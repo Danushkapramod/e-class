@@ -4,7 +4,7 @@ import {url} from "./apiData"
 
 export async function getClasses(queryParams){
     try{
-        const response = await axios.get(`${url}/classes`)
+        const response = await axios.get(`${url}/classes?teacher=true${queryParams}`)
         return response.data.body.classes
 
     }catch(error) {
@@ -36,7 +36,6 @@ export async function updateClasse({_id,newData}){
 }
 
 export async function deleteClass(classId){
-  console.log(classId,"--------");
   try{
       await axios.delete(`${url}/classes/${classId}`)
   }catch(error) {

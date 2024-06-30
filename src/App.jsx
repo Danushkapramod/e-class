@@ -14,7 +14,6 @@ import { OptionRoutes } from "./routes/OptionRoutes";
 import AccountInformation from "./user/AccountInformation";
 import Dashbord from "./dashboard/Dashbord";
 import LoginPage from "./pages/LoginPage";
-import AlertWindow from "./ui/components/AlertWindow";
 //import ProtectedRoute from "./authentication/ProtectedRoute";
 import SignupPage from "./pages/SignupPage";
 import RecoveryPasswordPage from "./pages/RecoveryPasswordPage";
@@ -73,7 +72,6 @@ function App() {
   return (
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
-        <AlertWindow />
         <Toaster position="top-right" reverseOrder={false} />
         <ReactQueryDevtools initialIsOpen={false} />
         <RouterProvider router={router} />

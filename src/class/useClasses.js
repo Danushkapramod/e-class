@@ -2,11 +2,13 @@ import { useQuery } from "@tanstack/react-query";
 
 //import { useLocation } from "react-router-dom";
 import { getClasses } from "../services_api/apiClasses";
+import { useLocation } from "react-router-dom";
 
-export default function useClasses(queryParams = {}){
-//   const location = useLocation({});
+export default function useClasses(query){
+  const location = useLocation({});
+  let queryParams ={}
 //   const searchParams = new URLSearchParams(location.search);
-//   let queryParams ={}
+//  
 
 // if(!query){
 //   for (const [key, value] of searchParams.entries()) {
@@ -22,7 +24,11 @@ export default function useClasses(queryParams = {}){
 //   }
 // }
 
-// if(query) queryParams = query
+    if(query){
+      queryParams = query
+    }else{
+      queryParams = location.search
+    }
 
 
     const {
