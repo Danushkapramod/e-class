@@ -1,11 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
-import { updateClass } from "../services/apiClasses";
 import toast from "react-hot-toast";
+import { updateClasse } from "../services_api/apiClasses";
 
 export default function useUpdateClass(){
 
     const { isPending: isUpdating, mutate } = useMutation({
-        mutationFn: updateClass,
+        mutationFn: updateClasse,
         onSuccess: () => {
         toast.success('Class updated successfully!')
         },

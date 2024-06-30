@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import {  deleteSubject } from "../services/apiOptions";
+import {  deleteSubject } from "../services_api/apiOptions";
 import toast from "react-hot-toast";
 
 export default function useDeleteSubject(){

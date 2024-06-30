@@ -26,21 +26,20 @@ function Update() {
   if (error) return <Error errorMsg={error.message} />;
 
   const teacherData = teachers.filter((teacherData) => {
-    return parseInt(teacherData.teacherId) === parseInt(id);
+    return teacherData._id === id;
   });
-  const { name, subject, phone, image, teacherId } = teacherData[0];
+  const { name, subject, phone, avatar: image, _id } = teacherData[0];
 
   const onSubmit = async (data) => {
     const newData = {
-      teacherId,
       phone: data.phone,
       subject: data.subject,
       name: data.teacher,
-      image: data.image.length
+      avatar: data.image.length
         ? await updateImage(data.image[0], data.teacher)
         : image,
     };
-    mutate(newData);
+    mutate({ _id, newData });
   };
 
   async function updateImage(imageFile, header) {

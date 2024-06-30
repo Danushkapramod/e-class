@@ -8,7 +8,7 @@ export default function OptionHall() {
   const { isCreating, mutate: mutateCreate, isSuccess } = useCreateHall();
   const { isDeleting, mutate: mutateDelete } = useDeleteHall();
 
-  const data = halls?.map((hall) => hall.hallName);
+  const data = halls?.map((hall) => [hall._id, hall.hallName]);
 
   function createHandler(hall) {
     mutateCreate({ hallName: hall });

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getGrades} from "../services/apiOptions";
+import { getGrades} from "../services_api/apiOptions";
 
 export default function useGrades(){
     

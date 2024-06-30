@@ -8,7 +8,7 @@ function OptionSubject() {
   const { isCreating, mutate: mutateCreate, isSuccess } = useCreateSubject();
   const { isDeleting, mutate: mutateDelete } = useDeleteSubject();
 
-  const data = subjects?.map((subject) => subject.subjectName);
+  const data = subjects?.map((subject) => [subject._id, subject.subjectName]);
 
   function createHandler(subject) {
     mutateCreate({ subjectName: subject });

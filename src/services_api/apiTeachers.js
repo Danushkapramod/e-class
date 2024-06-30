@@ -4,12 +4,10 @@ import { url } from "./apiData";
 export async function getTeachers(queryParams){
     try{
         const response = await axios.get(`${url}/teachers`)
-
         return response.data.body.teachers
 
     }catch(error) {
         if (error.response) {
-          console.error('Error Status:', error.response.status);
           console.error('Error Data:', error.response.data);
 
         } else if (error.request) {
@@ -22,11 +20,27 @@ export async function getTeachers(queryParams){
 }
 
 
-export async function createTeachers(teacherData){
+export async function createTeacher(teacherData){
     try{
         await axios.post(`${url}/teachers`,teacherData)
-
     }catch(error) {
         console.error('Error:', error);
-      }
+    }
 }
+
+export async function updateTeacher({_id,newData}){
+  try{
+      await axios.patch(`${url}/teachers/${_id}`,newData)
+  }catch(error) {
+      console.error('Error:', error);
+  }
+}
+
+export async function deleteTeacher(teacherId){
+  try{
+      await axios.delete(`${url}/teachers/${teacherId}`)
+  }catch(error) {
+      console.error('Error:', error);
+  }
+}
+

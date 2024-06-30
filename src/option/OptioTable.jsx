@@ -121,12 +121,12 @@ function Row({ isDeleting, item, number, mutateDelete }) {
         <span className=" text-sm opacity-50">
           {number < 10 ? "0" + number : number}
         </span>
-        <span className=" opacity-80">{item}</span>
+        <span className=" opacity-80">{item[1]}</span>
       </div>
 
       <Button
         disabled={isDeleting}
-        onClick={() => mutateDelete(item)}
+        onClick={() => mutateDelete(item[0])}
         type="xsSecondery"
         icon="delete"
       />

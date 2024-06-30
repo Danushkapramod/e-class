@@ -8,7 +8,7 @@ export default function OptionGrade() {
   const { isCreating, mutate: mutateCreate, isSuccess } = useCreateGrade();
   const { isDeleting, mutate: mutateDelete } = useDeleteGrade();
 
-  const data = grades?.map((grade) => grade.gradeName);
+  const data = grades?.map((grade) => [grade._id, grade.gradeName]);
 
   function createHandler(grade) {
     mutateCreate({ gradeName: grade });

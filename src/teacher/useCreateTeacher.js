@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { createTeachers } from "../services_api/apiTeachers";
+import { createTeacher } from "../services_api/apiTeachers";
 import toast from "react-hot-toast";
 
 export default function useCreateTeacher(){
@@ -9,7 +9,7 @@ export default function useCreateTeacher(){
     const queryClient = useQueryClient()
 
     const { isPending: isCreating, mutate } = useMutation({
-        mutationFn: createTeachers,
+        mutationFn: createTeacher,
         onSuccess: () => {
           queryClient.invalidateQueries({
             queryKey: ["teachers"],

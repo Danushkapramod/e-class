@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { getHalls } from "../services/apiOptions";
+import { getHalls } from "../services_api/apiOptions";
+
 
 export default function useHalls(){
     

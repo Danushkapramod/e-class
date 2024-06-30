@@ -9,7 +9,6 @@ import useSubjects from "../option/useSubjects";
 import useGrades from "../option/useGrades";
 import useClasses from "./useClasses";
 import { useParams } from "react-router-dom";
-
 import { useEffect } from "react";
 import useUpdateClass from "./useUpdateClass";
 import { getURL, uploadImage } from "../services/apiUploadImages";
@@ -36,7 +35,7 @@ function Update() {
   const { grades, isLoading: gradesIsloading } = useGrades();
 
   const selectedClassData = classes?.find(
-    (classData) => parseInt(classData.classId) === parseInt(classId),
+    (classData) => classData._id === classId,
   );
 
   const {
@@ -53,14 +52,13 @@ function Update() {
     if (selectedClassData) {
       setValue("subject", selectedClassData.subject);
       setValue("grade", selectedClassData.grade);
-      setValue("hallNumber", selectedClassData.hallNumber);
-      setValue("classDay", selectedClassData.classDay);
-      setValue("classTime", selectedClassData.classTime);
-      setValue("classTime", selectedClassData.classTime);
-      setValue("teacher", selectedClassData.teacher);
+      setValue("hallNumber", selectedClassData.hall);
+      setValue("classDay", selectedClassData.day);
+      setValue("classTime", selectedClassData.startTime);
+      setValue("teacher", selectedClassData.teacher.name);
       setValue("duration", selectedClassData.duration);
       setValue("charging", selectedClassData.charging);
-      setValue("teacherId", selectedClassData.teacherId);
+      setValue("teacherId", selectedClassData.teacher._id);
     }
   }, [selectedClassData, setValue]);
 
@@ -75,16 +73,23 @@ function Update() {
   }
 
   const onSubmit = async (data) => {
-    const classData = {
-      ...data,
-      classId,
-      class_poster: data.class_poster.length
+    const newData = {
+      subject: data.subject,
+      teacher: data.teacherId,
+      day: data.classDay,
+      grade: data.grade,
+      startTime: data.classTime,
+      charging: data.charging,
+      duration: data.duration,
+      hall: data.hallNumber,
+      avatar: data.class_poster.length
         ? await updateImage(data.class_poster[0])
         : selectedClassData.class_poster,
     };
 
     dispatch(setTempCreateFormData({}));
-    mutate(classData);
+    console.log(newData);
+    mutate({ _id: classId, newData });
   };
 
   function onSelectAdd() {
@@ -212,11 +217,12 @@ function Update() {
                 className="basis-2/3 rounded border border-slate-600 bg-white/15 px-4 py-2 "
                 id="classDay"
                 {...register("classDay")}
+                defaultChecked="Monday"
               >
                 {days.map((day, index) => {
                   return (
                     <option
-                      className=" bg-dark-primary "
+                      className=" bg-dark-primary"
                       key={index}
                       value={day}
                     >
@@ -288,7 +294,7 @@ function Update() {
                     showValue={false}
                     add={{ to: "/app/teachers/new", onClick: onSelectAdd }}
                     valueName="name"
-                    idName="teacherId"
+                    idName="_id"
                   />
                 </div>
               </div>

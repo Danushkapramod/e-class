@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import {  deleteGrade } from "../services/apiOptions";
+import {  deleteGrade } from "../services_api/apiOptions";
 import toast from "react-hot-toast";
 
 
