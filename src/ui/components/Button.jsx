@@ -1,0 +1,219 @@
+import { Link } from "react-router-dom";
+import { FadeLoader } from "react-spinners";
+
+// eslint-disable-next-line react/prop-types
+function Button({
+  onClick,
+  disabled,
+  children,
+  to,
+  icon,
+  type,
+  onType,
+  className,
+  spinner,
+  id,
+  ref,
+  htmlFor,
+}) {
+  const smallSecondery = `text-dark-text-primary flex items-center 
+                          rounded border border-slate-600 
+                          bg-white/10  py-1 text-sm uppercase
+                          transition-all duration-100
+                         hover:bg-white/5 active:bg-white/10
+                          ${children && icon && "gap-1"} 
+                          ${!children && icon ? "px-1" : "px-2"}`;
+
+  const smallPrimary = `text-dark-text-primary flex items-center 
+                          rounded transition-all duration-100
+                          hover:bg-blue-700 active:bg-blue-500
+                          bg-blue-600 px-2 py-1 text-sm uppercase
+                          ${children && icon && "gap-1"} `;
+
+  const primary = `text-dark-text-primary flex items-center 
+                         gap-2 rounded  bg-blue-600 px-[15px] py-[7px] text-base 
+                         border border-blue-600 
+                         transition-all duration-100
+                         hover:bg-blue-700 active:bg-blue-500
+                         uppercase ${children && icon && "gap-1"}`;
+
+  const secondery = `text-dark-text-primary flex items-center 
+                         gap-2 rounded  bg-white/10 px-[15px] py-[7px] text-base 
+                         border border-slate-600 
+                         transition-all duration-100
+                         hover:bg-white/5 active:bg-white/10
+                         uppercase ${children && icon && "gap-1"}`;
+
+  const xsSecondery = `text-dark-text-primary flex items-center 
+                         rounded border border-slate-600 
+                         bg-white/10   text-xs uppercase
+                         transition-all duration-100
+                         hover:bg-white/5 active:bg-white/10
+                         ${children && icon ? "gap py-0 px-2" : children && !icon ? "py-1 px-2" : !children && icon ? "" : ""} 
+                        `;
+
+  const link = `text-blue-400 gap-2  flex items-center`;
+
+  if (type === "xsSecondery") {
+    if (to) {
+      return (
+        <Link to={to} type={onType} className={`${xsSecondery} ${className}`}>
+          {icon && (
+            <span className="material-symbols-outlined scale-[0.70]  ">
+              {icon}
+            </span>
+          )}
+          <span className="pt-px">{children}</span>
+        </Link>
+      );
+    }
+    return (
+      <button
+        disabled={disabled}
+        onClick={onClick}
+        type={onType}
+        htmlFor={htmlFor}
+        ref={ref}
+        className={`${xsSecondery} ${className}`}
+      >
+        {icon && (
+          <span className="material-symbols-outlined scale-[0.70]  ">
+            {icon}
+          </span>
+        )}
+        <span className="pt-px">{children}</span>
+      </button>
+    );
+  }
+
+  if (type === "smallSecondery") {
+    if (to) {
+      return (
+        <Link
+          to={to}
+          type={onType}
+          ref={ref}
+          onClick={onClick}
+          className={smallSecondery}
+        >
+          {icon && (
+            <span className="material-symbols-outlined scale-[0.80]  ">
+              {icon}
+            </span>
+          )}
+          <span className="pt-px">{children}</span>
+        </Link>
+      );
+    }
+    return (
+      <button
+        ref={ref}
+        onClick={onClick}
+        type={onType}
+        className={smallSecondery}
+      >
+        {icon && (
+          <span className="material-symbols-outlined scale-[0.80]  ">
+            {icon}
+          </span>
+        )}
+        <span className="pt-px">{children}</span>
+      </button>
+    );
+  }
+
+  if (type === "smallPrimary") {
+    return (
+      <button
+        id={id}
+        ref={ref}
+        type={onType}
+        onClick={onClick}
+        className={`${smallPrimary} ${className}`}
+      >
+        {icon && (
+          <span className="material-symbols-outlined scale-[0.80]  ">
+            {icon}
+          </span>
+        )}
+        <span className="pt-px">{children}</span>
+      </button>
+    );
+  }
+
+  if (type === "primary") {
+    if (to) {
+      return (
+        <Link to={to} type={onType} onClick={onClick} className={primary}>
+          {icon && (
+            <span className=" material-symbols-outlined scale-90">{icon}</span>
+          )}
+          <span>{children}</span>
+        </Link>
+      );
+    }
+
+    return (
+      <button
+        type={onType}
+        disabled={disabled}
+        onClick={onClick}
+        ref={ref}
+        className={`${primary}  relative w-max ${className}`}
+      >
+        {icon && (
+          <span className=" material-symbols-outlined scale-90">{icon}</span>
+        )}
+        <span className={`${spinner && "opacity-0"}`}>{children}</span>
+        {spinner && (
+          <div
+            className=" absolute flex  scale-[40%] items-center 
+          justify-center  text-center "
+          >
+            <FadeLoader margin={0} color="#FFFFFF" />
+          </div>
+        )}
+      </button>
+    );
+  }
+
+  if (type === "secondery") {
+    if (to === "-1") {
+      return (
+        <Link to={-1} disabled={disabled} className={secondery}>
+          {icon && (
+            <span className=" material-symbols-outlined scale-90">{icon}</span>
+          )}
+          <span>{children}</span>
+        </Link>
+      );
+    }
+
+    return (
+      <button
+        disabled={disabled}
+        type={onType}
+        onClick={onClick}
+        ref={ref}
+        className={secondery}
+      >
+        {icon && (
+          <span className=" material-symbols-outlined scale-90">{icon}</span>
+        )}
+        <span>{children}</span>
+      </button>
+    );
+  }
+
+  if (type === "link")
+    return (
+      <Link to={to} type={onType} onClick={onClick} className={link}>
+        <span className=" underline">{children}</span>
+        {icon && (
+          <span className=" material-symbols-outlined  scale-75">{icon}</span>
+        )}
+      </Link>
+    );
+}
+
+export default Button;
