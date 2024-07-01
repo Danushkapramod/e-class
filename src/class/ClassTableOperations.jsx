@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import FilterField from "../ui/components/FilterField";
 import Filters from "../ui/components/Filters";
 import { useLocation, useSearchParams } from "react-router-dom";
-import useTeachers from "../teacher/useTeachers";
 
 import useGrades from "../option/useGrades";
 import useHalls from "../option/useHalls";
@@ -21,7 +20,7 @@ const days = [
   "Mondaya",
   "Tuesday",
   "Wednesday",
-  "Tuesday",
+  "Thursday",
   "Friday",
   "Saturday",
   "Sunday",
@@ -30,7 +29,6 @@ const days = [
 export function ClassFilter() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const { teachers } = useTeachers({});
   const { subjects } = useSubjects();
   const { grades } = useGrades();
   const { halls } = useHalls();
@@ -53,8 +51,8 @@ export function ClassFilter() {
       teacher,
       subject,
       grade,
-      hallNumber: hall,
-      classDay: day,
+      hall: hall,
+      day: day,
     });
     setFilterCount([...teacher, ...subject, ...grade, ...hall, ...day].length);
   }
@@ -82,12 +80,12 @@ export function ClassFilter() {
         setValu={setSubject}
       />
 
-      <FilterField
+      {/* <FilterField
         name="Teacher"
         data={teachers?.map((teacher) => teacher.name)}
         value={teacher}
         setValu={setTeacher}
-      />
+      /> */}
 
       <FilterField
         name="Grade"
@@ -117,15 +115,15 @@ export function ClassSort() {
     },
     {
       title: "Sort by Time",
-      sortBy: "classTime",
+      sortBy: "startTime",
     },
     {
       title: "Sort by Day",
-      sortBy: "classDay",
+      sortBy: "day",
     },
     {
       title: "Sort by Hall",
-      sortBy: "hallNumber",
+      sortBy: "hall",
     },
   ];
 

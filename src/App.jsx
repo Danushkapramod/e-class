@@ -14,7 +14,7 @@ import { OptionRoutes } from "./routes/OptionRoutes";
 import AccountInformation from "./user/AccountInformation";
 import Dashbord from "./dashboard/Dashbord";
 import LoginPage from "./pages/LoginPage";
-//import ProtectedRoute from "./authentication/ProtectedRoute";
+import ProtectedRoute from "./authentication/ProtectedRoute";
 import SignupPage from "./pages/SignupPage";
 import RecoveryPasswordPage from "./pages/RecoveryPasswordPage";
 import { Toaster } from "react-hot-toast";

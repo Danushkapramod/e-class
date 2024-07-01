@@ -40,15 +40,15 @@ function Filters({ children, filterCount, onFilterHandler, reset }) {
           <div className=" grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-y-2 font-light">
             {children}
           </div>
-          <div className=" flex justify-end gap-2 pr-2">
-            <Button onClick={() => setIsOpen(false)} type="secondery">
+          <div className=" mt-4 flex justify-end gap-2 pr-2">
+            <Button onClick={() => setIsOpen(false)} type="smallSecondery">
               close
             </Button>
-            <Button onClick={reset} type="secondery">
+            <Button onClick={reset} type="smallSecondery">
               Clear
             </Button>
-            <Button onClick={filterHandler} type="primary">
-              Filter
+            <Button onClick={filterHandler} type="smallPrimary">
+              Apply
             </Button>
           </div>
         </div>

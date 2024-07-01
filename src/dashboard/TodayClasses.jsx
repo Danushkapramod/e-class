@@ -42,9 +42,9 @@ function TodayClasses() {
     if (isLoading) return;
 
     classes.map((classData) => {
-      const { classTime, duration } = classData;
+      const { startTime, duration } = classData;
       const classStartTime = new Date(
-        `${new Date().toDateString()} ${classTime} GMT+0530 (India Standard Time)`,
+        `${new Date().toDateString()} ${startTime} GMT+0530 (India Standard Time)`,
       );
       const classEndTime = new Date(classStartTime);
       classEndTime.setTime(classEndTime.getTime() + duration * 3600 * 1000);
@@ -150,11 +150,10 @@ function TodayClasses() {
 
 function Row({ classData, filterStatus }) {
   const [bajColor, setBajColor] = useState("bg-blue-600");
-  const { subject, status, grade, class_poster, hallNumber, classTime } =
-    classData;
+  const { subject, status, grade, avatar, hallNumber, startTime } = classData;
 
   const formatedclassTime = moment
-    .tz(`2000-01-01T${classTime}Z`, "")
+    .tz(`2000-01-01T${startTime}Z`, "")
     .format("hh:mm A");
 
   useEffect(() => {
@@ -174,7 +173,7 @@ function Row({ classData, filterStatus }) {
       <tr className=" bg-dark-secondery text-sm">
         <td className="  pl-4">
           <div className=" flex h-9 w-9 items-center justify-center overflow-hidden rounded-full">
-            <img className="h-full object-cover" src={class_poster} alt="" />
+            <img className="h-full object-cover" src={avatar} alt="" />
           </div>
         </td>
         <td className="  px-2 py-3">

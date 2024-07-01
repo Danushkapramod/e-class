@@ -3,8 +3,12 @@ import {url} from "./apiData"
 
 
 export async function getClasses(queryParams){
+  let query;
+  queryParams?query = `&${queryParams.split("?")[1]}`:query = ""
+  
     try{
-        const response = await axios.get(`${url}/classes?teacher=true${queryParams}`)
+      console.log(queryParams);
+        const response = await axios.get(`${url}/classes?teacher=true${query}`)
         return response.data.body.classes
 
     }catch(error) {

@@ -10,8 +10,7 @@ import useDeleteImage from "../hooks/useDeleteImage";
 
 function AccountInformation() {
   const [isShow, setIsShow] = useState("editProfile");
-  // const { user } = useUser();
-
+  const { user } = useUser();
   const { mutate: update, isPending: isUpdating } = useUpdate();
   const {
     mutate: deleteImage,

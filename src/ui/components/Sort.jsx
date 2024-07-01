@@ -5,7 +5,6 @@ import Button from "./Button";
 function Sort({ sortData, setSort, isSorted }) {
   const [isOpen, setIsOpen] = useState(false);
   const [select, setSelect] = useState("none");
-  const toggleButton = useRef();
 
   useEffect(() => {
     setSort(select);
@@ -14,9 +13,9 @@ function Sort({ sortData, setSort, isSorted }) {
   useEffect(() => {
     function eventCallback(e) {
       if (e.target.closest("button")) return;
-      if (e.target !== toggleButton.current) {
-        setIsOpen(false);
-      }
+      // if (e.target !== toggleButton.current) {
+      // }
+      setIsOpen(false);
     }
 
     if (isOpen) {

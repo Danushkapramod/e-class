@@ -8,11 +8,11 @@ import SelectItem from "../ui/components/SelectItem";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import useDeleteClass from "./useDeleteClass";
+import { getAuth } from "../services_api/apiAuth";
 
 function ClassesTable() {
   useSetRoot("");
   const { tableView } = useSelector((store) => store.class);
-
   const { classes, isLoading, error } = useClasses();
 
   if (isLoading) return <Spinner />;
@@ -47,6 +47,12 @@ function ClassesTable() {
          rounded border
        border-slate-700 p-2 "
       >
+        <button
+          className=" text-2xl font-medium "
+          onClick={() => console.log(getAuth())}
+        >
+          Click Me
+        </button>
         {classes.map((classData, index) => {
           return <CardItem classData={classData} key={index} />;
         })}

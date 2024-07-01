@@ -14,7 +14,7 @@ const days = [
   "Mondaya",
   "Tuesday",
   "Wednesday",
-  "Tuesday",
+  "Thursday",
   "Friday",
   "Saturday",
   "Sunday",
