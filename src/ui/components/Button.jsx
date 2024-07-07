@@ -48,10 +48,19 @@ function Button({
                          rounded border border-slate-600 
                          bg-white/10   text-xs uppercase
                          transition-all duration-100
+                          justify-center
                          hover:bg-white/5 active:bg-white/10
                          ${children && icon ? "gap py-0 px-2" : children && !icon ? "py-1 px-2" : !children && icon ? "" : ""} 
                         `;
 
+  const xsPrimary = `   text-dark-text-primary flex items-center 
+                        rounded border border-blue-600 
+                         text-center justify-center
+                         bg-blue-600   text-xs uppercase
+                        transition-all duration-100 bg-blue-600 
+                        hover:bg-blue-700 active:bg-white/10
+                        ${children && icon ? "gap py-0 px-2" : children && !icon ? "py-1 px-2" : !children && icon ? "" : ""} 
+                       `;
   const link = `text-blue-400 gap-2  flex items-center`;
 
   if (type === "xsSecondery") {
@@ -81,7 +90,49 @@ function Button({
             {icon}
           </span>
         )}
-        <span className="pt-px">{children}</span>
+        <span className={`${spinner && "opacity-0"} pt-px`}>{children}</span>
+        {spinner && (
+          <div className=" absolute flex w-fit  scale-[35%] items-center justify-center ">
+            <FadeLoader margin={0} color="#FFFFFF" />
+          </div>
+        )}
+      </button>
+    );
+  }
+
+  if (type === "xsPrimary") {
+    if (to) {
+      return (
+        <Link to={to} type={onType} className={`${xsPrimary} ${className}`}>
+          {icon && (
+            <span className="material-symbols-outlined scale-[0.70]  ">
+              {icon}
+            </span>
+          )}
+          <span className="pt-px">{children}</span>
+        </Link>
+      );
+    }
+    return (
+      <button
+        disabled={disabled}
+        onClick={onClick}
+        type={onType}
+        htmlFor={htmlFor}
+        ref={ref}
+        className={`${xsPrimary} ${className}`}
+      >
+        {icon && (
+          <span className="material-symbols-outlined scale-[0.70]  ">
+            {icon}
+          </span>
+        )}
+        <span className={`${spinner && "opacity-0"} pt-px`}>{children}</span>
+        {spinner && (
+          <div className=" absolute flex  scale-[35%] items-center justify-center ">
+            <FadeLoader margin={0} color="#FFFFFF" />
+          </div>
+        )}
       </button>
     );
   }

@@ -1,20 +1,19 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateAuther } from "../services_api/apiAuth";
 import toast from "react-hot-toast";
+import { resetPassword } from "../services_api/apiAuth";
 
-export function useUpdate() {
+export function useResetPassword() {
   const queryClient = useQueryClient();
-  const { mutate, isPending } = useMutation({
-    mutationFn: updateAuther,
+  const { mutate, isPending, error } = useMutation({
+    mutationFn: resetPassword,
     onSuccess: () => {
       queryClient.invalidateQueries("user");
-      toast.success("Profile data updated succesfully");
+      toast.success("Password changed successfully");
     },
     onError: (err) => {
       console.log(err.message);
       toast.error(err.message);
     },
   });
-
-  return { mutate, isPending };
+  return { mutate, isPending, error };
 }

@@ -5,7 +5,6 @@ import Button from "../ui/components/Button";
 import { useParams } from "react-router-dom";
 import useSetRoot from "../utils/setRoot";
 import useUpdateTeacher from "./useUpdateTeacher";
-import { getURL, uploadImage } from "../services/apiUploadImages";
 import useTeachers from "./useTeachers";
 
 function Update() {
@@ -30,28 +29,17 @@ function Update() {
   });
   const { name, subject, phone, avatar: image, _id } = teacherData[0];
 
-  const onSubmit = async (data) => {
+  const onSubmit = (data) => {
     const newData = {
       phone: data.phone,
       subject: data.subject,
       name: data.teacher,
-      avatar: data.image.length
-        ? await updateImage(data.image[0], data.teacher)
-        : image,
+      avatarFile: data.image[0],
+      avatarDbUrl: image,
     };
-    mutate({ _id, newData });
+    mutate({ classId: _id, newData });
   };
 
-  async function updateImage(imageFile, header) {
-    const resData = await uploadImage({
-      bucketName: "teacher-avatars",
-      imageFile: imageFile,
-      fileNameHeader: header,
-    });
-
-    const imageUrl = getURL("teacher-avatars", resData.path);
-    return imageUrl;
-  }
   return (
     <div
       className="mx-auto mt-4 flex w-full max-w-[700px]

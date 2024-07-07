@@ -6,10 +6,10 @@ import teacherReducer from "./teacher/teacherSlice";
 import optionsReducer from "./option/optionSclice";
 
 export const store = configureStore({
-    reducer: {
-      global:globalUiReducer,
-      class:classReducer,
-      teacher:teacherReducer,
-      options:optionsReducer
-    },
-  });
+  reducer: {
+    global: globalUiReducer,
+    class: classReducer,
+    teacher: teacherReducer,
+    options: optionsReducer,
+  },
+});

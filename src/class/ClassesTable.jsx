@@ -8,13 +8,11 @@ import SelectItem from "../ui/components/SelectItem";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import useDeleteClass from "./useDeleteClass";
-import { getAuth } from "../services_api/apiAuth";
 
 function ClassesTable() {
   useSetRoot("");
   const { tableView } = useSelector((store) => store.class);
   const { classes, isLoading, error } = useClasses();
-
   if (isLoading) return <Spinner />;
   if (error) return <Error errorMsg={error.message} />;
 
@@ -47,12 +45,6 @@ function ClassesTable() {
          rounded border
        border-slate-700 p-2 "
       >
-        <button
-          className=" text-2xl font-medium "
-          onClick={() => console.log(getAuth())}
-        >
-          Click Me
-        </button>
         {classes.map((classData, index) => {
           return <CardItem classData={classData} key={index} />;
         })}
@@ -78,7 +70,7 @@ function CardItem({ classData }) {
       navigate(`/app/classes/${_id}`);
     }
     if (e.target.id === "delete") {
-      mutate(_id);
+      mutate({ classId: _id, avatarDbUrl: avatar });
     }
   }
   const formatedstartTime = moment
@@ -105,7 +97,7 @@ function CardItem({ classData }) {
         />
       </div>
 
-      <p className=" mb-1 line-clamp-1 text-lg capitalize ">{subject}</p>
+      <p className=" mb-1 line-clamp-1  text-lg capitalize ">{subject}</p>
       <div
         className="flex h-20 w-20 items-center  justify-center overflow-hidden rounded-full border-2 
          border-slate-300  "
@@ -134,7 +126,6 @@ function CardItem({ classData }) {
 
 function TableRow({ classData }) {
   const { isDeleting, mutate } = useDeleteClass();
-
   const { _id, teacher, subject, avatar, hall, startTime, grade, day } =
     classData;
 
@@ -172,7 +163,12 @@ function TableRow({ classData }) {
           </Button>
           <Button
             disabled={isDeleting}
-            onClick={() => mutate(_id)}
+            onClick={() =>
+              mutate({
+                classId: _id,
+                avatarDbUrl: avatar,
+              })
+            }
             className=" text-red-400"
             type="xsSecondery"
             icon="delete"

@@ -11,7 +11,6 @@ import useClasses from "./useClasses";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import useUpdateClass from "./useUpdateClass";
-import { getURL, uploadImage } from "../services/apiUploadImages";
 
 const days = [
   "Mondaya",
@@ -62,17 +61,7 @@ function Update() {
     }
   }, [selectedClassData, setValue]);
 
-  async function updateImage(imageFile, header) {
-    const resData = await uploadImage({
-      bucketName: "classes-images",
-      imageFile: imageFile,
-      fileNameHeader: header,
-    });
-    const imageUrl = getURL("classes-images", resData.path);
-    return imageUrl;
-  }
-
-  const onSubmit = async (data) => {
+  const onSubmit = (data) => {
     const newData = {
       subject: data.subject,
       teacher: data.teacherId,
@@ -82,14 +71,12 @@ function Update() {
       charging: data.charging,
       duration: data.duration,
       hall: data.hallNumber,
-      avatar: data.class_poster.length
-        ? await updateImage(data.class_poster[0])
-        : selectedClassData.class_poster,
+      avatarDbUrl: selectedClassData.avatar,
+      avatarFile: data.class_poster[0],
     };
 
     dispatch(setTempCreateFormData({}));
-    console.log(newData);
-    mutate({ _id: classId, newData });
+    mutate({ classId, newData });
   };
 
   function onSelectAdd() {
@@ -292,7 +279,10 @@ function Update() {
                     data={teachers}
                     isLoading={teachersIsloading}
                     showValue={false}
-                    add={{ to: "/app/teachers/new", onClick: onSelectAdd }}
+                    add={{
+                      to: "/app/teachers/new",
+                      onClick: onSelectAdd,
+                    }}
                     valueName="name"
                     idName="_id"
                   />

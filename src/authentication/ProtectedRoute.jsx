@@ -1,13 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import Spinner from "../ui/components/Spinner";
-import { useUser } from "./useUser";
+import { useAuther } from "./useAuther";
 import { useEffect } from "react";
 
 function ProtectedRoute({ children }) {
   const navigate = useNavigate();
-  const { isLoading, user } = useUser();
-
-  let isAuthenticated = user?.role === "authenticated";
+  const { isLoading, auther } = useAuther();
+  let isAuthenticated = auther;
 
   useEffect(() => {
     if (!isAuthenticated && !isLoading) {

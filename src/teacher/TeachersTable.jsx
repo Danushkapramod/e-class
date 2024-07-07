@@ -63,7 +63,7 @@ function CardItem({ teacherData }) {
       navigate(`/app/teachers/${teacherId}`);
     }
     if (e.target.id === "delete") {
-      mutate(teacherId);
+      mutate({ teacherId, avatarDbUrl: image });
     }
   }
 
@@ -122,7 +122,6 @@ function CardItem({ teacherData }) {
 
 function TableRow({ teacherData }) {
   const { isDeleting, mutate } = useDeleteTeacher();
-
   const { teacherId, name, subject, image, phone } = teacherData;
 
   return (
@@ -142,7 +141,12 @@ function TableRow({ teacherData }) {
         </Button>
         <Button
           disabled={isDeleting}
-          onClick={() => mutate(teacherId)}
+          onClick={() =>
+            mutate({
+              teacherId,
+              avatarDbUrl: image,
+            })
+          }
           className=" text-red-400"
           type="xsSecondery"
           icon="delete"

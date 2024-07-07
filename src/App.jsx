@@ -18,6 +18,7 @@ import ProtectedRoute from "./authentication/ProtectedRoute";
 import SignupPage from "./pages/SignupPage";
 import RecoveryPasswordPage from "./pages/RecoveryPasswordPage";
 import { Toaster } from "react-hot-toast";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 
 export const queryClient = new QueryClient(
   "https://kjvgesvqoblnntmvqaid.supabase.co",
@@ -38,16 +39,20 @@ function App() {
       element: <SignupPage />,
     },
     {
-      path: "passwordRecovery",
+      path: "forgot-password",
       element: <RecoveryPasswordPage />,
+    },
+    {
+      path: "reset-password",
+      element: <ResetPasswordPage />,
     },
 
     {
       path: "/app",
       element: (
-        // <ProtectedRoute>
-        <AppLayout />
-        // </ProtectedRoute>
+        <ProtectedRoute>
+          <AppLayout />
+        </ProtectedRoute>
       ),
       children: [
         ClassRoutes,

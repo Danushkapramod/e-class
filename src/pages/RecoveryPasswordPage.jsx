@@ -1,9 +1,10 @@
 import { Form, useForm } from "react-hook-form";
 import Button from "../ui/components/Button";
 import { useNavigate } from "react-router-dom";
-import supabase from "../services/supabase";
+import { useRequestResetToken } from "../authentication/useRequestResetToken";
 
 export default function RecoveryPasswordPage() {
+  const { mutate, isPending } = useRequestResetToken();
   const navigate = useNavigate();
   const {
     formState: { errors },
@@ -11,10 +12,8 @@ export default function RecoveryPasswordPage() {
     handleSubmit,
     register,
   } = useForm();
-  async function onSubmit(loginData) {
-    let { data } = await supabase.auth.resetPasswordForEmail(loginData.email);
-
-    console.log(data);
+  async function onSubmit(formData) {
+    mutate({ email: formData.email });
   }
 
   return (
@@ -63,13 +62,12 @@ export default function RecoveryPasswordPage() {
               e.preventDefault();
               navigate(-1);
             }}
-            disabled={""}
-            spinner={""}
+            disabled={isPending}
             type="secondery"
           >
             Close
           </Button>
-          <Button disabled={""} spinner={""} type="primary">
+          <Button disabled={isPending} spinner={isPending} type="primary">
             Login
           </Button>
         </div>

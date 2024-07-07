@@ -88,7 +88,7 @@ export default function LoginPage() {
         </div>
         <div className="  pr-2 text-right">
           <Link
-            to="/passwordRecovery"
+            to="/forgot-password"
             className="font-light text-blue-400  underline opacity-80"
           >
             Forgot your password?

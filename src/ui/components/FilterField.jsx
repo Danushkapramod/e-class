@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import useClientSearch from "../../hooks/useClientSearch";
 
 export default function FilterField({ data, value, setValu, name }) {
-  const { searchResults, setQuery } = useClientSearch(data, { type: "list" });
+  const { searchResults, setQuery } = useClientSearch(data, {
+    type: "list",
+  });
 
   function handleSearch(e) {
     setQuery(e.target.value);

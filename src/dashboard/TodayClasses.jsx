@@ -50,13 +50,22 @@ function TodayClasses() {
       classEndTime.setTime(classEndTime.getTime() + duration * 3600 * 1000);
 
       if (now < classStartTime) {
-        newClassesArray.push({ ...classData, status: "upcoming" });
+        newClassesArray.push({
+          ...classData,
+          status: "upcoming",
+        });
       }
       if (classEndTime > now && now > classStartTime) {
-        newClassesArray.push({ ...classData, status: "started" });
+        newClassesArray.push({
+          ...classData,
+          status: "started",
+        });
       }
       if (now > classEndTime) {
-        newClassesArray.push({ ...classData, status: "ended" });
+        newClassesArray.push({
+          ...classData,
+          status: "ended",
+        });
       }
     });
     setNwClassesArray(newClassesArray);

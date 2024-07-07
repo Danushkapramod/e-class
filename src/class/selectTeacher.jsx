@@ -15,7 +15,7 @@ function useSelectTeacher() {
       </button>
       {select && (
         <div className=" absolute z-20 w-full">
-          <div className=" bg-dark-primary  rounded border  border-slate-700">
+          <div className=" rounded  border border-slate-700  bg-dark-primary">
             <div>
               <SearchField className="w-full rounded-b-none border-0 bg-white/[0.05] py-2" />
               <div className=" absolute right-1 top-1">

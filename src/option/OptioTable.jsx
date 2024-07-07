@@ -77,10 +77,9 @@ export default function OptionTable({
             <div className=" absolute right-2 ">
               <Button
                 ref={inputAddBtn}
-                className=" border-none bg-blue-500"
                 disabled={isCreating}
                 onClick={() => mutateCreate(subject)}
-                type="xsSecondery"
+                type="xsPrimary"
                 icon="add"
               ></Button>
             </div>
@@ -121,7 +120,7 @@ function Row({ isDeleting, item, number, mutateDelete }) {
         <span className=" text-sm opacity-50">
           {number < 10 ? "0" + number : number}
         </span>
-        <span className=" opacity-80">{item[1]}</span>
+        <span className="  capitalize opacity-80">{item[1]}</span>
       </div>
 
       <Button

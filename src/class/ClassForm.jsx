@@ -52,11 +52,9 @@ function ClassForm() {
       startTime: data.classTime,
       duration: data.duration,
       charging: data.charging,
-      avatar:
-        "https://kjvgesvqoblnntmvqaid.supabase.co/storage/v1/object/public/classes-images/ICT_LsuL6Tord6.png",
+      avatar: data.class_poster[0],
     };
 
-    console.log(classData);
     dispatch(setTempCreateFormData({}));
     addSubject(data.subject);
     mutate(classData);
@@ -270,7 +268,10 @@ function ClassForm() {
                     data={teachers}
                     isLoading={teachersIsloading}
                     showValue={false}
-                    add={{ to: "/app/teachers/new", onClick: onSelectAdd }}
+                    add={{
+                      to: "/app/teachers/new",
+                      onClick: onSelectAdd,
+                    }}
                     valueName="name"
                     idName="_id"
                   />
