@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 //import { useLocation } from "react-router-dom";
-import { getTeachers } from "../services_api/apiTeachers";
+import { getTeachers } from "../services/apiTeachers";
 
 export default function useTeachers(queryParams) {
   //     const location = useLocation();

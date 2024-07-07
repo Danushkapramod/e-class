@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { changeEmail } from "../services_api/apiAuth";
+import { changeEmail } from "../services/apiAuth";
 
 export function useChangeEmail(onSuccessCallback) {
   const queryClient = useQueryClient();
@@ -15,7 +15,7 @@ export function useChangeEmail(onSuccessCallback) {
     },
     onError: (err) => {
       console.log(err.message);
-      toast.error(err.message);
+      toast.error(`Error : ${err.message}`);
     },
   });
   return { mutate, isPending, error };

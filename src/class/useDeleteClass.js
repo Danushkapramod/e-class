@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import toast from "react-hot-toast";
-import { deleteClass } from "../services_api/apiClasses";
+import { deleteClass } from "../services/apiClasses";
 
 export default function useDeleteClass() {
   const queryClient = useQueryClient();

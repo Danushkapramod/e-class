@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createHall } from "../services_api/apiOptions";
+import { createHall } from "../services/apiOptions";
 import toast from "react-hot-toast";
 
 export default function useCreateHall() {

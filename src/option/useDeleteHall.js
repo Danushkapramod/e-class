@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteHall } from "../services_api/apiOptions";
+import { deleteHall } from "../services/apiOptions";
 import toast from "react-hot-toast";
 
 export default function useDeleteHall() {

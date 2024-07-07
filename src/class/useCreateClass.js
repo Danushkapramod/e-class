@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { createClass } from "../services_api/apiClasses";
+import { createClass } from "../services/apiClasses";
 import toast from "react-hot-toast";
 
 export default function useCreateClass() {

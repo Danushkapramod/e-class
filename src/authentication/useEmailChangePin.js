@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { requestEmailResetToken } from "../services_api/apiAuth";
+import { requestEmailResetToken } from "../services/apiAuth";
 
 export function useRequestResetPin(onSuccessCallback) {
   const { mutate, isPending, error } = useMutation({
@@ -13,7 +13,7 @@ export function useRequestResetPin(onSuccessCallback) {
     },
     onError: (err) => {
       console.log(err.message);
-      toast.error(err.message);
+      toast.error(`Error : ${err.message}`);
     },
   });
   return { mutate, isPending, error};

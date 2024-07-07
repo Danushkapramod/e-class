@@ -1,119 +1,142 @@
-import { getURL, uploadImage } from "./apiUploadImages";
-import supabase from "./supabase";
+import axios from "axios";
+import { BASE_URL } from "./apiData";
+import { deleteFile, updateAvatar, uploadFile } from "./apiUploads";
 
 export async function getClasses(queryParams) {
-  console.log(Object.entries(queryParams));
-
   try {
-    let query = supabase.from("classes").select("*");
-    // .order('classTime', { ascending: false })
+    let query;
+    queryParams ? (query = `&${queryParams.split("?")[1]}`) : (query = "");
 
-    if (queryParams) {
-      Object.entries(queryParams).forEach(([colums, value]) => {
-        if (Array.isArray(value)) {
-          query = query.or(
-            value.map((val) => `${colums}.ilike.${val}`).join(","),
-          );
-        } else if (colums === "classId" || colums === "teacherId") {
-          query = query.eq(colums, value);
-        } else if (colums === "sort") {
-          query = query.order(value, value);
-        } else {
-          query = query.ilike(colums, `%${value}%`);
-        }
-      });
-    }
-
-    let { data, error } = await query;
-    if (error) {
-      console.error(error);
-      throw new Error(`Classes-Data could not be loaded, 
-                          Try again later.`);
-    }
-    return data;
+    const response = await axios.get(`${BASE_URL}/classes?teacher=true${query}`);
+    return response.data.body.classes;
   } catch (error) {
-    console.error("An error occurred:", error);
-    throw new Error(`An unexpected error occurred. Please try again later.`);
-  }
-}
-
-export async function getClasse(id) {
-  try {
-    let { data, error } = await supabase
-      .from("classes")
-      .eq("classId", id)
-      .select("*");
-
-    if (error) {
-      console.error(error);
-      throw new Error(`Classes could not be loaded, 
-                          Try again later.`);
-    }
-    return data;
-  } catch (error) {
-    console.error("An error occurred:", error);
-    throw new Error(`An unexpected error occurred. Please try again later.`);
-  }
-}
-
-export async function updateClass(newData) {
-  try {
-    const { data, error } = await supabase
-      .from("classes")
-      .update(newData)
-      .eq("classId", newData.classId);
-
-    if (error) {
-      console.error(error);
+    if (error.response) {
+     
+      console.error("Error Data:", error.response.data);
+      throw new Error("Failed to fetch classes. Server responded with error.");
+    } else if (error.request) {
+     
+      console.error("No response received:", error.request);
       throw new Error(
-        `Class data could not be updated. Please try again later.`,
+        "Failed to fetch classes. No response received from server.",
       );
+    } else {
+    
+      console.error("Error during request setup:", error.message);
+      throw new Error("Failed to fetch classes. Request setup error.");
     }
-    return data;
-  } catch (error) {
-    console.error("An error occurred:", error);
-    throw new Error(`An unexpected error occurred. Please try again later.`);
   }
 }
 
-export async function deleteClass(id) {
-  try {
-    const { error } = await supabase.from("classes").delete().eq("classId", id);
 
-    if (error) {
-      console.error(error);
-      throw new Error(`Class could not be deleted. Please try again later.`);
-    }
+export async function getClassesCount(queryParams) {
+  try {
+    const response = await axios.get(`${BASE_URL}/classes/total${queryParams}`);
+    return response.data.body.total;
   } catch (error) {
-    console.error("An error occurred:", error);
-    throw new Error(`An unexpected error occurred. Please try again later.`);
+
+     console.error("Error during request setup:", error.message);
+     throw new Error("Failed to fetch total. Request setup error.");
+    
   }
 }
 
 export async function createClass(classData) {
-  const { class_poster, subject } = classData;
   try {
-    const resData = await uploadImage({
-      bucketName: "classes-images",
-      imageFile: class_poster[0],
-      fileNameHeader: subject,
-    });
-
-    if (!resData.path)
-      throw new Error("Image could not be uploaded. Try Again later");
-
-    const imageUrl = getURL("classes-images", resData.path);
-
-    const { error } = await supabase
-      .from("classes")
-      .insert([{ ...classData, class_poster: imageUrl }]);
-
-    if (error) {
-      console.error(error);
-      throw new Error(`Class  could not be created. Please try again later.`);
+    let avatar;
+    if (classData.avatar) {
+      try {
+        // Upload the avatar image and store the URL
+        avatar = await uploadFile(
+          "assets/images/class-avatars",
+          classData.avatar,
+        );
+      } catch (uploadError) {
+        console.error("Error uploading avatar image:", uploadError);
+        throw new Error("Failed to upload avatar image. Please try again.");
+      }
+    }
+    // Try to save teacher data including the avatar URL if available
+    try {
+      await axios.post(`${BASE_URL}/classes`, {
+        ...classData,
+        avatar,
+      },{
+        withCredentials:true,
+        timeout:10000
+      });
+    } catch (apiError) {
+      console.error("Error saving class data:", apiError);
+      throw new Error("Failed to save class data. Please try again.");
     }
   } catch (error) {
-    console.error("An error occurred:", error);
-    throw new Error(`An unexpected error occurred. Please try again later.`);
+    console.error("Error creating class:", error);
   }
 }
+
+export async function updateClass({ classId, newData }) {
+  try {
+    let avatar;
+    // Update avatar if a new avatar file is provided
+    if (newData.avatarFile) {
+      try {
+        avatar = await updateAvatar(
+          newData.avatarFile,
+          newData.avatarDbUrl,
+          "assets/images/class-avatars",
+        );
+      } catch (updateAvatarError) {
+        console.error("Error updating avatar:", updateAvatarError);
+        throw new Error("Failed to update avatar. Please try again.");
+      }
+    } else {
+      avatar = newData.avatarDbUrl;
+    }
+    // Clean up newData object
+    delete newData.avatarDbUrl;
+    delete newData.avatarFile;
+    // Update teacher data
+    try {
+      await axios.patch(`${BASE_URL}/classes/${classId}`, {
+        ...newData,
+        avatar,
+      },{
+        withCredentials:true,
+        timeout:10000
+      });
+    } catch (apiError) {
+      console.error("Error updating class data:", apiError);
+      throw new Error("Failed to update class data. Please try again.");
+    }
+  } catch (error) {
+    console.error("Error in updateClass:", error);
+  }
+}
+
+export async function deleteClass({ classId, avatarDbUrl }) {
+  try {
+  
+    try {
+      await axios.delete(`${BASE_URL}/classes/${classId}`,{
+        withCredentials:true,
+        timeout:10000
+      });
+    } catch (apiError) {
+      console.error("Error deleting class from database:", apiError);
+      throw new Error("Failed to delete class data. Please try again.");
+    }
+    // If an avatar URL is provided, attempt to delete the avatar image from S3
+    if (avatarDbUrl) {
+      try {
+        await deleteFile(avatarDbUrl.split("amazonaws.com/")[1]);
+      } catch (s3Error) {
+        console.error("Error deleting avatar image from S3:", s3Error);
+        throw new Error("Failed to delete avatar image. Please try again.");
+      }
+    }
+  } catch (error) {
+    console.error("Error deleting class:", error);
+    alert(error.message);
+  }
+}
+

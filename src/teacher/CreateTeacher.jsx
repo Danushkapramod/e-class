@@ -3,7 +3,6 @@ import Button from "../ui/components/Button";
 import useCreateTeacher from "./useCreateTeacher";
 import useCreateSubject from "../option/useCreateSubject";
 import useSubjects from "../option/useSubjects";
-import { uploadFile } from "../services_api/apiUploads";
 
 function CreateTeacher() {
   const { isCreating, mutate } = useCreateTeacher();

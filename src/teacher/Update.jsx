@@ -37,7 +37,7 @@ function Update() {
       avatarFile: data.image[0],
       avatarDbUrl: image,
     };
-    mutate({ classId: _id, newData });
+    mutate({ teacherId: _id, newData });
   };
 
   return (

@@ -1,15 +1,10 @@
-import supabase from "./supabase";
+import axios from "axios";
+import { BASE_URL } from "./apiData";
 
 export async function getSubjects() {
   try {
-    let { data, error } = await supabase.from("subjects").select("*");
-
-    if (error) {
-      console.error(error);
-      throw new Error(`Subjects could not be loaded, 
-                            Try again later.`);
-    }
-    return data;
+    const response = await axios.get(`${BASE_URL}/options?option=subject`);
+    return response.data.body.options;
   } catch (error) {
     console.error("An error occurred:", error);
     throw new Error(`An unexpected error occurred. Please try again later.`);
@@ -18,29 +13,20 @@ export async function getSubjects() {
 
 export async function createSubject(subjectData) {
   try {
-    const { error } = await supabase.from("subjects").insert([subjectData]);
-
-    if (error) {
-      console.error(error);
-      throw new Error(`Subject could not be created. Please try again later.`);
-    }
+    await axios.post(`${BASE_URL}/options?option=subject`, subjectData,{
+      withCredentials:true
+    });
   } catch (error) {
     console.error("An error occurred:", error);
     throw new Error(`An unexpected error occurred. Please try again later.`);
   }
 }
 
-export async function deleteSubject(subject) {
+export async function deleteSubject(subjectId) {
   try {
-    const { error } = await supabase
-      .from("subjects")
-      .delete()
-      .eq("subjectName", subject);
-
-    if (error) {
-      console.error(error);
-      throw new Error(`subject could not be deleted. Please try again later.`);
-    }
+    await axios.delete(`${BASE_URL}/options/${subjectId}?option=subject`,{
+      withCredentials:true
+    });
   } catch (error) {
     console.error("An error occurred:", error);
     throw new Error(`An unexpected error occurred. Please try again later.`);
@@ -49,14 +35,8 @@ export async function deleteSubject(subject) {
 
 export async function getHalls() {
   try {
-    let { data, error } = await supabase.from("halls").select("*");
-
-    if (error) {
-      console.error(error);
-      throw new Error(`Halls could not be loaded, 
-                            Try again later.`);
-    }
-    return data;
+    const response = await axios.get(`${BASE_URL}/options?option=hall`);
+    return response.data.body.options;
   } catch (error) {
     console.error("An error occurred:", error);
     throw new Error(`An unexpected error occurred. Please try again later.`);
@@ -65,29 +45,20 @@ export async function getHalls() {
 
 export async function createHall(hallData) {
   try {
-    const { error } = await supabase.from("halls").insert([hallData]);
-
-    if (error) {
-      console.error(error);
-      throw new Error(`Hall could not be created. Please try again later.`);
-    }
+    await axios.post(`${BASE_URL}/options?option=hall`, hallData,{
+      withCredentials:true
+    });
   } catch (error) {
     console.error("An error occurred:", error);
     throw new Error(`An unexpected error occurred. Please try again later.`);
   }
 }
 
-export async function deleteHall(hall) {
+export async function deleteHall(hallId) {
   try {
-    const { error } = await supabase
-      .from("halls")
-      .delete()
-      .eq("hallName", hall);
-
-    if (error) {
-      console.error(error);
-      throw new Error(`Hall could not be deleted. Please try again later.`);
-    }
+    await axios.delete(`${BASE_URL}/options/${hallId}?option=hall`,{
+      withCredentials:true
+    });
   } catch (error) {
     console.error("An error occurred:", error);
     throw new Error(`An unexpected error occurred. Please try again later.`);
@@ -96,14 +67,8 @@ export async function deleteHall(hall) {
 
 export async function getGrades() {
   try {
-    let { data, error } = await supabase.from("grades").select("*");
-
-    if (error) {
-      console.error(error);
-      throw new Error(`Grades could not be loaded, 
-                            Try again later.`);
-    }
-    return data;
+    const response = await axios.get(`${BASE_URL}/options?option=grade`);
+    return response.data.body.options;
   } catch (error) {
     console.error("An error occurred:", error);
     throw new Error(`An unexpected error occurred. Please try again later.`);
@@ -112,31 +77,32 @@ export async function getGrades() {
 
 export async function createGrade(gradeData) {
   try {
-    const { error } = await supabase.from("grades").insert([gradeData]);
-
-    if (error) {
-      console.error(error);
-      throw new Error(`Grade could not be created. Please try again later.`);
-    }
+    await axios.post(`${BASE_URL}/options?option=grade`, gradeData);
   } catch (error) {
     console.error("An error occurred:", error);
     throw new Error(`An unexpected error occurred. Please try again later.`);
   }
 }
 
-export async function deleteGrade(grade) {
+export async function deleteGrade(gradeId) {
   try {
-    const { error } = await supabase
-      .from("grades")
-      .delete()
-      .eq("gradeName", grade);
-
-    if (error) {
-      console.error(error);
-      throw new Error(`Grade could not be deleted. Please try again later.`);
-    }
+    await axios.delete(`${BASE_URL}/options/${gradeId}?option=grade`,{
+      withCredentials:true
+    });
   } catch (error) {
     console.error("An error occurred:", error);
     throw new Error(`An unexpected error occurred. Please try again later.`);
+  }
+}
+
+export async function getOptionsCount(option) {
+  try {
+    const response = await axios.get(`${BASE_URL}/options/total?option=${option}`);
+    return response.data.body.total;
+  } catch (error) {
+
+     console.error("Error during request setup:", error.message);
+     throw new Error("Failed to fetch total. Request setup error.");
+    
   }
 }

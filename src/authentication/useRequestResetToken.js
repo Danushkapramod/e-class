@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { requestPasswordResetToken } from "../services_api/apiAuth";
+import { requestPasswordResetToken } from "../services/apiAuth";
 
 export function useRequestResetToken() {
   const { mutate, isPending, error } = useMutation({

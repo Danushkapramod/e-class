@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { getTableRowCount } from "../services/apiUtils";
 import { useDispatch, useSelector } from "react-redux";
 import { totalClasses } from "../class/classSlice";
 import { totalTeachers } from "../teacher/teacherSlice";
@@ -10,6 +9,9 @@ import {
   totalOptions,
   totalSubjects,
 } from "../option/optionSclice";
+import { getTeachersCount } from "../services/apiTeachers";
+import { getOptionsCount } from "../services/apiOptions";
+import { getClassesCount } from "../services/apiClasses";
 
 function Card() {
   const dispatch = useDispatch();
@@ -18,15 +20,15 @@ function Card() {
   const { totalOptions: options } = useSelector((store) => store.options);
   useEffect(() => {
     async function getCounts() {
-      const classes = await getTableRowCount("classes");
-      const teachers = await getTableRowCount("teachers");
-      const halls = await getTableRowCount("halls");
-      const subjects = await getTableRowCount("subjects");
-      const grades = await getTableRowCount("grades");
+      const classes = await getClassesCount();
       dispatch(totalClasses(classes));
+      const teachers = await getTeachersCount();
       dispatch(totalTeachers(teachers));
+      const halls = await getOptionsCount("hall");
       dispatch(totalHalls(halls));
+      const subjects = await getOptionsCount("subject");
       dispatch(totalSubjects(subjects));
+      const grades = await getOptionsCount("grade");
       dispatch(totalGrades(grades));
       dispatch(totalOptions(halls + subjects + grades));
     }

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getSubjects } from "../services_api/apiOptions";
+import { getSubjects } from "../services/apiOptions";
 
 export default function useSubjects() {
   const {

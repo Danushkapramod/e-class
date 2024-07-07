@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 
 import toast from "react-hot-toast";
-import { updateTeacher } from "../services_api/apiTeachers";
+import { updateTeacher } from "../services/apiTeachers";
 
 export default function useUpdateTeacher() {
   const {
