@@ -1,57 +1,73 @@
-import Button from "../ui/components/Button";
-import Spinner from "../ui/components/Spinner";
-import moment from "moment-timezone";
-import Error from "../ui/components/Error";
-import useSetRoot from "../utils/setRoot";
-import useClasses from "./useClasses";
-import SelectItem from "../ui/components/SelectItem";
-import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import useDeleteClass from "./useDeleteClass";
+import Button from '../ui/components/Button';
+import Spinner from '../ui/components/Spinner';
+import moment from 'moment-timezone';
+import Error from '../ui/components/Error';
+import useSetRoot from '../utils/setRoot';
+import useClasses from './useClasses';
+import SelectItem from '../ui/components/SelectItem';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import useDeleteClass from './useDeleteClass';
+import { setTableView } from './classSlice';
+import AppNav from '../ui/layouts/AppNav';
+import useClientSearch from '../hooks/useClientSearch';
 
 function ClassesTable() {
-  useSetRoot("");
+  useSetRoot('');
   const { tableView } = useSelector((store) => store.class);
-  const { classes, isLoading, error } = useClasses();
+  const { classes: data, isLoading, error } = useClasses();
+
+  const { searchResults: classes, setQuery } = useClientSearch(data, {
+    type: 'obj',
+    valueName: 'subject',
+  });
+
   if (isLoading) return <Spinner />;
   if (error) return <Error errorMsg={error.message} />;
 
-  if (tableView === "list") {
-    return (
-      <div className="mt-4 rounded border border-slate-700">
-        <table className="w-full divide-y divide-slate-600  px-2">
-          <tr className="opacity-70">
-            <th className=" "></th>
-            <th className="  px-2 py-3 text-left">Subject</th>
-            <th className="  px-2 text-left">Teacher</th>
-            <th className="  px-2 text-left">Grade</th>
-            <th className="  px-2 text-left">Hall</th>
-            <th className="  px-2 text-left">Day</th>
-            <th className="  px-2 text-left">Time</th>
-            <th className="  px-2 text-left"></th>
-          </tr>
-          {classes.map((classData, index) => {
-            return <TableRow classData={classData} key={index} />;
-          })}
-        </table>
-      </div>
-    );
+  function setSearchQuery(e) {
+    setQuery(e.target.value.trim());
   }
 
-  if (tableView === "card") {
-    return (
-      <div
-        className=" mt-2 grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))]
-         rounded border
-       border-slate-700 p-2 "
-      >
-        {classes.map((classData, index) => {
-          return <CardItem classData={classData} key={index} />;
-        })}
-        {/* <CardItem1 classData={classes[4]} /> */}
-      </div>
-    );
-  }
+  return (
+    <div className="grow">
+      <AppNav
+        type="class"
+        setTableView={setTableView}
+        tableView={tableView}
+        onChange={setSearchQuery}
+      />
+      {tableView === 'card' ? (
+        <div
+          className="  relative mt-2 grid grow grid-cols-[repeat(auto-fill,minmax(220px,1fr))]
+           gap-2  rounded "
+        >
+          {classes.map((classData, index) => {
+            return <CardItem classData={classData} key={index} />;
+          })}
+          {/* <CardItem1 classData={classes[4]} /> */}
+        </div>
+      ) : (
+        <div className={`mt-2 overflow-hidden rounded `}>
+          <table className="w-full divide-y-4 divide-bg--primary-200  px-2">
+            <tr className="bg-bg--primary-200 text-text--secondery">
+              <th className=" "></th>
+              <th className="  px-2 py-3 text-left">Subject</th>
+              <th className="  px-2 text-left">Teacher</th>
+              <th className="  px-2 text-left">Grade</th>
+              <th className="  px-2 text-left">Hall</th>
+              <th className="  px-2 text-left">Day</th>
+              <th className="  px-2 text-left">Time</th>
+              <th className="  px-2 text-left"></th>
+            </tr>
+            {classes.map((classData, index) => {
+              return <TableRow classData={classData} key={index} />;
+            })}
+          </table>
+        </div>
+      )}
+    </div>
+  );
 }
 export default ClassesTable;
 
@@ -59,29 +75,26 @@ function CardItem({ classData }) {
   const navigate = useNavigate();
   const { isDeleting, mutate } = useDeleteClass();
 
-  const { _id, teacher, subject, avatar, hall, startTime, grade, day } =
-    classData;
+  const { _id, teacher, subject, avatar, hall, startTime, grade, day } = classData;
 
   function onSelectHandler(e) {
-    if (e.target.id === "update") {
+    if (e.target.id === 'update') {
       navigate(`/app/classes/${_id}/update`);
     }
-    if (e.target.id === "view") {
+    if (e.target.id === 'view') {
       navigate(`/app/classes/${_id}`);
     }
-    if (e.target.id === "delete") {
+    if (e.target.id === 'delete') {
       mutate({ classId: _id, avatarDbUrl: avatar });
     }
   }
-  const formatedstartTime = moment
-    .tz(`2000-01-01T${startTime}Z`, "Asia")
-    .format("hh:mm A");
+  const formatedstartTime = moment.tz(`2000-01-01T${startTime}Z`, 'Asia').format('hh:mm A');
 
   return (
     <div
-      className="  relative m-1 flex flex-grow flex-col 
-                   items-center justify-center rounded border border-b-[3px]  border-slate-700
-                 border-b-blue-600 bg-dark-secondery px-2 py-4 shadow-md "
+      className="relative  flex flex-grow flex-col items-center justify-center rounded-lg 
+                  border  border-b-4 border-bg--primary-100 border-b-bg--secondery-2
+                 bg-bg--primary-200 px-2 py-4 text-text--secondery shadow-md"
     >
       <div className="  absolute right-2 top-2">
         <SelectItem
@@ -90,17 +103,17 @@ function CardItem({ classData }) {
           bg="bg-neutral-900"
           onClick={onSelectHandler}
           items={[
-            ["update", "edit"],
-            ["view", "wysiwyg"],
-            ["delete", "delete"],
+            ['update', 'edit'],
+            ['view', 'wysiwyg'],
+            ['delete', 'delete'],
           ]}
         />
       </div>
 
-      <p className=" mb-1 line-clamp-1  text-lg capitalize ">{subject}</p>
+      <p className=" mb-1 line-clamp-1 text-lg   capitalize text-text--primary ">{subject}</p>
       <div
-        className="flex h-20 w-20 items-center  justify-center overflow-hidden rounded-full border-2 
-         border-slate-300  "
+        className="flex h-20 w-20 items-center  justify-center overflow-hidden
+         rounded-full border-2 border-slate-300  "
       >
         <img className=" h-full object-cover " src={avatar} alt="image" />
       </div>
@@ -117,7 +130,7 @@ function CardItem({ classData }) {
         <p className="text-sm">{hall}</p>
 
         <p className=" text-sm">
-          {day} {formatedstartTime}
+          <span className=" capitalize">{day}</span> {formatedstartTime}
         </p>
       </div>
     </div>
@@ -126,15 +139,11 @@ function CardItem({ classData }) {
 
 function TableRow({ classData }) {
   const { isDeleting, mutate } = useDeleteClass();
-  const { _id, teacher, subject, avatar, hall, startTime, grade, day } =
-    classData;
-
-  const formatedstartTime = moment
-    .tz(`2000-01-01T${startTime}Z`, "Asia")
-    .format("hh:mm A");
+  const { _id, teacher, subject, avatar, hall, startTime, grade, day } = classData;
+  const formatedstartTime = moment.tz(`2000-01-01T${startTime}Z`, 'Asia').format('hh:mm A');
 
   return (
-    <tr className="bg-dark-secondery">
+    <tr className="shadow-sm">
       <td className="pl-4">
         <div className="flex h-9 w-9 min-w-9 items-center justify-center overflow-hidden rounded-full ">
           <img className="h-full object-cover" src={avatar} alt="" />
@@ -142,7 +151,7 @@ function TableRow({ classData }) {
       </td>
       <td className=" max-w-38 px-2 py-3 capitalize">{subject}</td>
       <td className=" max-w-44  px-2  py-3 capitalize">
-        {" "}
+        {' '}
         {!teacher ? (
           <span className=" w-full text-center lowercase">---------</span>
         ) : (

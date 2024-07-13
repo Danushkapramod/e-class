@@ -25,11 +25,11 @@ export default function LoginPage() {
 
   return (
     <div
-      className="flex h-screen items-center justify-center
-                bg-dark-secondery text-dark-text-primary"
+      className=" flex h-screen items-center
+                justify-center text-slate-900 "
     >
       <Form
-        className="w-[28rem] rounded-lg  border border-slate-700 bg-dark-primary p-8"
+        className="w-[28rem] rounded-md bg-bg--primary-300 p-8 shadow-md"
         onSubmit={handleSubmit(onSubmit)}
         control={control}
       >
@@ -41,8 +41,8 @@ export default function LoginPage() {
             Email
           </label>
           <input
-            className=" rounded border border-slate-600
-             bg-white/20 px-6  py-3    
+            className=" rounded border border-bg--primary-100
+             bg-bg--primary-200 px-6  py-3    
              outline-slate-400 focus:outline"
             type="email"
             id="email"
@@ -68,8 +68,8 @@ export default function LoginPage() {
             Password
           </label>
           <input
-            className=" rounded border border-slate-600
-           bg-white/20 px-6  py-3  
+            className=" rounded border border-bg--primary-100
+           bg-bg--primary-200 px-6  py-3  
            outline-slate-400 focus:outline"
             type="password"
             id="password"
@@ -89,7 +89,7 @@ export default function LoginPage() {
         <div className="  pr-2 text-right">
           <Link
             to="/forgot-password"
-            className="font-light text-blue-400  underline opacity-80"
+            className="text-bg--secondery-2 font-light  underline opacity-80"
           >
             Forgot your password?
           </Link>

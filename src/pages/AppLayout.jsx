@@ -1,7 +1,7 @@
-import { useState } from "react";
-import Sidebar from "../ui/layouts/Sidebar";
-import { Outlet } from "react-router-dom";
-import Nav from "../ui/layouts/Nav";
+import { useState } from 'react';
+import Sidebar from '../ui/layouts/Sidebar';
+import { Outlet } from 'react-router-dom';
+import Nav from '../ui/layouts/Nav';
 
 function AppLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -10,11 +10,11 @@ function AppLayout() {
     setSidebarOpen((prev) => !prev);
   };
   return (
-    <div className=" flex  h-dvh w-full text-dark-text-primary">
+    <div className=" flex  h-dvh w-full text-text--primary">
       <Sidebar sidebarOpen={sidebarOpen} />
-      <div className=" flex   grow flex-col bg-dark-primary">
+      <div className="  flex grow flex-col">
         <Nav sidebarHandler={toggleSidebar} />
-        <div className="relative grow overflow-auto bg-white/[0.03] p-4 ">
+        <div className="relative grow overflow-auto bg-bg--primary-300 p-4 ">
           <Outlet />
         </div>
       </div>

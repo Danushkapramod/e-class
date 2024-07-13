@@ -11,10 +11,10 @@ export default function FilterField({ data, value, setValu, name }) {
   }
 
   return (
-    <div className="border-x border-slate-800 px-2  py-2">
-      <p className=" px-3 pb-2 font-normal opacity-75">{name}</p>
+    <div className="border-x border-bg--primary-100 px-2 py-2  text-text--primary">
+      <p className=" px-3 pb-2 font-normal ">{name}</p>
       <div className=" z-20 w-full">
-        <div className=" rounded bg-dark-primary ">
+        <div className=" rounded bg-bg--primary-400 ">
           <div className=" relative flex w-fit  items-center">
             <span
               className=" material-symbols-outlined absolute
@@ -24,8 +24,8 @@ export default function FilterField({ data, value, setValu, name }) {
             </span>
             <input
               onChange={handleSearch}
-              className={` w-full rounded-sm border border-slate-700 bg-white/10 
-             py-1 pl-9 pr-4 text-sm outline-none`}
+              className="w-full rounded border-b  border-b-bg--primary-100 bg-bg--primary-200
+             py-1 pl-9 pr-4 text-sm shadow outline-none"
               type="text"
               placeholder={"search"}
             />
@@ -33,7 +33,7 @@ export default function FilterField({ data, value, setValu, name }) {
 
           <ul
             className=" mt-2  h-40 touch-auto divide-y 
-               divide-slate-800 overflow-auto rounded-b text-base 
+               divide-bg--primary-100 overflow-auto rounded-b text-base 
                font-light"
           >
             {searchResults?.map((data, index) => {
@@ -83,7 +83,7 @@ function SearchOption({ data, setValu, value }) {
           done
         </span>
 
-        <span className=" opacity-75">{data}</span>
+        <span className=" text-text--secondery">{data}</span>
       </div>
     </li>
   );

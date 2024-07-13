@@ -11,10 +11,33 @@ export default {
     },
 
     extend: {
-      colors:{
+      colors: {
         'dark-primary': '#111214',
-        'dark-secondery':'#282F35',
-        'dark-text-primary':'#F5FFF4'
+        'dark-secondary': '#282F35',
+        'dark-text-primary': '#F5FFF4',
+        'bg--primary-100': 'var(--color-primary-100)',
+        'bg--primary-200': 'var(--color-primary-200)',
+        'bg--primary-300': 'var(--color-primary-300)',
+        'bg--primary-400': 'var(--color-primary-400)',
+        'bg--primary-500': 'var(--color-primary-500)',
+
+        'bg--secondery-1': 'var(--color-secondery-1)',
+        'bg--secondery-2': 'var(--color-secondery-2)',
+        'bg--secondery-3': 'var(--color-secondery-3)',
+        'bg--secondery-4': 'var(--color-secondery-4)',
+        'bg--secondery-5': 'var(--color-secondery-5)',
+
+         'text--primary': 'var(--color-text-primary)',
+         'text--secondery': 'var(--color-text-secondary)',
+         'text--muted': 'var(--color-text-muted)',
+
+         'text--option-1':'var(--color-text-option-1)',
+
+         'opacity-overflow':'var(--color-overflow)'
+       
+
+
+        
       },
       fontFamily:{
         "roboto":"Roboto, sans-serif"

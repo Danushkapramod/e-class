@@ -36,7 +36,8 @@ function ChangePassword() {
         <label from="curent_password">Current Password</label>
         <div className=" relative flex basis-[65%] flex-col">
           <input
-            className=" rounded border border-slate-700 bg-white/15 px-4 py-2  focus:outline focus:outline-slate-400 "
+            className=" rounded border border-bg--primary-100 bg-bg--primary-200 
+             px-4 py-2  focus:outline focus:outline-slate-400 "
             type="password"
             id="curent_password"
             placeholder="Current password"
@@ -55,7 +56,8 @@ function ChangePassword() {
         <label from="new_password">New Password</label>
         <div className=" relative flex basis-[65%] flex-col">
           <input
-            className="basis-[65%] rounded border border-slate-700 bg-white/15 px-4 py-2  focus:outline focus:outline-slate-400 "
+            className="basis-[65%] rounded border border-bg--primary-100 bg-bg--primary-200
+             px-4 py-2  focus:outline focus:outline-slate-400 "
             type="password"
             required
             id="new_password"
@@ -79,7 +81,8 @@ function ChangePassword() {
         <label from="new_password">New Password</label>
         <div className=" relative  flex basis-[65%] flex-col">
           <input
-            className=" w-full rounded border border-slate-700 bg-white/15 px-4 py-2  focus:outline focus:outline-slate-400 "
+            className=" w-full rounded border border-bg--primary-100 bg-bg--primary-200
+             px-4 py-2  focus:outline focus:outline-slate-400 "
             type="password"
             required
             placeholder="New password"

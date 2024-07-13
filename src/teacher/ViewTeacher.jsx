@@ -1,26 +1,22 @@
-import { useNavigate, useParams } from "react-router-dom";
-import SelectItem from "../ui/components/SelectItem";
-import Spinner from "../ui/components/Spinner";
-import Error from "../ui/components/Error";
-import useSetRoot from "../utils/setRoot";
-import useDeleteTeacher from "./useDeleteTeacher";
-import useClasses from "../class/useClasses";
-import useTeachers from "./useTeachers";
-import moment from "moment/moment";
-import useDeleteClass from "../class/useDeleteClass";
-import { FadeLoader } from "react-spinners";
+import { useNavigate, useParams } from 'react-router-dom';
+import SelectItem from '../ui/components/SelectItem';
+import Spinner from '../ui/components/Spinner';
+import Error from '../ui/components/Error';
+import useSetRoot from '../utils/setRoot';
+import useDeleteTeacher from './useDeleteTeacher';
+import useClasses from '../class/useClasses';
+import useTeachers from './useTeachers';
+import moment from 'moment/moment';
+import useDeleteClass from '../class/useDeleteClass';
+import { FadeLoader } from 'react-spinners';
 
 function ViewTeacher() {
-  useSetRoot("view");
+  useSetRoot('view');
   const { id: teacherId } = useParams();
   const navigate = useNavigate();
   const { isDeleting, mutate } = useDeleteTeacher();
   const { teachers, isLoading, error } = useTeachers();
-  const {
-    classes,
-    isLoading: classesisLoading,
-    error: classesError,
-  } = useClasses();
+  const { classes, isLoading: classesisLoading, error: classesError } = useClasses();
 
   if (isLoading) return <Spinner />;
   if (error) return <Error errorMsg={error.message} />;
@@ -36,10 +32,10 @@ function ViewTeacher() {
   const { name, subject, phone, avatar } = teacherData[0];
 
   function onSelectHandler(e) {
-    if (e.target.id === "update") {
+    if (e.target.id === 'update') {
       navigate(`/app/teachers/${teacherId}/update`);
     }
-    if (e.target.id === "delete") {
+    if (e.target.id === 'delete') {
       mutate(teacherId);
       navigate(-1);
     }
@@ -48,8 +44,8 @@ function ViewTeacher() {
   return (
     <div className="mt-4 flex flex-wrap items-start gap-4">
       <div
-        className=" relative  flex w-[25rem] flex-col items-center 
-      rounded-lg border border-slate-700 bg-dark-primary p-8 "
+        className=" relative  flex w-[25rem] flex-col items-center rounded-md border 
+          border-bg--primary-100  bg-bg--primary-200 p-8 shadow-md"
       >
         <div
           className=" items-centerw-32 flex h-32 w-32 justify-center
@@ -60,7 +56,7 @@ function ViewTeacher() {
             src={
               avatar
                 ? avatar
-                : "https://kjvgesvqoblnntmvqaid.supabase.co/storage/v1/object/public/teacher-avatars/Darshana%20kulathilaka_lmH0A2Ftjn.png"
+                : 'https://kjvgesvqoblnntmvqaid.supabase.co/storage/v1/object/public/teacher-avatars/Darshana%20kulathilaka_lmH0A2Ftjn.png'
             }
           ></img>
         </div>
@@ -70,18 +66,16 @@ function ViewTeacher() {
             disabled={isDeleting}
             onClick={onSelectHandler}
             items={[
-              ["update", "edit"],
-              ["delete", "delete"],
+              ['update', 'edit'],
+              ['delete', 'delete'],
             ]}
           />
         </div>
 
-        <div className=" mt-4 flex w-full flex-col  divide-y   divide-slate-700">
+        <div className=" mt-4 flex w-full flex-col  divide-y  divide-bg--primary-100">
           <div className="flex w-full items-center justify-between px-2 py-2">
             <div className="flex items-center gap-1">
-              <span className="material-symbols-outlined scale-90 font-thin">
-                person
-              </span>
+              <span className="material-symbols-outlined scale-90 font-thin">person</span>
               <div>Teacher</div>
             </div>
             <div className=" basis-[62%] capitalize">{name}</div>
@@ -89,9 +83,7 @@ function ViewTeacher() {
 
           <div className="flex w-full items-center justify-between   px-2 py-2">
             <div className="flex items-center gap-1">
-              <span className="material-symbols-outlined scale-90 font-thin">
-                subject
-              </span>
+              <span className="material-symbols-outlined scale-90 font-thin">subject</span>
               <div>Subject</div>
             </div>
             <div className=" basis-[62%] capitalize">{subject}</div>
@@ -99,9 +91,7 @@ function ViewTeacher() {
 
           <div className="  flex w-full items-center justify-between   px-2 py-2">
             <div className="flex items-center gap-1">
-              <span className="material-symbols-outlined scale-90 font-thin">
-                call
-              </span>
+              <span className="material-symbols-outlined scale-90 font-thin">call</span>
               <div>Phone</div>
             </div>
             <div className=" basis-[62%] ">{phone}</div>
@@ -109,12 +99,9 @@ function ViewTeacher() {
         </div>
       </div>
 
-      <div className=" max-w-[28rem] grow rounded-lg border border-slate-700 bg-dark-primary p-4 ">
+      <div className=" max-w-[28rem] grow rounded-md bg-bg--primary-200 p-4 shadow-md ">
         <div className=" uppercase opacity-60">Classes</div>
-        <ul
-          className="mt-2 divide-y-2 divide-slate-700 overflow-hidden
-          rounded bg-white/10"
-        >
+        <ul className="mt-2 divide-y-2 divide-bg--primary-100 overflow-hidden rounded bg-bg--primary-300">
           {!classesisLoading ? (
             classesError ? (
               classesError.message
@@ -148,33 +135,27 @@ function ClassItem({ classData }) {
     day: classDay,
   } = classData;
 
-  const formattedclassTime = moment("2000-01-01T" + classTime + "Z").format(
-    "LT",
-  );
+  const formattedclassTime = moment('2000-01-01T' + classTime + 'Z').format('LT');
 
   function onSelectHandler(e) {
-    if (e.target.id === "update") {
+    if (e.target.id === 'update') {
       navigate(`/app/classes/${classId}/update`);
     }
-    if (e.target.id === "view") {
+    if (e.target.id === 'view') {
       navigate(`/app/classes/${classId}`);
     }
-    if (e.target.id === "delete") {
+    if (e.target.id === 'delete') {
       mutate(classId);
     }
   }
   return (
     <li
-      className="  flex h-fit justify-between  
+      className=" flex h-fit justify-between  
     "
     >
       <div className="flex">
         <div className="flex h-24 w-24  items-center justify-center overflow-hidden ">
-          <img
-            className="  h-full object-cover "
-            src={class_poster}
-            alt="class-avatar"
-          />
+          <img className="  h-full object-cover " src={class_poster} alt="class-avatar" />
         </div>
         <div className="flex flex-col  p-2">
           <div className=" text-lg capitalize ">Grade {grade}</div>
@@ -194,9 +175,9 @@ function ClassItem({ classData }) {
             bg="bg-dark-primary"
             onClick={onSelectHandler}
             items={[
-              ["update", "edit"],
-              ["delete", "delete"],
-              ["view", "wysiwyg"],
+              ['update', 'edit'],
+              ['delete', 'delete'],
+              ['view', 'wysiwyg'],
             ]}
           />
         </div>

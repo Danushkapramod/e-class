@@ -45,9 +45,9 @@ function LeftSection({ auther }) {
   }
 
   return (
-    <div className=" flex  min-w-96  grow   flex-col items-center rounded-md border border-slate-800 bg-dark-primary p-6">
-      <div className="mt-4 rounded-full border-2 p-1.5">
-        <div className=" flex  h-40 w-40 items-center justify-center overflow-hidden rounded-full ">
+    <div className=" flex min-w-96 grow flex-col items-center rounded-md   bg-bg--primary-300 p-6">
+      <div className="mt-4 rounded-full border-2 border-bg--primary-100 p-1.5">
+        <div className="flex h-40 w-40 items-center justify-center overflow-hidden rounded-full ">
           <img
             className="h-full object-cover"
             src={
@@ -63,7 +63,8 @@ function LeftSection({ auther }) {
       <form className="mt-3  flex gap-2" onSubmit={onSubmitAvatar}>
         <label
           disabled={isUploadingImage}
-          className=" px-2py-0.5 flex items-center  justify-center rounded bg-blue-600 text-xs uppercase"
+          className=" px-2py-0.5 bg-bg--secondery-2 flex items-center  
+          justify-center rounded text-xs uppercase text-slate-200"
           htmlFor="updateAvatar"
         >
           <div
@@ -121,27 +122,27 @@ function RightSection({ auther }) {
     setIsShow(e.target.name);
   }
   return (
-    <div className=" h-[23rem] grow  rounded-md border border-slate-800 bg-dark-primary p-6">
+    <div className=" h-[23rem] grow rounded-md bg-bg--primary-300 p-6">
       <div className="">
-        <div className=" flex w-full  rounded-t-md border-b-2 border-slate-400 bg-white/5">
+        <div className=" flex w-full  rounded-t-md border-b-2 border-slate-400 bg-bg--primary-200">
           <button
             name="editProfile"
             onClick={isOpenHandler}
-            className={` basis-1/3  rounded-ss px-4 py-2 ${isShow === "editProfile" && "bg-white/10"}`}
+            className={` basis-1/3 rounded-ss px-4 py-2 ${isShow === "editProfile" && "bg-bg--primary-100"}`}
           >
             Edit Profile
           </button>
           <button
             name="changeEmail"
             onClick={isOpenHandler}
-            className={` basis-1/3   px-4 py-2 ${isShow === "changeEmail" && "bg-white/10"}`}
+            className={` basis-1/3 px-4 py-2 ${isShow === "changeEmail" && "bg-bg--primary-100"}`}
           >
             Change Email
           </button>
           <button
             name="changePassword"
             onClick={isOpenHandler}
-            className={` basis-1/3  rounded-se px-4 py-2 ${isShow === "changePassword" && "bg-white/10"}`}
+            className={` basis-1/3 rounded-se px-4 py-2 ${isShow === "changePassword" && "bg-bg--primary-100"}`}
           >
             Change Password
           </button>

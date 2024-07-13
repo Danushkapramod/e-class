@@ -1,17 +1,12 @@
-import { useEffect } from "react";
-import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { totalClasses } from "../class/classSlice";
-import { totalTeachers } from "../teacher/teacherSlice";
-import {
-  totalGrades,
-  totalHalls,
-  totalOptions,
-  totalSubjects,
-} from "../option/optionSclice";
-import { getTeachersCount } from "../services/apiTeachers";
-import { getOptionsCount } from "../services/apiOptions";
-import { getClassesCount } from "../services/apiClasses";
+import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { totalClasses } from '../class/classSlice';
+import { totalTeachers } from '../teacher/teacherSlice';
+import { totalGrades, totalHalls, totalOptions, totalSubjects } from '../option/optionSclice';
+import { getTeachersCount } from '../services/apiTeachers';
+import { getOptionsCount } from '../services/apiOptions';
+import { getClassesCount } from '../services/apiClasses';
 
 function Card() {
   const dispatch = useDispatch();
@@ -24,11 +19,11 @@ function Card() {
       dispatch(totalClasses(classes));
       const teachers = await getTeachersCount();
       dispatch(totalTeachers(teachers));
-      const halls = await getOptionsCount("hall");
+      const halls = await getOptionsCount('hall');
       dispatch(totalHalls(halls));
-      const subjects = await getOptionsCount("subject");
+      const subjects = await getOptionsCount('subject');
       dispatch(totalSubjects(subjects));
-      const grades = await getOptionsCount("grade");
+      const grades = await getOptionsCount('grade');
       dispatch(totalGrades(grades));
       dispatch(totalOptions(halls + subjects + grades));
     }
@@ -37,22 +32,22 @@ function Card() {
 
   const cardsData = [
     {
-      title: "classes",
+      title: 'classes',
       count: classes,
-      to: "/app/classes",
-      icon: "school",
+      to: '/app/classes',
+      icon: 'school',
     },
     {
-      title: "Teachers",
+      title: 'Teachers',
       count: teachers,
-      to: "/app/teachers",
-      icon: "groups",
+      to: '/app/teachers',
+      icon: 'groups',
     },
     {
-      title: "Options",
+      title: 'Options',
       count: options,
-      to: "/app/options",
-      icon: "style",
+      to: '/app/options',
+      icon: 'style',
     },
   ];
 
@@ -69,29 +64,23 @@ function CardItem({ cardData }) {
   const { title, count, to, icon } = cardData;
   return (
     <div
-      className="  grow rounded border border-b-4 border-slate-700
-    border-b-blue-600  bg-dark-secondery p-4  px-6 shadow-md"
+      className="grow rounded-md border-b-4 border-b-bg--secondery-1
+       bg-bg--primary-200 p-4 px-6 text-text--option-1 shadow-lg"
     >
       <div className="flex justify-between ">
-        <span className=" material-symbols-outlined scale-150 text-blue-500">
-          {icon}
-        </span>
-        <div className=" text-xl  uppercase">{title}</div>
+        <span className=" material-symbols-outlined  scale-150">{icon}</span>
+        <div className=" text-xl uppercase ">{title}</div>
       </div>
-      <div className=" mt-2 h-px w-full bg-slate-300 opacity-50"></div>
+      <div className=" mt-2 h-px  w-full bg-bg--secondery-1"></div>
       <div className="mt-4 flex justify-between">
-        <div className=" text-2xl font-bold opacity-75">
-          {String(count).padStart(2, "0")}
-        </div>
+        <div className=" text-2xl font-bold ">{String(count).padStart(2, '0')}</div>
         <Link
           to={to}
-          className=" flex items-center gap-px rounded-full 
-     bg-blue-600 py-1 pl-4 pr-2 text-sm shadow"
+          className="flex items-center gap-px rounded-full bg-[#005fd8]
+           py-1 pl-4 pr-2 text-sm text-white shadow"
         >
           View
-          <span className=" material-symbols-outlined scale-75">
-            arrow_right_alt
-          </span>
+          <span className=" material-symbols-outlined scale-75">arrow_right_alt</span>
         </Link>
       </div>
     </div>

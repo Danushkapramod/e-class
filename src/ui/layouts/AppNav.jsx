@@ -1,32 +1,37 @@
-import { useDispatch } from "react-redux";
-import { ClassFilter, ClassSort } from "../../class/ClassTableOperations";
-import { TeacherFilter } from "../../teacher/TeacherTableOperations";
-import Button from "../components/Button";
-import SearchField from "../components/SearchField";
+import { useDispatch } from 'react-redux';
+import { ClassFilter, ClassSort } from '../../class/ClassTableOperations';
+import { TeacherFilter } from '../../teacher/TeacherTableOperations';
+import Button from '../components/Button';
+import SearchField from '../components/SearchField';
 
-function AppNav({ type, tableView, setTableView }) {
+function AppNav({ type, tableView, setTableView, onChange }) {
   const dispatch = useDispatch();
   let Filter, view;
-  if (type === "class") Filter = ClassFilter;
-  if (type === "teacher") Filter = TeacherFilter;
+  if (type === 'class') Filter = ClassFilter;
+  if (type === 'teacher') Filter = TeacherFilter;
 
-  if (tableView === "card") view = "grid_view";
-  if (tableView === "list") view = "format_list_bulleted";
+  if (tableView === 'card') view = 'grid_view';
+  if (tableView === 'list') view = 'format_list_bulleted';
 
   function handleView() {
-    if (tableView === "list") dispatch(setTableView("card"));
-    if (tableView === "card") dispatch(setTableView("list"));
+    if (tableView === 'list') dispatch(setTableView('card'));
+    if (tableView === 'card') dispatch(setTableView('list'));
   }
   return (
     <div
-      className="z-40 mt-4 flex items-center justify-between  rounded
-                    border border-gray-700 px-2   py-2 "
+      className="z-40 mt-4 flex items-center justify-between  rounded border
+                   border-bg--primary-200  px-2 py-2 text-text--primary shadow-md"
     >
-      <SearchField />
+      <SearchField className={'!shadow-sm'} onChange={onChange} />
       <div className="flex gap-2 ">
         <Filter />
-        {type === "class" && <ClassSort />}
-        <Button onClick={handleView} type="smallSecondery" icon={view} />
+        {type === 'class' && <ClassSort />}
+        <Button
+          className={'!border-bg--primary-100 !text-text--primary !shadow-sm'}
+          onClick={handleView}
+          type="smallSecondery"
+          icon={view}
+        />
       </div>
     </div>
   );

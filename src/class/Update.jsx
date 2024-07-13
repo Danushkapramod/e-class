@@ -1,26 +1,18 @@
-import Button from "../ui/components/Button";
-import { Form, useForm } from "react-hook-form";
-import Select from "../ui/components/Select";
-import { useDispatch } from "react-redux";
-import { setTempCreateFormData } from "./classSlice";
-import useTeachers from "../teacher/useTeachers";
-import useHalls from "../option/useHalls";
-import useSubjects from "../option/useSubjects";
-import useGrades from "../option/useGrades";
-import useClasses from "./useClasses";
-import { useParams } from "react-router-dom";
-import { useEffect } from "react";
-import useUpdateClass from "./useUpdateClass";
+import Button from '../ui/components/Button';
+import { Form, useForm } from 'react-hook-form';
+import Select from '../ui/components/Select';
+import { useDispatch } from 'react-redux';
+import { setTempCreateFormData } from './classSlice';
+import useTeachers from '../teacher/useTeachers';
+import useHalls from '../option/useHalls';
+import useSubjects from '../option/useSubjects';
+import useGrades from '../option/useGrades';
+import useClasses from './useClasses';
+import { useParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import useUpdateClass from './useUpdateClass';
 
-const days = [
-  "Mondaya",
-  "Tuesday",
-  "Wednesday",
-  "Tuesday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-];
+const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
 function Update() {
   const dispatch = useDispatch();
@@ -33,9 +25,7 @@ function Update() {
   const { subjects, isLoading: subjectsIsloading } = useSubjects();
   const { grades, isLoading: gradesIsloading } = useGrades();
 
-  const selectedClassData = classes?.find(
-    (classData) => classData._id === classId,
-  );
+  const selectedClassData = classes?.find((classData) => classData._id === classId);
 
   const {
     register,
@@ -45,19 +35,23 @@ function Update() {
     setValue,
     watch,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      classDay: selectedClassData?.day, // Set the default value here
+    },
+  });
 
   useEffect(() => {
     if (selectedClassData) {
-      setValue("subject", selectedClassData.subject);
-      setValue("grade", selectedClassData.grade);
-      setValue("hallNumber", selectedClassData.hall);
-      setValue("classDay", selectedClassData.day);
-      setValue("classTime", selectedClassData.startTime);
-      setValue("teacher", selectedClassData.teacher.name);
-      setValue("duration", selectedClassData.duration);
-      setValue("charging", selectedClassData.charging);
-      setValue("teacherId", selectedClassData.teacher._id);
+      setValue('subject', selectedClassData.subject);
+      setValue('grade', selectedClassData.grade);
+      setValue('hallNumber', selectedClassData.hall);
+      setValue('classDay', selectedClassData.day);
+      setValue('classTime', selectedClassData.startTime);
+      setValue('teacher', selectedClassData.teacher.name);
+      setValue('duration', selectedClassData.duration);
+      setValue('charging', selectedClassData.charging);
+      setValue('teacherId', selectedClassData.teacher._id);
     }
   }, [selectedClassData, setValue]);
 
@@ -88,12 +82,11 @@ function Update() {
     <>
       <div className=" absolute inset-0  backdrop-blur-lg"></div>
       <div
-        className=" absolute right-[50%]  top-[50%] flex h-max w-full  max-w-[1000px] 
-                      translate-x-[50%] translate-y-[-50%] flex-col 
-                     space-y-4 rounded-lg border border-slate-700 
-                     bg-dark-primary p-6  "
+        className=" absolute right-[50%]  top-[50%] flex h-max w-full  
+                    max-w-[1000px] translate-x-[50%] translate-y-[-50%] flex-col space-y-4 
+                    rounded-lg  bg-bg--primary-500 p-6"
       >
-        <h1 className=" py-2 text-start text-2xl font-medium">UPDATE CLASS</h1>
+        <h1 className="py-2 text-start text-2xl font-medium">UPDATE CLASS</h1>
 
         <Form
           onSubmit={handleSubmit(onSubmit)}
@@ -103,17 +96,17 @@ function Update() {
           <div className="w-[25rem] max-w-[30rem] grow space-y-6 ">
             <div className=" relative flex items-center justify-between">
               <label>Subject Name</label>
-              <div className="relative basis-2/3">
+              <div className="relative flex basis-2/3 items-center justify-end">
                 <input
-                  className=" w-full rounded border border-slate-600
-                   bg-white/15 px-4 py-2 pr-14 "
+                  className="w-full rounded border border-bg--primary-100  bg-bg--primary-200
+                  px-4 py-2 pr-14 shadow outline-1 outline-text--muted focus:outline "
                   type="text"
                   id="subject"
-                  value={watch("subject")}
+                  value={watch('subject')}
                   placeholder="Subject"
-                  onChange={(e) => setValue("subject", e.target.value)}
-                  {...register("subject", {
-                    required: "This field is required",
+                  onChange={(e) => setValue('subject', e.target.value)}
+                  {...register('subject', {
+                    required: 'This field is required',
                   })}
                 ></input>
                 {errors.subject && (
@@ -121,9 +114,9 @@ function Update() {
                     {errors.subject.message}
                   </p>
                 )}
-                <div className=" absolute right-0 top-0 ">
+                <div className=" absolute ">
                   <Select
-                    setValue={(subject) => setValue("subject", subject)}
+                    setValue={(subject) => setValue('subject', subject)}
                     search={true}
                     data={subjects}
                     isLoading={subjectsIsloading}
@@ -136,15 +129,16 @@ function Update() {
 
             <div className="flex items-center justify-between ">
               <label>Grade</label>
-              <div className="relative basis-2/3">
+              <div className="relative flex basis-2/3 items-center justify-end">
                 <input
-                  className="w-full basis-2/3 rounded border border-slate-600 bg-white/15  px-4 py-2 "
+                  className="w-full rounded border border-bg--primary-100  bg-bg--primary-200
+                  px-4 py-2 pr-14 shadow outline-1 outline-text--muted focus:outline "
                   type="text"
                   id="grade"
-                  value={watch("grade")}
-                  onChange={(e) => setValue("grade", e.target.value)}
-                  {...register("grade", {
-                    required: "This field is required",
+                  value={watch('grade')}
+                  onChange={(e) => setValue('grade', e.target.value)}
+                  {...register('grade', {
+                    required: 'This field is required',
                   })}
                   placeholder="Grade"
                 ></input>
@@ -153,9 +147,9 @@ function Update() {
                     {errors.grade.message}
                   </p>
                 )}
-                <div className=" absolute right-0 top-0 ">
+                <div className=" absolute ">
                   <Select
-                    setValue={(grade) => setValue("grade", grade)}
+                    setValue={(grade) => setValue('grade', grade)}
                     search={true}
                     data={grades}
                     isLoading={gradesIsloading}
@@ -168,16 +162,17 @@ function Update() {
 
             <div className="flex items-center justify-between">
               <label>Hall number</label>
-              <div className="relative basis-2/3">
+              <div className="relative flex basis-2/3 items-center justify-end">
                 <input
-                  className="w-full basis-2/3 rounded border border-slate-600 bg-white/15  px-4 py-2  "
+                  className="w-full rounded border border-bg--primary-100  bg-bg--primary-200
+                  px-4 py-2 pr-14 shadow outline-1 outline-text--muted focus:outline "
                   type="text"
                   id="hallNumber"
-                  value={watch("hallNumber")}
+                  value={watch('hallNumber')}
                   placeholder="Select hall"
                   disabled={true}
-                  {...register("hallNumber", {
-                    required: "This field is required",
+                  {...register('hallNumber', {
+                    required: 'This field is required',
                   })}
                 ></input>
                 {errors.hall && (
@@ -185,9 +180,9 @@ function Update() {
                     {errors.hall.message}
                   </p>
                 )}
-                <div className=" absolute right-0 top-0 ">
+                <div className=" absolute ">
                   <Select
-                    setValue={(hall) => setValue("hallNumber", hall)}
+                    setValue={(hall) => setValue('hallNumber', hall)}
                     search={true}
                     data={halls}
                     isLoading={hallsIsloading}
@@ -201,19 +196,15 @@ function Update() {
             <div className="flex items-center justify-between">
               <label>Class Day</label>
               <select
-                className="basis-2/3 rounded border border-slate-600 bg-white/15 px-4 py-2 "
+                className="w-full basis-2/3 rounded border border-bg--primary-100  bg-bg--primary-200
+                  px-4 py-2 pr-14 shadow outline-1 outline-text--muted focus:outline "
                 id="classDay"
-                {...register("classDay")}
-                defaultChecked="Monday"
+                {...register('classDay')}
               >
                 {days.map((day, index) => {
                   return (
-                    <option
-                      className=" bg-dark-primary"
-                      key={index}
-                      value={day}
-                    >
-                      {day}
+                    <option className="capitalize" key={index} value={day}>
+                      {day.charAt(0).toUpperCase() + day.slice(1)}
                     </option>
                   );
                 })}
@@ -223,11 +214,12 @@ function Update() {
             <div className="flex items-center justify-between">
               <label>Class Time</label>
               <input
-                className="basis-2/3 rounded border border-slate-600 bg-white/15 px-4 py-2 "
+                className="w-full basis-2/3 rounded border border-bg--primary-100 
+                  bg-bg--primary-200 px-4 py-2 shadow outline-1 outline-text--muted focus:outline "
                 type="time"
                 defaultChecked={false}
                 id="classTime"
-                {...register("classTime")}
+                {...register('classTime')}
               ></input>
             </div>
 
@@ -235,8 +227,9 @@ function Update() {
               <label>Class Duration</label>
               <input
                 id="duration"
-                {...register("duration")}
-                className="basis-2/3 rounded border border-slate-600 bg-white/15 px-4 py-2 "
+                {...register('duration')}
+                className="w-full basis-2/3 rounded border border-bg--primary-100 
+                  bg-bg--primary-200 px-4 py-2 shadow outline-1 outline-text--muted focus:outline "
                 type="number"
                 placeholder="Duration"
               ></input>
@@ -246,23 +239,24 @@ function Update() {
             <div className="flex   justify-between">
               <label>Teacher Name</label>
 
-              <div className="relative basis-2/3">
+              <div className="relative flex basis-2/3 items-center justify-end">
                 <input
-                  className="w-full basis-2/3 rounded border border-slate-600 bg-white/15  px-4 py-2  "
+                  className="w-full rounded border border-bg--primary-100  bg-bg--primary-200
+                  px-4 py-2 pr-14 shadow outline-1 outline-text--muted focus:outline "
                   type="text"
                   id="teacher"
-                  value={watch("teacher")}
+                  value={watch('teacher')}
                   disabled={true}
                   placeholder="Select teacher"
-                  {...register("teacher", {
-                    required: "This field is required",
+                  {...register('teacher', {
+                    required: 'This field is required',
                   })}
                 ></input>
 
                 <input
                   hidden={true}
-                  {...register("teacherId")}
-                  value={getValues("teacherId")}
+                  {...register('teacherId')}
+                  value={getValues('teacherId')}
                   id="teacherId"
                   type="number"
                 />
@@ -271,16 +265,16 @@ function Update() {
                     {errors.hall.message}
                   </p>
                 )}
-                <div className=" absolute right-0 top-0 ">
+                <div className="absolute">
                   <Select
-                    setValueId={(teacherId) => setValue("teacherId", teacherId)}
-                    setValue={(teacher) => setValue("teacher", teacher)}
+                    setValueId={(teacherId) => setValue('teacherId', teacherId)}
+                    setValue={(teacher) => setValue('teacher', teacher)}
                     search={true}
                     data={teachers}
                     isLoading={teachersIsloading}
                     showValue={false}
                     add={{
-                      to: "/app/teachers/new",
+                      to: '/app/teachers/new',
                       onClick: onSelectAdd,
                     }}
                     valueName="name"
@@ -294,8 +288,9 @@ function Update() {
               <label>Charging</label>
               <input
                 id="charging"
-                {...register("charging")}
-                className="basis-2/3 rounded border border-slate-600 bg-white/15 px-4 py-2 "
+                {...register('charging')}
+                className="w-full basis-2/3 rounded border border-bg--primary-100 
+                  bg-bg--primary-200 px-4 py-2 shadow outline-1 outline-text--muted focus:outline "
                 type="number"
                 placeholder="Optional*"
               ></input>
@@ -304,7 +299,7 @@ function Update() {
               <label>Class Poster</label>
               <div
                 className=" relative flex basis-2/3 items-center rounded 
-                               border border-slate-800 px-2"
+                               border border-bg--primary-200 px-2"
               >
                 <label
                   className=" absolute inline-block  cursor-pointer 
@@ -315,7 +310,7 @@ function Update() {
                 </label>
                 <input
                   id="class_poster"
-                  {...register("class_poster")}
+                  {...register('class_poster')}
                   className=" -z-10 w-full py-2 pl-1 "
                   type="file"
                 ></input>
@@ -326,12 +321,7 @@ function Update() {
             <Button to="-1" onType="reset" type="secondery">
               Close
             </Button>
-            <Button
-              disabled={isUpdating}
-              ontype="submit"
-              spinner={isUpdating}
-              type="primary"
-            >
+            <Button disabled={isUpdating} ontype="submit" spinner={isUpdating} type="primary">
               Update
             </Button>
           </div>

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useUpdate } from "../authentication/useUpdate";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { Form } from "react-router-dom";
 import Button from "../ui/components/Button";
 
@@ -28,7 +28,7 @@ function ChangeProfile({ auther }) {
           Email
         </label>
         <input
-          className=" basis-[70%] rounded-full border border-slate-700 bg-transparent px-4 py-2 "
+          className=" basis-[70%] rounded-full border border-bg--primary-200 bg-transparent px-4 py-2 text-text--secondery"
           disabled
           value={auther.auther?.email}
         ></input>
@@ -43,6 +43,7 @@ function ChangeProfile({ auther }) {
       <DataField
         options={{
           register,
+          control,
           defaultV: auther.auther?.name,
           id: "name",
           placeholder: "Name",
@@ -51,6 +52,7 @@ function ChangeProfile({ auther }) {
       <DataField
         options={{
           register,
+          control,
           defaultV: auther.auther?.phone,
           id: "phone",
           placeholder: "Phone",
@@ -70,7 +72,7 @@ function ChangeProfile({ auther }) {
   );
 }
 
-function DataField({ options: { register, defaultV, id, placeholder } }) {
+function DataField({ options: { defaultV, id, placeholder, control } }) {
   const [isActive, setIsActive] = useState(true);
   const inputRef = useRef(null);
 
@@ -84,16 +86,21 @@ function DataField({ options: { register, defaultV, id, placeholder } }) {
         Name
       </label>
       <div className="relative flex basis-[70%] items-center">
-        <input
-          className="w-full rounded border border-slate-700 bg-white/10 
-                       px-4 py-2 focus:outline focus:outline-slate-400"
-          type="text"
-          id={id}
+        <Controller
+          name={id}
+          control={control}
           defaultValue={defaultV}
-          placeholder={placeholder}
-          disabled={isActive}
-          {...register(id)}
-          ref={inputRef}
+          render={({ field }) => (
+            <input
+              {...field}
+              className="w-full rounded border border-bg--primary-200 bg-bg--primary-200 px-4 py-2 focus:outline focus:outline-slate-400"
+              type="text"
+              id={id}
+              placeholder={placeholder}
+              disabled={isActive}
+              ref={inputRef}
+            />
+          )}
         />
         <span
           onClick={() => {

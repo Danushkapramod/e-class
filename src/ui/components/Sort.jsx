@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "./Button";
 //import SelectItem from "./SelectItem";
 
@@ -30,6 +30,7 @@ function Sort({ sortData, setSort, isSorted }) {
   return (
     <div className=" relative">
       <Button
+        className={"!border-bg--primary-100 !text-text--primary"}
         onClick={() => setIsOpen(!isOpen)}
         type="smallSecondery"
         icon="sort"
@@ -39,17 +40,17 @@ function Sort({ sortData, setSort, isSorted }) {
       {isSorted ? (
         <div
           className="
-             te absolute  right-0  top-0 flex h-4 w-4
-              -translate-y-[50%] translate-x-[20%] items-center justify-center 
-              rounded-full   bg-blue-600 text-sm "
+             te bg-bg--secondery-2  absolute  right-0 top-0 flex h-4
+              w-4 -translate-y-[50%] translate-x-[20%] items-center 
+              justify-center   rounded-full text-sm "
         ></div>
       ) : null}
       {isOpen && (
         <div
           className={` absolute  right-0 z-50 mt-1 flex   
             flex-col divide-y
-           divide-slate-700 rounded border
-           border-slate-700 bg-dark-primary  `}
+           divide-bg--primary-100 rounded border
+           border-bg--primary-100 bg-bg--primary-300 `}
         >
           {sortData.map((item, index) => {
             return (

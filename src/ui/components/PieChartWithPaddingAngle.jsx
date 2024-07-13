@@ -1,11 +1,11 @@
-import { useSelector } from "react-redux";
-import { PieChart, Pie, Cell, Legend, ResponsiveContainer } from "recharts";
+import { useSelector } from 'react-redux';
+import { PieChart, Pie, Cell, Legend, ResponsiveContainer } from 'recharts';
 
-const COLORS = ["#0088FE", "#41B06E", "#DD761C"];
+const COLORS = ['#0088FE', '#41B06E', '#DD761C'];
 
 export default function Example() {
   const { todayUpcoming, todayStarted, todayEnded, todayTotal } = useSelector(
-    (store) => store.class,
+    (store) => store.class
   );
 
   const data = [
@@ -15,10 +15,11 @@ export default function Example() {
   ];
 
   return (
-    <div className="relative flex min-w-72 max-w-80 grow justify-center rounded-lg border border-slate-800 p-2">
-      <div className=" absolute pt-2 text-lg font-medium uppercase">
-        Classes Summery
-      </div>
+    <div
+      className="relative flex min-w-72 max-w-80 grow justify-center 
+             rounded-lg  bg-bg--primary-200 p-2 shadow-md"
+    >
+      <div className=" absolute pt-2 text-lg font-medium uppercase">Classes Summery</div>
       <div className=" absolute  top-[42%] flex flex-col items-center  pt-2">
         Total <span>{todayTotal}</span>
       </div>
@@ -36,11 +37,7 @@ export default function Example() {
             label
           >
             {data.map((entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={COLORS[index]}
-                stroke={COLORS[index]}
-              />
+              <Cell key={`cell-${index}`} fill={COLORS[index]} stroke={COLORS[index]} />
             ))}
           </Pie>
 

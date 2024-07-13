@@ -32,7 +32,7 @@ function EmailChangeWindow({ setWindow }) {
           Enter new email address
         </label>
         <input
-          className=" w-full rounded  border border-slate-700 bg-white/15 px-4 
+          className=" w-full rounded  border border-bg--primary-100 bg-bg--primary-200 px-4 
                          py-2  focus:outline focus:outline-slate-400 "
           type="email"
           required

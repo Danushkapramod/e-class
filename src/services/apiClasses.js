@@ -31,7 +31,7 @@ export async function getClasses(queryParams) {
 
 export async function getClassesCount(queryParams) {
   try {
-    const response = await axios.get(`${BASE_URL}/classes/total${queryParams}`);
+    const response = await axios.get(`${BASE_URL}/classes/total?${queryParams}`);
     return response.data.body.total;
   } catch (error) {
 

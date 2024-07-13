@@ -20,9 +20,9 @@ function Avatar() {
       {isOpen && (
         <ul
           onClick={() => setIsOpen(false)}
-          className=" absolute right-0 top-12 z-40 flex w-48  flex-col divide-y divide-slate-700 
-           rounded border  border-slate-500
-        bg-dark-secondery p-0 text-sm"
+          className=" absolute right-0 top-12 z-40 flex w-48  flex-col divide-y divide-bg--primary-100 
+           rounded border  border-bg--primary-200
+           bg-bg--primary-300 p-0 text-sm"
         >
           <Link
             to="/app/account/me"

@@ -5,6 +5,7 @@ import { deleteFile, updateAvatar } from "./apiUploads";
 // Environment variable or configuration for the base URL
 
 export async function getAuth() {
+  console.log("0000000000000000000000000000");
   try {
     const response = await axios.get(`${BASE_URL}/users/me`, {
       withCredentials: true,
@@ -105,6 +106,7 @@ export async function changePassword(passwordData) {
 }
 
 export async function updateAuther(newData) {
+ 
   try {
     let avatar;
     if (newData.avatarFile) {
@@ -122,7 +124,7 @@ export async function updateAuther(newData) {
       await deleteFile(newData.avatarDbUrl.split("amazonaws.com/")[1]);
       avatar = "";
     } else {
-      avatar = newData.avatarDbUrl;
+      avatar = newData.avatarDbUrl || newData.avatar;
     }
     // Clean up newData object
     delete newData.avatarDbUrl;
@@ -130,7 +132,7 @@ export async function updateAuther(newData) {
     // Update teacher data
     try {
       await axios.patch(
-        `${BASE_URL}users/me/update`,
+        `${BASE_URL}/users/me/update`,
         { ...newData, avatar },
         {
           withCredentials: true,

@@ -18,8 +18,8 @@ export default function RecoveryPasswordPage() {
 
   return (
     <div
-      className="flex h-screen items-center justify-center
-                bg-dark-secondery text-dark-text-primary"
+      className="bg-dark-secondery flex h-screen items-center
+                justify-center text-dark-text-primary"
     >
       <Form
         className="w-[28rem] rounded-lg  border border-slate-700 bg-dark-primary p-8"

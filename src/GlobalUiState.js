@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   alerts: [],
   root: "",
+  theme:'dark',
 };
 
 const globalReducer = createSlice({
@@ -18,8 +19,11 @@ const globalReducer = createSlice({
     removeAlert(state, action) {
       state.alerts.splice(action.payload, 1);
     },
+    setUiTheme(state, action) {
+      state.theme = action.payload;
+    },
   },
 });
 const globalUiReducer = globalReducer.reducer;
 export default globalUiReducer;
-export const { addAlert, removeAlert, setRootName } = globalReducer.actions;
+export const { addAlert, removeAlert,setUiTheme, setRootName } = globalReducer.actions;

@@ -3,6 +3,7 @@ import Button from "./Button";
 import SearchField from "./SearchField";
 import { FadeLoader } from "react-spinners";
 import useClientSearch from "../../hooks/useClientSearch";
+import { useSelector } from "react-redux";
 
 function Select({
   initial,
@@ -16,6 +17,7 @@ function Select({
   valueName,
   showValue,
 }) {
+  const { theme } = useSelector((store) => store.global);
   const { searchResults, setQuery } = useClientSearch(data, {
     type: "obj",
     valueName: valueName,
@@ -59,7 +61,7 @@ function Select({
           data-value={data[valueName || "name"]}
           data-valueId={data[idName || "id"]}
           key={index}
-          className=" cursor-pointer  px-3 py-1 hover:bg-white/10 "
+          className={`cursor-pointer  px-3 py-1 ${theme === "dark" ? "hover:bg-white/5" : "hover:bg-black/5"}`}
         >
           {data[valueName || "name"]}
         </li>
@@ -68,28 +70,26 @@ function Select({
   }
 
   return (
-    <div className="relative basis-2/3">
+    <div className="relative ">
       <button
         onClick={(e) => {
           e.preventDefault();
           setSelect(!select);
         }}
-        className=" first-letter: mb-1 flex  w-full
-                items-center justify-center rounded
-               border border-slate-700 bg-white/10 px-3 py-2"
+        className="flex justify-center rounded-sm bg-bg--primary-100 px-3 py-[8px]"
       >
         {value}
-        <span className=" material-symbols-outlined scale-75">unfold_more</span>
+        <div className="material-symbols-outlined scale-75">unfold_more</div>
       </button>
       {select && (
-        <div className="absolute right-0 z-20 w-full min-w-max">
-          <div className=" rounded  border border-slate-700  bg-dark-primary">
+        <div className="absolute right-0 z-20 w-full min-w-max text-text--primary">
+          <div className=" rounded border border-bg--primary-100  bg-bg--primary-400">
             <div>
               {search && (
                 <div ref={inputRef}>
                   <SearchField
                     onChange={(e) => setQuery(e.target.value)}
-                    className="w-full rounded-b-none border-0 bg-white/[0.05] py-2"
+                    className="w-full rounded-b-none border-0 !bg-bg--primary-200 py-2"
                   />
                 </div>
               )}
@@ -121,7 +121,7 @@ function Select({
 
                 setValue(e.target.getAttribute("data-value"));
               }}
-              className=" mt-2 max-h-60 w-full   overflow-auto  rounded-b text-base "
+              className=" mt-2 max-h-60 w-full   divide-y divide-bg--primary-100 overflow-auto  rounded-b text-base "
             >
               {!isLoading ? (
                 displayData

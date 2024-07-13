@@ -1,15 +1,15 @@
-import { useNavigate, useParams } from "react-router-dom";
-import SelectItem from "../ui/components/SelectItem";
-import Spinner from "../ui/components/Spinner";
-import Error from "../ui/components/Error";
-import moment from "moment";
-import useSetRoot from "../utils/setRoot";
-import useDeleteClass from "./useDeleteClass";
-import Button from "../ui/components/Button";
-import useClasses from "./useClasses";
+import { useNavigate, useParams } from 'react-router-dom';
+import SelectItem from '../ui/components/SelectItem';
+import Spinner from '../ui/components/Spinner';
+import Error from '../ui/components/Error';
+import moment from 'moment';
+import useSetRoot from '../utils/setRoot';
+import useDeleteClass from './useDeleteClass';
+import Button from '../ui/components/Button';
+import useClasses from './useClasses';
 
 function ClassView() {
-  useSetRoot("view");
+  useSetRoot('view');
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -33,24 +33,22 @@ function ClassView() {
   } = classData[0];
 
   function onSelectHandler(e) {
-    if (e.target.id === "update") {
+    if (e.target.id === 'update') {
       navigate(`/app/classes/${id}/update`);
     }
-    if (e.target.id === "delete") {
+    if (e.target.id === 'delete') {
       mutate(id);
       navigate(-1);
     }
   }
 
-  const formatedclassTime = moment
-    .tz(`2000-01-01T${classTime}Z`, "Asia")
-    .format("hh:mm A");
+  const formatedclassTime = moment.tz(`2000-01-01T${classTime}Z`, 'Asia').format('hh:mm A');
 
   return (
     <>
       <div
         className=" relative mt-4 flex w-[28rem] flex-col items-center 
-      rounded-lg border border-slate-700 bg-dark-primary p-8 "
+           rounded-md bg-bg--primary-200 p-8 shadow-md "
       >
         <div
           className="items-centerw-24  flex h-24 w-24 justify-center overflow-hidden
@@ -64,45 +62,35 @@ function ClassView() {
             disabled={isDeleting}
             onClick={onSelectHandler}
             items={[
-              ["update", "edit"],
-              ["delete", "delete"],
+              ['update', 'edit'],
+              ['delete', 'delete'],
             ]}
           />
         </div>
 
-        <div className=" mt-4 flex w-full flex-col  divide-y   divide-slate-700">
+        <div className=" mt-4 flex w-full flex-col  divide-y   divide-bg--primary-100">
           <div className="flex w-full items-center justify-between   px-2 py-2">
             <div className="flex items-center gap-1">
-              <span className="material-symbols-outlined scale-90 font-thin">
-                subject
-              </span>
+              <span className="material-symbols-outlined scale-90 font-thin">subject</span>
               <div>Subject</div>
             </div>
             <div className=" basis-[62%] capitalize">{subject}</div>
           </div>
           <div className="flex w-full items-center justify-between px-2 py-2">
             <div className="flex items-center gap-1">
-              <span className="material-symbols-outlined scale-90 font-thin">
-                person
-              </span>
+              <span className="material-symbols-outlined scale-90 font-thin">person</span>
               <div>Teacher</div>
             </div>
 
             <div className=" basis-[62%] capitalize">
-              <Button
-                to={`/app/teachers/${teacher?._id}`}
-                icon="east"
-                type="link"
-              >
+              <Button to={`/app/teachers/${teacher?._id}`} icon="east" type="link">
                 {teacher?.name}
               </Button>
             </div>
           </div>
           <div className="  flex w-full items-center justify-between   px-2 py-2">
             <div className="flex items-center gap-1">
-              <span className="material-symbols-outlined scale-90 font-thin">
-                grade
-              </span>
+              <span className="material-symbols-outlined scale-90 font-thin">grade</span>
               <div>Grade</div>
             </div>
 
@@ -111,36 +99,28 @@ function ClassView() {
 
           <div className="  flex w-full items-center justify-between   px-2 py-2">
             <div className="flex items-center gap-1">
-              <span className="material-symbols-outlined scale-90 font-thin">
-                house
-              </span>
+              <span className="material-symbols-outlined scale-90 font-thin">house</span>
               <div>Hall</div>
             </div>
             <div className="basis-[62%]">{hallNumber}</div>
           </div>
           <div className="  flex w-full items-center justify-between   px-2 py-2">
             <div className="flex items-center gap-1">
-              <span className="material-symbols-outlined scale-90 font-thin">
-                today
-              </span>
+              <span className="material-symbols-outlined scale-90 font-thin">today</span>
               <div>Day</div>
             </div>
             <div className=" basis-[62%] capitalize">{classDay}</div>
           </div>
           <div className="  flex w-full items-center justify-between   px-2 py-2">
             <div className="flex items-center gap-1">
-              <span className="material-symbols-outlined scale-90 font-thin">
-                schedule
-              </span>
+              <span className="material-symbols-outlined scale-90 font-thin">schedule</span>
               <div>Time</div>
             </div>
             <div className="basis-[62%]">{formatedclassTime}</div>
           </div>
           <div className="  flex w-full items-center justify-between   px-2 py-2">
             <div className="flex items-center gap-1">
-              <span className="material-symbols-outlined scale-90 font-thin">
-                timelapse
-              </span>
+              <span className="material-symbols-outlined scale-90 font-thin">timelapse</span>
               <div>Duraation</div>
             </div>
             <div className="basis-[62%]">{duration} Hours</div>

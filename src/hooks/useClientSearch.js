@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
-export default function useClientSearch(data, { type, valueName }) {
+export default function useClientSearch(data = [], { type, valueName }) {
   const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] = useState(data);
 
