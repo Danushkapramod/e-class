@@ -6,7 +6,6 @@ export async function getClasses(queryParams) {
   try {
     let query;
     queryParams ? (query = `&${queryParams.split("?")[1]}`) : (query = "");
-
     const response = await axios.get(`${BASE_URL}/classes?teacher=true${query}`);
     return response.data.body.classes;
   } catch (error) {

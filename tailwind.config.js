@@ -31,6 +31,7 @@ export default {
          'text--secondery': 'var(--color-text-secondary)',
          'text--muted': 'var(--color-text-muted)',
 
+         'border-1':'var(--color-border-1)',
          'text--option-1':'var(--color-text-option-1)',
 
          'opacity-overflow':'var(--color-overflow)'
@@ -46,7 +47,15 @@ export default {
         'alert-in': 'alertIn 0.5s ease-out forwards',
         'disappearr': 'disappear 0.3s  ease-out  forwards',
         'slideDown': "slideDown 0.15s ease-out forwards"
-      }
+      },
+      boxShadow: {
+        'soft': '0 4px 8px rgba(0, 0, 0, 0.1)',
+        'deep': '0 6px 12px rgba(0, 0, 0, 0.3)',
+        'neumorphism': '0px 2px 4px rgba(0, 0, 0, 0.2),0px -1px 2px rgba(0, 0, 0, 0.05)',
+        'glow': '0 0 10px rgba(0, 255, 0, 0.7)',
+        'floating': '0 8px 16px rgba(0, 0, 0, 0.2)',
+        'card': '0 4px 8px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.12)',
+      },
 
     },
   },

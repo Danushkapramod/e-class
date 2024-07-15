@@ -1,5 +1,5 @@
-import { useState } from "react";
-import Button from "./Button";
+import { useState } from 'react';
+import Button from './Button';
 
 function Filters({ children, filterCount, onFilterHandler, reset }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,10 +13,10 @@ function Filters({ children, filterCount, onFilterHandler, reset }) {
     <div className="  ">
       <div className=" relative">
         <Button
-          className={"border-bg--primary-100 !text-text--primary !shadow-sm"}
+          className={'border-bg--primary-100 !text-text--primary !shadow-sm'}
           onClick={() => setIsOpen(!isOpen)}
-          type={"smallSecondery"}
-          icon={"tune"}
+          type={'smallSecondery'}
+          icon={'tune'}
         >
           filters
         </Button>
@@ -24,9 +24,9 @@ function Filters({ children, filterCount, onFilterHandler, reset }) {
         {filterCount ? (
           <div
             className="
-             te bg-bg--secondery-2  absolute  right-0 top-0 flex h-6
-              w-6 -translate-y-[50%] translate-x-[20%] items-center 
-              justify-center   rounded-full text-sm "
+             te absolute  right-0  top-0 flex h-6 w-6
+              -translate-y-[50%] translate-x-[20%] items-center justify-center 
+              rounded-full   bg-bg--secondery-2 text-sm "
           >
             {filterCount}
           </div>

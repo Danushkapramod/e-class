@@ -1,10 +1,10 @@
 import {  useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { exportToCsv } from "../services/apiAccets";
+import { exportToPdf } from "../services/apiAccets";
 
-export default function useExportToCsv() {
+export default function useExportToPdf() {
   const { isLoading, mutate } = useMutation({
-    mutationFn: exportToCsv,
+    mutationFn: exportToPdf,
     onSuccess: () => {
       //toast.success('Class deleted successfully!"');
     },

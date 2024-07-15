@@ -6,7 +6,9 @@ import { deleteFile, updateAvatar, uploadFile } from "./apiUploads";
 
 export async function getTeachers(queryParams) {
   try {
-    const response = await axios.get(`${BASE_URL}/teachers`, { params: queryParams });
+    let query;
+    queryParams ? query = queryParams : query = "";
+    const response = await axios.get(`${BASE_URL}/teachers${query}`);
     return response.data.body.teachers;
   
   } catch (error) {

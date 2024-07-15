@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
-import useClientSearch from "../../hooks/useClientSearch";
+import { useEffect, useState } from 'react';
+import useClientSearch from '../../hooks/useClientSearch';
 
 export default function FilterField({ data, value, setValu, name }) {
   const { searchResults, setQuery } = useClientSearch(data, {
-    type: "list",
+    type: 'list',
   });
 
   function handleSearch(e) {
@@ -27,7 +27,7 @@ export default function FilterField({ data, value, setValu, name }) {
               className="w-full rounded border-b  border-b-bg--primary-100 bg-bg--primary-200
              py-1 pl-9 pr-4 text-sm shadow outline-none"
               type="text"
-              placeholder={"search"}
+              placeholder={'search'}
             />
           </div>
 
@@ -37,14 +37,7 @@ export default function FilterField({ data, value, setValu, name }) {
                font-light"
           >
             {searchResults?.map((data, index) => {
-              return (
-                <SearchOption
-                  key={index}
-                  value={value}
-                  setValu={setValu}
-                  data={data}
-                />
-              );
+              return <SearchOption key={index} value={value} setValu={setValu} data={data} />;
             })}
           </ul>
         </div>
@@ -78,7 +71,7 @@ function SearchOption({ data, setValu, value }) {
       <div className=" flex items-center text-sm">
         <span
           className={`material-symbols-outlined scale-75 
-            ${select ? "opacity-100" : "opacity-0"}`}
+            ${select ? 'opacity-100' : 'opacity-0'}`}
         >
           done
         </span>

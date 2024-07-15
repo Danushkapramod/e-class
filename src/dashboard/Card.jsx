@@ -65,7 +65,7 @@ function CardItem({ cardData }) {
   return (
     <div
       className="grow rounded-md border-b-4 border-b-bg--secondery-1
-       bg-bg--primary-200 p-4 px-6 text-text--option-1 shadow-lg"
+       bg-bg--primary-200 p-4 px-6 text-text--option-1 shadow-md"
     >
       <div className="flex justify-between ">
         <span className=" material-symbols-outlined  scale-150">{icon}</span>

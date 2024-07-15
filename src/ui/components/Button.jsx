@@ -43,12 +43,12 @@ function Button({
 
   const secondery = `text--text-primary flex items-center 
                          gap-2 rounded  px-[15px] py-[7px] text-base 
-                         border border-bg--primary-100 
+                         border border-bg--primary-100 uppercase 
                          transition-all duration-100 shadow-sm
                          hover:bg-white/5 active:bg-white/10
                          ${theme ? 'bg-white/5' : 'bg-white/40'}
-                         uppercase ${children && icon && 'gap-1'}
-                          ${children && icon ? 'pl-[10px]' : ''}`;
+                         ${children && icon ? 'pl-[10px] gap-1' : ''}
+                         ${!children && icon ? 'px-[8px] gap-[0]' : ''}`;
 
   const xsSecondery = `text--text-primary flex items-center 
                          rounded border border-bg--primary-100 
@@ -56,7 +56,15 @@ function Button({
                          transition-all duration-100 shadow-sm
                           ${theme ? 'bg-white/5' : 'bg-white/40'}
                          hover:bg-white/5 active:bg-white/10
-                         ${children && icon ? 'gap py-0 px-2' : children && !icon ? 'py-1 px-2' : !children && icon ? '' : ''} 
+                         ${
+                           children && icon
+                             ? 'gap py-0 px-2'
+                             : children && !icon
+                               ? 'py-1 px-2'
+                               : !children && icon
+                                 ? ''
+                                 : ''
+                         } 
                         `;
 
   const xsPrimary = `   text-slate-200 flex items-center 

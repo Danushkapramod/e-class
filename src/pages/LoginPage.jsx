@@ -1,8 +1,8 @@
-import { Form, useForm } from "react-hook-form";
+import { Form, useForm } from 'react-hook-form';
 
-import Button from "../ui/components/Button";
-import { useLogin } from "../authentication/useLogin";
-import { Link, useNavigate } from "react-router-dom";
+import Button from '../ui/components/Button';
+import { useLogin } from '../authentication/useLogin';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ export default function LoginPage() {
   function onSubmit(loginData) {
     login(loginData, {
       onSettled: () => {
-        setValue("email", ""), setValue("password", "");
+        setValue('email', ''), setValue('password', '');
       },
     });
   }
@@ -29,13 +29,11 @@ export default function LoginPage() {
                 justify-center text-slate-900 "
     >
       <Form
-        className="w-[28rem] rounded-md bg-bg--primary-300 p-8 shadow-md"
+        className="shadow-neumorphism border-border-1 w-[28rem] rounded-md border bg-bg--primary-300 p-8"
         onSubmit={handleSubmit(onSubmit)}
         control={control}
       >
-        <p className="  pb-6 text-center text-2xl font-medium">
-          E-Class Log In
-        </p>
+        <p className="  pb-6 text-center text-2xl font-medium">E-Class Log In</p>
         <div className=" relative mb-6 flex flex-col">
           <label className=" pl-px text-sm opacity-80 " htmlFor="email">
             Email
@@ -49,11 +47,11 @@ export default function LoginPage() {
             required
             disabled={isPending}
             placeholder="email"
-            {...register("email", {
-              required: "Email is required",
+            {...register('email', {
+              required: 'Email is required',
               pattern: {
                 value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                message: "Invalid email address",
+                message: 'Invalid email address',
               },
             })}
           />
@@ -76,8 +74,8 @@ export default function LoginPage() {
             required
             disabled={isPending}
             placeholder="password"
-            {...register("password", {
-              required: "Password is required",
+            {...register('password', {
+              required: 'Password is required',
             })}
           />
           {errors.password && (
@@ -89,7 +87,7 @@ export default function LoginPage() {
         <div className="  pr-2 text-right">
           <Link
             to="/forgot-password"
-            className="text-bg--secondery-2 font-light  underline opacity-80"
+            className="font-light text-bg--secondery-2  underline opacity-80"
           >
             Forgot your password?
           </Link>

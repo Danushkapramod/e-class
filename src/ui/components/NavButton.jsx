@@ -3,9 +3,9 @@ function NavButton({ name, onClick }) {
   return (
     <button
       onClick={onClick}
-      className="hover:bg-bg--primary-200 ml-3 flex items-center justify-center rounded-full p-2"
+      className="ml-3 flex items-center justify-center rounded-full p-2 hover:bg-bg--primary-200"
     >
-      <div className=" material-symbols-outlined ">{name}</div>
+      <div className=" material-symbols-outlined font-light ">{name}</div>
     </button>
   );
 }

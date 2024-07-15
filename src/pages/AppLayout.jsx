@@ -14,7 +14,7 @@ function AppLayout() {
       <Sidebar sidebarOpen={sidebarOpen} />
       <div className="  flex grow flex-col">
         <Nav sidebarHandler={toggleSidebar} />
-        <div className="relative grow overflow-auto bg-bg--primary-300 p-4 ">
+        <div className="relative grow overflow-auto bg-bg--primary-300 px-4 py-2">
           <Outlet />
         </div>
       </div>

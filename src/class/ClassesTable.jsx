@@ -30,7 +30,7 @@ function ClassesTable() {
   }
 
   return (
-    <div className="grow">
+    <div>
       <AppNav
         type="class"
         setTableView={setTableView}
@@ -92,15 +92,14 @@ function CardItem({ classData }) {
 
   return (
     <div
-      className="relative  flex flex-grow flex-col items-center justify-center rounded-lg 
-                  border  border-b-4 border-bg--primary-100 border-b-bg--secondery-2
+      className="relative flex flex-grow flex-col items-center justify-center rounded-lg 
+                 border  border-b-4 border-bg--primary-100 border-b-bg--secondery-2
                  bg-bg--primary-200 px-2 py-4 text-text--secondery shadow-md"
     >
       <div className="  absolute right-2 top-2">
         <SelectItem
           disabled={isDeleting}
           buttonType="xsSecondery"
-          bg="bg-neutral-900"
           onClick={onSelectHandler}
           items={[
             ['update', 'edit'],
@@ -110,12 +109,12 @@ function CardItem({ classData }) {
         />
       </div>
 
-      <p className=" mb-1 line-clamp-1 text-lg   capitalize text-text--primary ">{subject}</p>
+      <p className=" mb-1 line-clamp-1 text-lg capitalize text-text--primary ">{subject}</p>
       <div
-        className="flex h-20 w-20 items-center  justify-center overflow-hidden
+        className="flex h-20 w-20 items-center justify-center overflow-hidden
          rounded-full border-2 border-slate-300  "
       >
-        <img className=" h-full object-cover " src={avatar} alt="image" />
+        <img className="h-full object-cover" src={avatar} alt="image" />
       </div>
 
       <div className=" mt-2 text-center opacity-70  ">

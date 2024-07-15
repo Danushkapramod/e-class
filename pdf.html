@@ -1,8 +1,9 @@
 <html>
   <head>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
       body {
-        font-family: Arial, sans-serif;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         background-color: #f9f9f9;
         display: flex;
         justify-content: center;
@@ -13,7 +14,6 @@
         max-width: 800px;
         padding: 16px;
         background-color: #fff;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
       }
       table {
         width: 100%;
@@ -28,6 +28,8 @@
       td {
         padding: 8px 12px;
         text-align: left;
+      }
+      tbody tr {
         border-bottom: 1px solid #e2e8f0;
       }
       td {
@@ -51,68 +53,106 @@
         text-overflow: ellipsis;
         white-space: nowrap;
       }
+      .section {
+        margin-top: 1rem;
+        padding-left: 1rem /* 16px */;
+        padding-right: 1rem /* 16px */;
+      }
+      .date {
+        font-size: 14px;
+        text-align: end;
+      }
+      .title {
+        text-align: center;
+        font-size: 1.25rem /* 20px */;
+        line-height: 1.75rem /* 28px */;
+        font-weight: 700;
+      }
+      .data-1 {
+        display: flex;
+        font-size: 14px;
+        justify-content: space-between;
+      }
+      .day {
+        width: 4px;
+      }
     </style>
   </head>
   <body>
     <div class="container">
+      <div class="section">
+        <div class="date">06/03/2023</div>
+        <div class="title">EduSuite</div>
+        <div class="data-1">
+          <div>All Classes</div>
+          <div>23 results</div>
+        </div>
+      </div>
       <table>
         <thead>
           <tr>
-            <th>Subject</th>
+            <th class="w-1">#</th>
+            <th class="max-w-28">Subject</th>
             <th>Teacher</th>
             <th>Time</th>
-            <th>Grade</th>
-            <th>Hall</th>
-            <th>Day</th>
+            <th class="max-w-16">Grade</th>
+            <th class="max-w-16">Hall</th>
+            <th class="day">Day</th>
           </tr>
         </thead>
         <tbody>
           <tr>
+            <td class="text-slate-500">056</td>
             <td>Physics</td>
-            <td class="max-w-28">Anurada Perera</td>
+            <td>Anurada Perera</td>
             <td>02:00 PM</td>
-            <td class="max-w-16">13</td>
-            <td class="max-w-16">Hall-01</td>
+            <td>13</td>
+            <td>Hall-01</td>
+            <td class="pr-8">Monday</td>
+          </tr>
+          <tr>
+            <td class="text-slate-500">02</td>
+            <td>Physics</td>
+            <td>Anurada Perera</td>
+            <td>02:00 PM</td>
+            <td>13</td>
+            <td>Hall-01</td>
             <td>Monday</td>
           </tr>
           <tr>
+            <td class="text-slate-500">03</td>
             <td>Physics</td>
-            <td class="max-w-28">Anurada Perera</td>
+            <td>Anurada Perera</td>
             <td>02:00 PM</td>
-            <td class="max-w-16">13</td>
-            <td class="max-w-16">Hall-01</td>
+            <td>13</td>
+            <td>Hall-01</td>
             <td>Monday</td>
           </tr>
           <tr>
+            <td class="text-slate-500">04</td>
             <td>Physics</td>
-            <td class="max-w-28">Anurada Perera</td>
+            <td>Anurada Perera</td>
             <td>02:00 PM</td>
-            <td class="max-w-16">13</td>
-            <td class="max-w-16">Hall-01</td>
+            <td>13</td>
+            <td>Hall-01</td>
             <td>Monday</td>
           </tr>
           <tr>
+            <td class="text-slate-500">05</td>
             <td>Physics</td>
-            <td class="max-w-28">Anurada Perera</td>
+            <td>Anurada Perera</td>
             <td>02:00 PM</td>
-            <td class="max-w-16">13</td>
-            <td class="max-w-16">Hall-01</td>
+            <td>13</td>
+            <td>Hall-01</td>
             <td>Monday</td>
           </tr>
           <tr>
+            <td class="text-slate-500">09</td>
             <td>Physics</td>
-            <td class="max-w-28">Anurada Perera</td>
+            <td>Anurada Perera</td>
             <td>02:00 PM</td>
-            <td class="max-w-16">13</td>
-            <td class="max-w-16">Hall-01</td>
-            <td>Monday</td>
-          </tr>
-          <tr>
-            <td>Physics</td>
-            <td class="max-w-28">Anurada Perera</td>
-            <td>02:00 PM</td>
-            <td class="max-w-16">13</td>
-            <td class="max-w-16">Hall-01</td>
+            <td>13</td>
+            <td>Hall-01</td>
             <td>Monday</td>
           </tr>
         </tbody>

@@ -6,7 +6,7 @@ const bucket = "aws-bucket-e-class";
 export async function uploadFile(path, file) {
   try {
     const respons = await axios.post(
-      `${BASE_URL}/awsSignedUrl/upload`,
+      `${BASE_URL}/assets/awsSignedUrl`,
       {
         path,
         bucket,
@@ -42,7 +42,7 @@ export async function updateAvatar(mainFile, currentdbUrl, path) {
 
 export async function deleteFile(fileName) {
   try {
-    await axios.post(`${BASE_URL}/awsSignedUrl/delete`, {
+    await axios.post(`${BASE_URL}/assets/delete`, {
       fileName,
       bucket,
     });

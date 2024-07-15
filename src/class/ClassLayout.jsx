@@ -1,15 +1,15 @@
 import { Outlet } from 'react-router-dom';
 import Button from '../ui/components/Button';
 import { useSelector } from 'react-redux';
-import useExportToCsv from './useExportCsv';
-import SelectItem from '../ui/components/SelectItem';
+import Exports from '../ui/components/Exports';
+import Pagination from '../ui/components/Pagination';
+import { getClassesCount } from '../services/apiClasses';
 
 function ClassLayout() {
   const { root } = useSelector((store) => store.global);
-  const { isLoading, mutate } = useExportToCsv();
 
   return (
-    <div className="flex flex-col  ">
+    <div className="flex flex-col ">
       <div className="flex items-center justify-between px-2">
         <div className="flex items-end">
           <div className=" text-2xl text-text--secondery">Classes/</div>
@@ -17,29 +17,16 @@ function ClassLayout() {
         </div>
 
         <div className=" flex items-end gap-2">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              //   mutate();
-            }}
-          >
-            <SelectItem
-              disabled={isLoading}
-              buttonType="secondery"
-              size="medium"
-              btnTitle="EXPORT"
-              icon="download"
-              bg="bg-bg--primary-500"
-              items={[['Export to CSV'], ['Export to PDF']]}
-            />
-          </form>
+          <Exports category="class" />
           <Button to="new" type="primary" icon="add">
             Add class
           </Button>
         </div>
       </div>
-
       <Outlet />
+      <div className=" mb-8 mt-4 flex w-full justify-center">
+        <Pagination getTotal={getClassesCount} />
+      </div>
     </div>
   );
 }

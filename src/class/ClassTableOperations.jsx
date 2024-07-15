@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
-import FilterField from "../ui/components/FilterField";
-import Filters from "../ui/components/Filters";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import FilterField from '../ui/components/FilterField';
+import Filters from '../ui/components/Filters';
+import { useLocation, useSearchParams } from 'react-router-dom';
 
-import useGrades from "../option/useGrades";
-import useHalls from "../option/useHalls";
-import useSubjects from "../option/useSubjects";
-import Sort from "../ui/components/Sort";
+import useGrades from '../option/useGrades';
+import useHalls from '../option/useHalls';
+import useSubjects from '../option/useSubjects';
+import Sort from '../ui/components/Sort';
 // const teachers = [
 //   "Amila disanayake",
 //   "Anurada perera",
@@ -16,15 +16,7 @@ import Sort from "../ui/components/Sort";
 // const subjects = ["Physics", "Chemistry", "Maths", "Biology", "ICT"];
 // const grades = ["10", "11", "12", "13"];
 // const halls = ["Hall-1", "Hall-2", "Hall-3", "Hall-4", "Hall-5"];
-const days = [
-  "Mondaya",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-];
+const days = ['Mondaya', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 export function ClassFilter() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -33,28 +25,23 @@ export function ClassFilter() {
   const { grades } = useGrades();
   const { halls } = useHalls();
 
-  const [filterCount, setFilterCount] = useState(null);
-  const subjectFilterValue = searchParams.getAll("subject");
-  const teacherFilterValue = searchParams.getAll("teacher");
-  const gradeFilterValue = searchParams.getAll("grade");
-  const hallFilterValue = searchParams.getAll("hall");
-  const dayFilterValue = searchParams.getAll("day");
+  const subjectFilterValue = searchParams.getAll('subject');
+  const gradeFilterValue = searchParams.getAll('grade');
+  const hallFilterValue = searchParams.getAll('hall');
+  const dayFilterValue = searchParams.getAll('day');
 
+  const [filterCount, setFilterCount] = useState(null);
   const [subject, setSubject] = useState(subjectFilterValue);
-  const [teacher, setTeacher] = useState(teacherFilterValue);
   const [grade, setGrade] = useState(gradeFilterValue);
   const [hall, setHall] = useState(hallFilterValue);
   const [day, setDay] = useState(dayFilterValue);
 
+  useEffect(() => {
+    setFilterCount([...subject, ...grade, ...hall, ...day].length);
+  }, [subject, grade, hall, day]);
+
   function filterHandler() {
-    setSearchParams({
-      teacher,
-      subject,
-      grade,
-      hall: hall,
-      day: day,
-    });
-    setFilterCount([...teacher, ...subject, ...grade, ...hall, ...day].length);
+    setSearchParams({ subject, grade, hall, day });
   }
 
   function reset() {
@@ -64,15 +51,10 @@ export function ClassFilter() {
     setGrade([]);
     setHall([]);
     setSubject([]);
-    setTeacher([]);
   }
 
   return (
-    <Filters
-      filterCount={filterCount}
-      onFilterHandler={filterHandler}
-      reset={reset}
-    >
+    <Filters filterCount={filterCount} onFilterHandler={filterHandler} reset={reset}>
       <FilterField
         name="Subject"
         data={subjects?.map((subject) => subject.subjectName)}
@@ -110,38 +92,38 @@ export function ClassSort() {
   const location = useLocation({});
   const sortData = [
     {
-      title: "None",
-      sortBy: "none",
+      title: 'None',
+      sortBy: 'none',
     },
     {
-      title: "Sort by Time",
-      sortBy: "startTime",
+      title: 'Sort by Time',
+      sortBy: 'startTime',
     },
     {
-      title: "Sort by Day",
-      sortBy: "day",
+      title: 'Sort by Day',
+      sortBy: 'day',
     },
     {
-      title: "Sort by Hall",
-      sortBy: "hall",
+      title: 'Sort by Hall',
+      sortBy: 'hall',
     },
   ];
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [isSorted, setIsSorted] = useState(false);
-  const sortValue = searchParams.get("sort");
+  const sortValue = searchParams.get('sort');
   const [sort, setSort] = useState(sortValue);
 
   useEffect(() => {
-    let existParamsString = location.search.split("?")[1];
-    if (!sort || sort === "none") {
-      existParamsString = existParamsString?.split("sort")[0];
+    let existParamsString = location.search.split('?')[1];
+    if (!sort || sort === 'none') {
+      existParamsString = existParamsString?.split('sort')[0];
       setSearchParams(existParamsString);
       setIsSorted(false);
     } else {
       if (location.search) {
-        if (existParamsString?.includes("sort")) {
-          existParamsString = existParamsString.split("sort")[0];
+        if (existParamsString?.includes('sort')) {
+          existParamsString = existParamsString.split('sort')[0];
         }
         const newParamsString = `${existParamsString}&sort=${sort}`;
         setSearchParams(newParamsString);

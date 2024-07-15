@@ -19,8 +19,8 @@ function AppNav({ type, tableView, setTableView, onChange }) {
   }
   return (
     <div
-      className="z-40 mt-4 flex items-center justify-between  rounded border
-                   border-bg--primary-200  px-2 py-2 text-text--primary shadow-md"
+      className="border-border-1 shadow-neumorphism z-40 mt-2 flex items-center justify-between rounded
+                   border  bg-bg--primary-300 px-2 py-2  text-text--primary"
     >
       <SearchField className={'!shadow-sm'} onChange={onChange} />
       <div className="flex gap-2 ">

@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from "react";
-import Button from "../ui/components/Button";
-import { FadeLoader } from "react-spinners";
-import Error from "../ui/components/Error";
-import { useSelector } from "react-redux";
+import { useEffect, useRef, useState } from 'react';
+import Button from '../ui/components/Button';
+import { FadeLoader } from 'react-spinners';
+import Error from '../ui/components/Error';
+import useOColor from '../utils/getOColor';
 
 export default function OptionTable({
   fieldName,
@@ -15,9 +15,9 @@ export default function OptionTable({
   isSuccess,
   isCreating,
 }) {
-  const { theme } = useSelector((store) => store.global);
+  const theme = useOColor();
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [subject, setSubject] = useState("");
+  const [subject, setSubject] = useState('');
   const inputRef = useRef();
   const inputAddBtn = useRef();
 
@@ -27,7 +27,7 @@ export default function OptionTable({
 
   useEffect(() => {
     function eventCallback(e) {
-      if (e.target.closest("button")) return;
+      if (e.target.closest('button')) return;
       if (e.target !== inputRef.current && e.target !== inputRef.inputAddBtn) {
         setIsFormOpen(false);
       }
@@ -35,23 +35,23 @@ export default function OptionTable({
 
     if (isFormOpen) {
       inputRef.current.focus();
-      document.addEventListener("click", eventCallback);
+      document.addEventListener('click', eventCallback);
     }
     return () => {
-      document.removeEventListener("click", eventCallback);
+      document.removeEventListener('click', eventCallback);
     };
   }, [isFormOpen]);
 
   useEffect(() => {
-    setSubject("");
+    setSubject('');
     if (isSuccess) setIsFormOpen(false);
   }, [isSuccess]);
 
   return (
-    <div className="grow basis-1 rounded  shadow">
+    <div className="shadow-neumorphism grow basis-1  rounded">
       <div
         className=" flex items-center justify-between rounded-t border-b
-                    border-b-bg--primary-100  bg-bg--primary-300  px-2 py-2 pl-4 text-lg"
+                    border-b-bg--primary-100  bg-bg--primary-200  px-2 py-2 pl-4 text-lg"
       >
         {fieldName}
 
@@ -64,7 +64,7 @@ export default function OptionTable({
 
       <ul
         className={`max-h-[70dvh]  divide-y divide-bg--primary-100 overflow-auto 
-         rounded-b ${theme === "dark" ? "bg-black/20" : "bg-white/30"}`}
+         rounded-b  ${!theme ? 'bg-white/80' : 'bg-white/[0.03]'}`}
       >
         {isFormOpen && (
           <li
@@ -118,11 +118,9 @@ export default function OptionTable({
 
 function Row({ isDeleting, item, number, mutateDelete }) {
   return (
-    <li className=" flex  justify-between px-2 py-1.5">
+    <li className="flex justify-between px-2 py-1.5">
       <div className="flex items-center  gap-3">
-        <span className=" text-sm opacity-50">
-          {number < 10 ? "0" + number : number}
-        </span>
+        <span className=" text-sm opacity-50">{number < 10 ? '0' + number : number}</span>
         <span className="  capitalize opacity-80">{item[1]}</span>
       </div>
 
