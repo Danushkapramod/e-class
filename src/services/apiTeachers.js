@@ -8,7 +8,10 @@ export async function getTeachers(queryParams) {
   try {
     let query;
     queryParams ? query = queryParams : query = "";
-    const response = await axios.get(`${BASE_URL}/teachers${query}`);
+    const response = await axios.get(`${BASE_URL}/teachers${query}`,{
+      withCredentials:true,
+      timeout:6000
+    });
     return response.data.body.teachers;
   
   } catch (error) {
@@ -115,9 +118,11 @@ export async function deleteTeacher({teacherId, avatarDbUrl}) {
 }
 
 
-export async function getTeachersCount(queryParams) {
+export async function getTeachersCount() {
   try {
-    const response = await axios.get(`${BASE_URL}/teachers/total?${queryParams}`);
+    const response = await axios.get(`${BASE_URL}/teachers/total`,{
+      withCredentials:true
+    });
     return response.data.body.total;
   } catch (error) {
 

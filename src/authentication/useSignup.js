@@ -1,19 +1,16 @@
 import { useMutation } from "@tanstack/react-query";
-//import { signup } from "../services/apiLogin";
-import { useAddAlert } from "../utils/alerts";
+import toast from "react-hot-toast";
+import { signUp } from "../services/apiAuth";
 
 export default function useSignup() {
-  const { addAlertFn } = useAddAlert();
   const { mutate, isPending } = useMutation({
-    mutationFn: "signup",
+    mutationFn:signUp,
     onSuccess: () => {
-      addAlertFn({
-        type: "succes",
-        message: "Accout succesfully created! Please verify the email addres.",
-      });
+      toast.success("Accout succesfully created! Please verify the email addres")
+      
     },
     onError: (err) => {
-      addAlertFn({ type: "error", message: err.message });
+      toast.error(`Error: ${err.message}`)
     },
   });
   return { mutate, isPending };

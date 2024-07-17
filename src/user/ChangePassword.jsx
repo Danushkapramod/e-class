@@ -1,11 +1,10 @@
-import { Form } from "react-router-dom";
-import { useChangePassword } from "../authentication/useChangePassword";
-import Button from "../ui/components/Button";
-import { useForm } from "react-hook-form";
+import { Form } from 'react-router-dom';
+import { useChangePassword } from '../authentication/useChangePassword';
+import Button from '../ui/components/Button';
+import { useForm } from 'react-hook-form';
 
 function ChangePassword() {
-  const { mutate: changePassword, isPending: isChangingPassword } =
-    useChangePassword();
+  const { mutate: changePassword, isPending: isChangingPassword } = useChangePassword();
   const {
     register,
     handleSubmit,
@@ -23,9 +22,9 @@ function ChangePassword() {
 
     changePassword(newData, {
       onSettled: () => {
-        setValue("new_password", ""),
-          setValue("curent_password", ""),
-          setValue("confirm_password", "");
+        setValue('new_password', ''),
+          setValue('curent_password', ''),
+          setValue('confirm_password', '');
       },
     });
   }
@@ -36,13 +35,13 @@ function ChangePassword() {
         <label from="curent_password">Current Password</label>
         <div className=" relative flex basis-[65%] flex-col">
           <input
-            className=" rounded border border-bg--primary-100 bg-bg--primary-200 
-             px-4 py-2  focus:outline focus:outline-slate-400 "
+            className=" border-border-1 rounded border bg-bg--primary-200 px-4 
+             py-2 shadow  focus:outline focus:outline-slate-400 "
             type="password"
             id="curent_password"
             placeholder="Current password"
-            {...register("curent_password", {
-              required: "This field is required",
+            {...register('curent_password', {
+              required: 'This field is required',
             })}
           ></input>
           {errors.curent_password && (
@@ -56,16 +55,16 @@ function ChangePassword() {
         <label from="new_password">New Password</label>
         <div className=" relative flex basis-[65%] flex-col">
           <input
-            className="basis-[65%] rounded border border-bg--primary-100 bg-bg--primary-200
-             px-4 py-2  focus:outline focus:outline-slate-400 "
+            className="border-border-1 basis-[65%] rounded border bg-bg--primary-200
+             px-4 py-2  shadow focus:outline focus:outline-slate-400 "
             type="password"
             required
             id="new_password"
-            {...register("new_password", {
-              required: "This field is required",
+            {...register('new_password', {
+              required: 'This field is required',
               minLength: {
                 value: 6,
-                message: "Password must be at least 6 characters long",
+                message: 'Password must be at least 6 characters long',
               },
             })}
             placeholder="New password"
@@ -81,22 +80,22 @@ function ChangePassword() {
         <label from="new_password">New Password</label>
         <div className=" relative  flex basis-[65%] flex-col">
           <input
-            className=" w-full rounded border border-bg--primary-100 bg-bg--primary-200
-             px-4 py-2  focus:outline focus:outline-slate-400 "
+            className=" border-border-1 w-full rounded border bg-bg--primary-200 px-4
+             py-2 shadow  focus:outline focus:outline-slate-400 "
             type="password"
             required
             placeholder="New password"
             id="confirm_password"
-            {...register("confirm_password", {
-              required: "This field is required",
+            {...register('confirm_password', {
+              required: 'This field is required',
               minLength: {
                 value: 6,
-                message: "Password must be at least 6 characters long",
+                message: 'Password must be at least 6 characters long',
               },
               validate: (value) => {
                 return (
-                  value === getValues("new_password") ||
-                  "Password & confirmPassword should be same."
+                  value === getValues('new_password') ||
+                  'Password & confirmPassword should be same.'
                 );
               },
             })}
@@ -109,11 +108,7 @@ function ChangePassword() {
         </div>
       </div>
       <div className="flex justify-end pt-6">
-        <Button
-          disabled={isChangingPassword}
-          spinner={isChangingPassword}
-          type="primary"
-        >
+        <Button disabled={isChangingPassword} spinner={isChangingPassword} type="primary">
           Save
         </Button>
       </div>

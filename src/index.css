@@ -82,6 +82,9 @@
   }
 }
 
+/* html {
+  font-size: smaller;
+} */
 body {
   height: 100dvh;
 }

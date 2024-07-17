@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+
 import { useLocation, useSearchParams } from 'react-router-dom';
 
-function Pagination({ limit = 8, getTotal }) {
+function Pagination({ limit = 20, getTotal }) {
   const pageLimit = limit;
   const location = useLocation();
   const newParams = useMemo(() => new URLSearchParams(location.search), [location]);
@@ -18,7 +19,7 @@ function Pagination({ limit = 8, getTotal }) {
       const pageCount = Math.ceil(total / pageLimit);
       setPageCount(pageCount);
     })();
-  }, [getTotal, pageLimit]);
+  }, [pageLimit]);
 
   useEffect(() => {
     if (oldP_L.current.page !== currentPage || oldP_L.current.limit !== pageLimit) {
@@ -59,31 +60,33 @@ function Pagination({ limit = 8, getTotal }) {
   }, [currentPage, pageCount]);
 
   return (
-    <div>
-      <div className=" flex gap-1 ">
-        <Block onClick={() => clickHandler(currentPage - 1)} type="sides">
-          <span className="material-symbols-outlined text-lg">arrow_back_ios</span>
-        </Block>
-
-        {btnList?.map((number) => {
-          return (
-            <Block curPage={currentPage} onClick={() => clickHandler(number)} key={number}>
-              {number}
-            </Block>
-          );
-        })}
-
-        {pageCount > 5 && pageCount - currentPage > 2 && <Block>...</Block>}
-        {pageCount > 5 && pageCount - currentPage > 2 && (
-          <Block curPage={currentPage} onClick={() => clickHandler(pageCount)}>
-            {pageCount}
+    pageCount > 1 && (
+      <div>
+        <div className=" flex gap-1 ">
+          <Block onClick={() => clickHandler(currentPage - 1)} type="sides">
+            <span className="material-symbols-outlined text-lg">arrow_back_ios</span>
           </Block>
-        )}
-        <Block onClick={() => clickHandler(currentPage + 1)} type="sides">
-          <span className="material-symbols-outlined text-lg">arrow_forward_ios</span>
-        </Block>
+
+          {btnList?.map((number) => {
+            return (
+              <Block curPage={currentPage} onClick={() => clickHandler(number)} key={number}>
+                {number}
+              </Block>
+            );
+          })}
+
+          {pageCount > 5 && pageCount - currentPage > 2 && <Block>...</Block>}
+          {pageCount > 5 && pageCount - currentPage > 2 && (
+            <Block curPage={currentPage} onClick={() => clickHandler(pageCount)}>
+              {pageCount}
+            </Block>
+          )}
+          <Block onClick={() => clickHandler(currentPage + 1)} type="sides">
+            <span className="material-symbols-outlined text-lg">arrow_forward_ios</span>
+          </Block>
+        </div>
       </div>
-    </div>
+    )
   );
 }
 
@@ -94,8 +97,8 @@ function Block({ children, onClick, type, curPage }) {
     return (
       <button
         onClick={onClick}
-        className="border-border-1 flex items-center 
-        justify-center rounded-sm border px-3 "
+        className="flex items-center justify-center rounded-sm border
+        border-bg--primary-100 px-3 shadow  hover:bg-bg--primary-200 "
       >
         {children}
       </button>
@@ -104,8 +107,8 @@ function Block({ children, onClick, type, curPage }) {
     return (
       <button
         onClick={onClick}
-        className={`border-border-1 rounded-sm 
-        border px-4 py-2 ${active ? ' bg-bg--primary-100' : ''}`}
+        className={`rounded-sm border border-bg--primary-100 px-4 py-2 
+        shadow hover:bg-bg--primary-200 ${active ? '!border-slate-400 bg-bg--primary-100' : ''}`}
       >
         {children}
       </button>

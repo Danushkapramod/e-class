@@ -1,20 +1,19 @@
-import { useEffect, useRef, useState } from "react";
-import { useUpdate } from "../authentication/useUpdate";
-import { Controller, useForm } from "react-hook-form";
-import { Form } from "react-router-dom";
-import Button from "../ui/components/Button";
+import { useEffect, useRef, useState } from 'react';
+import { useUpdate } from '../authentication/useUpdate';
+import { Controller, useForm } from 'react-hook-form';
+import { Form } from 'react-router-dom';
+import Button from '../ui/components/Button';
 
 function ChangeProfile({ auther }) {
-  const { mutate: updateProfileData, isPending: isUpdatingProfileData } =
-    useUpdate();
+  const { mutate: updateProfileData, isPending: isUpdatingProfileData } = useUpdate();
 
   const { register, setValue, handleSubmit, control } = useForm();
 
   useEffect(() => {
     if (!auther) return;
-    setValue("name", auther.auther?.name);
-    setValue("email", auther.auther?.email);
-    setValue("phone", auther.auther?.phone);
+    setValue('name', auther.auther?.name);
+    setValue('email', auther.auther?.email);
+    setValue('phone', auther.auther?.phone);
   }, [setValue, auther]);
 
   function onUpdateProfile(newData) {
@@ -28,13 +27,14 @@ function ChangeProfile({ auther }) {
           Email
         </label>
         <input
-          className=" basis-[70%] rounded-full border border-bg--primary-200 bg-transparent px-4 py-2 text-text--secondery"
+          className=" basis-[70%] rounded-full border border-bg--primary-100 
+          bg-transparent px-4 py-2 text-text--secondery"
           disabled
           value={auther.auther?.email}
         ></input>
         <span
-          className="material-symbols-outlined absolute right-2  cursor-pointer 
-                 select-none rounded-full p-1 font-light"
+          className="material-symbols-outlined absolute right-2  
+          cursor-pointer  select-none rounded-full p-1 font-light"
         >
           lock
         </span>
@@ -45,8 +45,8 @@ function ChangeProfile({ auther }) {
           register,
           control,
           defaultV: auther.auther?.name,
-          id: "name",
-          placeholder: "Name",
+          id: 'name',
+          placeholder: 'Name',
         }}
       />
       <DataField
@@ -54,17 +54,13 @@ function ChangeProfile({ auther }) {
           register,
           control,
           defaultV: auther.auther?.phone,
-          id: "phone",
-          placeholder: "Phone",
+          id: 'phone',
+          placeholder: 'Phone',
         }}
       />
 
       <div className="flex justify-end pt-6">
-        <Button
-          disabled={isUpdatingProfileData}
-          spinner={isUpdatingProfileData}
-          type="primary"
-        >
+        <Button disabled={isUpdatingProfileData} spinner={isUpdatingProfileData} type="primary">
           update
         </Button>
       </div>
@@ -93,7 +89,7 @@ function DataField({ options: { defaultV, id, placeholder, control } }) {
           render={({ field }) => (
             <input
               {...field}
-              className="w-full rounded border border-bg--primary-200 bg-bg--primary-200 px-4 py-2 focus:outline focus:outline-slate-400"
+              className="w-full rounded border border-bg--primary-200 bg-bg--primary-200 px-4 py-2 shadow focus:outline focus:outline-slate-400"
               type="text"
               id={id}
               placeholder={placeholder}

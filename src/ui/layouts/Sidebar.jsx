@@ -1,13 +1,13 @@
-import { NavLink } from "react-router-dom";
-import Logo from "../components/Logo";
-import { useLogout } from "../../authentication/useLogout";
+import { NavLink } from 'react-router-dom';
+import Logo from '../components/Logo';
+import { useLogout } from '../../authentication/useLogout';
 
 // eslint-disable-next-line react/prop-types
 function Sidebar({ sidebarOpen }) {
   const { mutate: logout, isLoading } = useLogout();
   return (
     <div
-      style={sidebarOpen ? { width: "240px" } : { width: "0" }}
+      style={sidebarOpen ? { width: '15rem' } : { width: '0' }}
       className="dark flex h-dvh  shrink-0 flex-col
                  items-center overflow-hidden border-r  border-r-bg--primary-100
                   bg-bg--primary-300 py-6 transition-all duration-300 ease-in-out "
@@ -16,19 +16,17 @@ function Sidebar({ sidebarOpen }) {
       <div className=" mt-8  flex w-full flex-col  divide-y divide-bg--primary-100 px-3   ">
         <NavLink
           to="dashbord"
-          className="hover:text-bg--secondery-2 flex gap-4 rounded-sm bg-white/[0.03] py-2 pl-4 transition-all 
-                     duration-150 first-line:items-center hover:bg-white/10"
+          className="flex gap-4 rounded-sm bg-white/[0.03] py-2 pl-4 transition-all duration-150 
+                     first-line:items-center hover:bg-white/10 hover:text-bg--secondery-2"
         >
-          <span className=" material-symbols-outlined font-light">
-            Dashboard
-          </span>
+          <span className=" material-symbols-outlined font-light">Dashboard</span>
           <span className=""> Dashbord</span>
         </NavLink>
 
         <NavLink
           to="classes"
-          className="hover:text-bg--secondery-2 flex gap-4 rounded-sm bg-white/[0.03] py-2 pl-4 
-           transition-all duration-150 first-line:items-center hover:bg-white/10"
+          className="flex gap-4 rounded-sm bg-white/[0.03] py-2 pl-4 transition-all 
+           duration-150 first-line:items-center hover:bg-white/10 hover:text-bg--secondery-2"
         >
           <span className="material-symbols-outlined font-light">school</span>
           <span className=" ">Class</span>
@@ -36,24 +34,24 @@ function Sidebar({ sidebarOpen }) {
 
         <NavLink
           to="teachers"
-          className="hover:text-bg--secondery-2 flex gap-4 rounded-sm bg-white/[0.03] py-2 
-          pl-4  transition-all duration-150
-           first-line:items-center  hover:bg-white/10"
+          className="flex gap-4 rounded-sm bg-white/[0.03] py-2 pl-4 
+          transition-all  duration-150 first-line:items-center
+           hover:bg-white/10  hover:text-bg--secondery-2"
         >
           <span className="material-symbols-outlined font-light">group</span>
           <span className="">Teacher</span>
         </NavLink>
         <NavLink
           to="options"
-          className="hover:text-bg--secondery-2 flex gap-4 rounded-sm bg-white/[0.03] py-2 
-          pl-4  transition-all duration-150
-           first-line:items-center  hover:bg-white/10"
+          className="flex gap-4 rounded-sm bg-white/[0.03] py-2 pl-4 
+          transition-all  duration-150 first-line:items-center
+           hover:bg-white/10  hover:text-bg--secondery-2"
         >
           <span className="material-symbols-outlined font-light">post_add</span>
           <span className="">Options</span>
         </NavLink>
       </div>
-      <div className="text-bg--secondery-2 mt-auto w-full px-4">
+      <div className="mt-auto w-full px-4 text-bg--secondery-2">
         <button
           disabled={isLoading}
           onClick={logout}
@@ -61,9 +59,7 @@ function Sidebar({ sidebarOpen }) {
                      border border-bg--primary-100  py-1.5 pl-4 transition-all duration-150
                      first-line:items-center hover:bg-white/[0.03] "
         >
-          <span className="material-symbols-outlined scale-75 font-light">
-            logout
-          </span>
+          <span className="material-symbols-outlined scale-75 font-light">logout</span>
           <span className=" text-sm ">Logout</span>
         </button>
       </div>

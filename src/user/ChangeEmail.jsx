@@ -1,10 +1,10 @@
-import Button from "../ui/components/Button";
-import { useChangeEmail } from "../authentication/useChangeEmail";
-import { useRequestResetPin } from "../authentication/useEmailChangePin";
-import { useEffect, useRef } from "react";
+import Button from '../ui/components/Button';
+import { useChangeEmail } from '../authentication/useChangeEmail';
+import { useRequestResetPin } from '../authentication/useEmailChangePin';
+import { useEffect, useRef } from 'react';
 
 export default function ChangeEmail({ window, setWindow }) {
-  return window === "EmailChangeWindow" ? (
+  return window === 'EmailChangeWindow' ? (
     <EmailChangeWindow setWindow={setWindow} window={window} />
   ) : (
     <EnterPinWindow setWindow={setWindow} window={window} />
@@ -22,7 +22,7 @@ function EmailChangeWindow({ setWindow }) {
   }
 
   function handleSuccess() {
-    setWindow("EnterPinWindow");
+    setWindow('EnterPinWindow');
   }
 
   return (
@@ -32,8 +32,8 @@ function EmailChangeWindow({ setWindow }) {
           Enter new email address
         </label>
         <input
-          className=" w-full rounded  border border-bg--primary-100 bg-bg--primary-200 px-4 
-                         py-2  focus:outline focus:outline-slate-400 "
+          className=" border-border-1 w-full rounded border bg-bg--primary-200 px-4 
+                      py-2 shadow focus:outline focus:outline-slate-400"
           type="email"
           required
           id="new_email"
@@ -43,12 +43,7 @@ function EmailChangeWindow({ setWindow }) {
       </div>
 
       <div className="mt-auto flex justify-center pt-6">
-        <Button
-          disabled={isPending}
-          spinner={isPending}
-          className="px-8"
-          type="primary"
-        >
+        <Button disabled={isPending} spinner={isPending} className="px-8" type="primary">
           submit
         </Button>
       </div>
@@ -68,7 +63,7 @@ function EnterPinWindow({ setWindow }) {
   }
 
   function handleSuccess() {
-    setWindow("EmailChangeWindow");
+    setWindow('EmailChangeWindow');
   }
   useEffect(() => {
     inputRef.current.focus();
@@ -94,18 +89,13 @@ function EnterPinWindow({ setWindow }) {
       </div>
 
       <div className="mt-auto flex justify-center pt-6">
-        <Button
-          disabled={isPending}
-          spinner={isPending}
-          className="px-8"
-          type="primary"
-        >
+        <Button disabled={isPending} spinner={isPending} className="px-8" type="primary">
           submit
         </Button>
       </div>
       <button>
         <span
-          onClick={() => setWindow("EmailChangeWindow")}
+          onClick={() => setWindow('EmailChangeWindow')}
           className=" material-symbols-outlined absolute right-2 top-2 rounded-full bg-white/[0.05] p-2 hover:bg-white/10"
         >
           close

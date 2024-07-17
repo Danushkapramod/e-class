@@ -10,6 +10,8 @@ import useDeleteTeacher from './useDeleteTeacher';
 import AppNav from '../ui/layouts/AppNav';
 import { setTableView } from './teacherSlice';
 import useClientSearch from '../hooks/useClientSearch';
+import { getTeachersCount } from '../services/apiTeachers';
+import Pagination from '../ui/components/Pagination';
 
 function TeachersTable() {
   const { tableView } = useSelector((store) => store.teacher);
@@ -19,9 +21,6 @@ function TeachersTable() {
     valueName: 'name',
   });
   useSetRoot('');
-
-  if (isLoading) return <Spinner />;
-  if (error) return <Error errorMsg={error.message} />;
 
   function setSearchQuery(e) {
     setQuery(e.target.value.trim());
@@ -35,13 +34,20 @@ function TeachersTable() {
         onChange={setSearchQuery}
       />
       {tableView === 'card' ? (
-        <div
-          className=" mt-2 grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] 
-                       gap-2 rounded"
-        >
-          {teachers.map((teacherData, index) => {
-            return <CardItem teacherData={teacherData} key={index} />;
-          })}
+        <div className=" mt-2 grid grid-cols-[repeat(auto-fill,minmax(13rem,1fr))] gap-2 rounded">
+          {!isLoading ? (
+            error ? (
+              <Error errorMsg={error.message} />
+            ) : (
+              teachers?.map((teacherData, index) => {
+                return <CardItem teacherData={teacherData} key={index} />;
+              })
+            )
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Spinner />
+            </div>
+          )}
         </div>
       ) : (
         <div className={`mt-4 overflow-hidden rounded`}>
@@ -59,6 +65,12 @@ function TeachersTable() {
           </table>
         </div>
       )}
+      {
+        <div className=" mb-10 mt-2 flex w-full flex-col items-center justify-center">
+          <div className=" mb-4 h-[1px] w-full bg-bg--primary-100"></div>
+          <Pagination getTotal={getTeachersCount} />
+        </div>
+      }
     </>
   );
 }

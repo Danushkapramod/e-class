@@ -1,8 +1,8 @@
-import { Form, useForm } from "react-hook-form";
+import { Form, useForm } from 'react-hook-form';
 
-import Button from "../ui/components/Button";
-import { useNavigate } from "react-router-dom";
-import useSignup from "../authentication/useSignup";
+import Button from '../ui/components/Button';
+import { useNavigate } from 'react-router-dom';
+import useSignup from '../authentication/useSignup';
 
 export default function SignupPage() {
   const navigate = useNavigate();
@@ -16,29 +16,31 @@ export default function SignupPage() {
   } = useForm();
   const { mutate: signup, isPending } = useSignup();
 
-  function onSubmit(loginData) {
-    signup(loginData, {
+  function onSubmit(data) {
+    const formData = {
+      name: data.name,
+      email: data.email,
+      password: data.password,
+    };
+
+    signup(formData, {
       onSettled: () => {
-        setValue("email", ""),
-          setValue("password", ""),
-          setValue("confirmPassword", "");
+        setValue('email', ''), setValue('password', ''), setValue('confirmPassword', '');
       },
     });
   }
 
   return (
     <div
-      className="flex h-screen items-center justify-center
-                bg-dark-secondery text-dark-text-primary"
+      className="bg-dark-secondery flex h-screen items-center
+                justify-center text-dark-text-primary"
     >
       <Form
         className="w-[28rem] rounded-lg  border border-slate-700 bg-dark-primary p-8"
         onSubmit={handleSubmit(onSubmit)}
         control={control}
       >
-        <p className="  pb-6 text-center text-2xl font-medium">
-          E-Class Sign Up
-        </p>
+        <p className="  pb-6 text-center text-2xl font-medium">E-Class Sign Up</p>
         <div className=" relative mb-6 flex flex-col">
           <label className=" pl-px text-sm opacity-80 " htmlFor="email">
             Name
@@ -52,8 +54,8 @@ export default function SignupPage() {
             required
             disabled={isPending}
             placeholder="name"
-            {...register("name", {
-              required: "Name is required",
+            {...register('name', {
+              required: 'Name is required',
             })}
           />
           {errors.name && (
@@ -75,8 +77,8 @@ export default function SignupPage() {
             required
             disabled={isPending}
             placeholder="email"
-            {...register("email", {
-              required: "Email is required",
+            {...register('email', {
+              required: 'Email is required',
             })}
           />
           {errors.email && (
@@ -98,11 +100,11 @@ export default function SignupPage() {
             required
             disabled={isPending}
             placeholder="password"
-            {...register("password", {
-              required: "Password is required",
+            {...register('password', {
+              required: 'Password is required',
               minLength: {
                 value: 6,
-                message: "Password must be at least 6 characters long",
+                message: 'Password must be at least 6 characters long',
               },
             })}
           />
@@ -113,10 +115,7 @@ export default function SignupPage() {
           )}
         </div>
         <div className=" relative mb-4 flex flex-col">
-          <label
-            className=" pl-px text-sm opacity-80 "
-            htmlFor="confirmPassword"
-          >
+          <label className=" pl-px text-sm opacity-80 " htmlFor="confirmPassword">
             confirm password
           </label>
           <input
@@ -128,16 +127,15 @@ export default function SignupPage() {
             required
             disabled={isPending}
             placeholder="confirmPassword"
-            {...register("confirmPassword", {
-              required: "Confirm password is required",
+            {...register('confirmPassword', {
+              required: 'Confirm password is required',
               minLength: {
                 value: 6,
-                message: "Password must be at least 6 characters long",
+                message: 'Password must be at least 6 characters long',
               },
               validate: (value) => {
                 return (
-                  value === getValues("password") ||
-                  "Password & confirmPassword should be same."
+                  value === getValues('password') || 'Password & confirmPassword should be same.'
                 );
               },
             })}

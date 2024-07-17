@@ -24,9 +24,6 @@ function ClassLayout() {
         </div>
       </div>
       <Outlet />
-      <div className=" mb-8 mt-4 flex w-full justify-center">
-        <Pagination getTotal={getClassesCount} />
-      </div>
     </div>
   );
 }

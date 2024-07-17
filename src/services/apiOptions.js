@@ -3,7 +3,9 @@ import { BASE_URL } from "./apiData";
 
 export async function getSubjects() {
   try {
-    const response = await axios.get(`${BASE_URL}/options?option=subject`);
+    const response = await axios.get(`${BASE_URL}/options?option=subject`,{
+      withCredentials:true,
+    });
     return response.data.body.options;
   } catch (error) {
     console.error("An error occurred:", error);
@@ -35,7 +37,9 @@ export async function deleteSubject(subjectId) {
 
 export async function getHalls() {
   try {
-    const response = await axios.get(`${BASE_URL}/options?option=hall`);
+    const response = await axios.get(`${BASE_URL}/options?option=hall`,{
+      withCredentials:true,
+    });
     return response.data.body.options;
   } catch (error) {
     console.error("An error occurred:", error);
@@ -67,7 +71,9 @@ export async function deleteHall(hallId) {
 
 export async function getGrades() {
   try {
-    const response = await axios.get(`${BASE_URL}/options?option=grade`);
+    const response = await axios.get(`${BASE_URL}/options?option=grade`,{
+      withCredentials:true,
+    });
     return response.data.body.options;
   } catch (error) {
     console.error("An error occurred:", error);
@@ -77,7 +83,9 @@ export async function getGrades() {
 
 export async function createGrade(gradeData) {
   try {
-    await axios.post(`${BASE_URL}/options?option=grade`, gradeData);
+    await axios.post(`${BASE_URL}/options?option=grade`, gradeData,{
+      withCredentials:true,
+    });
   } catch (error) {
     console.error("An error occurred:", error);
     throw new Error(`An unexpected error occurred. Please try again later.`);
@@ -97,7 +105,9 @@ export async function deleteGrade(gradeId) {
 
 export async function getOptionsCount(option) {
   try {
-    const response = await axios.get(`${BASE_URL}/options/total?option=${option}`);
+    const response = await axios.get(`${BASE_URL}/options/total?option=${option}`,{
+      withCredentials:true
+    });
     return response.data.body.total;
   } catch (error) {
 

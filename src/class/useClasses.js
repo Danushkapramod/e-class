@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { getClasses } from '../services/apiClasses';
 import { useLocation } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import {  useEffect,  useState } from 'react';
 
 export default function useClasses(query) {
   const location = useLocation();
@@ -10,8 +10,6 @@ export default function useClasses(query) {
   useEffect(() => {
     setQueryParams(query || location.search);
   }, [location.search, query]);
-
-  console.log(queryParams);
 
   const {
     data: classes,

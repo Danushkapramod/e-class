@@ -1,54 +1,47 @@
-import {
-  createBrowserRouter,
-  Navigate,
-  RouterProvider,
-} from "react-router-dom";
-import AppLayout from "./pages/AppLayout";
-import { ClassRoutes } from "./routes/ClassRoutes";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { store } from "./store";
-import { Provider } from "react-redux";
-import { TeachersRoutes } from "./routes/TeacherRoutes";
-import { OptionRoutes } from "./routes/OptionRoutes";
-import AccountInformation from "./user/AccountInformation";
-import Dashbord from "./dashboard/Dashbord";
-import LoginPage from "./pages/LoginPage";
-import ProtectedRoute from "./authentication/ProtectedRoute";
-import SignupPage from "./pages/SignupPage";
-import RecoveryPasswordPage from "./pages/RecoveryPasswordPage";
-import { Toaster } from "react-hot-toast";
-import ResetPasswordPage from "./pages/ResetPasswordPage";
-
-export const queryClient = new QueryClient(
-  "https://kjvgesvqoblnntmvqaid.supabase.co",
-);
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
+import AppLayout from './pages/AppLayout';
+import { ClassRoutes } from './routes/ClassRoutes';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { store } from './store';
+import { Provider } from 'react-redux';
+import { TeachersRoutes } from './routes/TeacherRoutes';
+import { OptionRoutes } from './routes/OptionRoutes';
+import AccountInformation from './user/AccountInformation';
+import Dashbord from './dashboard/Dashbord';
+import LoginPage from './pages/LoginPage';
+import ProtectedRoute from './authentication/ProtectedRoute';
+import SignupPage from './pages/SignupPage';
+import RecoveryPasswordPage from './pages/RecoveryPasswordPage';
+import { Toaster } from 'react-hot-toast';
+import ResetPasswordPage from './pages/ResetPasswordPage';
+import { queryClient } from './queryClient';
 
 function App() {
   const router = createBrowserRouter([
     {
-      path: "/",
+      path: '/',
       element: <Navigate to="app/dashbord" replace={true} />,
     },
     {
-      path: "login",
+      path: 'login',
       element: <LoginPage />,
     },
     {
-      path: "signup",
+      path: 'signup',
       element: <SignupPage />,
     },
     {
-      path: "forgot-password",
+      path: 'forgot-password',
       element: <RecoveryPasswordPage />,
     },
     {
-      path: "reset-password",
+      path: 'reset-password',
       element: <ResetPasswordPage />,
     },
 
     {
-      path: "/app",
+      path: '/app',
       element: (
         <ProtectedRoute>
           <AppLayout />
@@ -59,11 +52,11 @@ function App() {
         TeachersRoutes,
         OptionRoutes,
         {
-          path: "account/me",
+          path: 'account/me',
           element: <AccountInformation />,
         },
         {
-          path: "dashbord",
+          path: 'dashbord',
           element: <Dashbord />,
         },
         {

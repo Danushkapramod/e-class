@@ -108,7 +108,7 @@ function TodayClasses() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-bg--primary-100 ">
-                {newClassesArray.map((classData, index) => {
+                {newClassesArray?.map((classData, index) => {
                   return <Row filterStatus={status} key={index} classData={classData} />;
                 })}
               </tbody>

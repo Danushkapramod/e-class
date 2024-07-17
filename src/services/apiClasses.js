@@ -6,7 +6,10 @@ export async function getClasses(queryParams) {
   try {
     let query;
     queryParams ? (query = `&${queryParams.split("?")[1]}`) : (query = "");
-    const response = await axios.get(`${BASE_URL}/classes?teacher=true${query}`);
+    const response = await axios.get(`${BASE_URL}/classes?teacher=true${query}`,{
+      withCredentials:true,
+      timeout:6000
+    });
     return response.data.body.classes;
   } catch (error) {
     if (error.response) {
@@ -28,9 +31,11 @@ export async function getClasses(queryParams) {
 }
 
 
-export async function getClassesCount(queryParams) {
+export async function getClassesCount() {
   try {
-    const response = await axios.get(`${BASE_URL}/classes/total?${queryParams}`);
+    const response = await axios.get(`${BASE_URL}/classes/total`,{
+      withCredentials:true
+    });
     return response.data.body.total;
   } catch (error) {
 

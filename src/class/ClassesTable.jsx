@@ -11,6 +11,14 @@ import useDeleteClass from './useDeleteClass';
 import { setTableView } from './classSlice';
 import AppNav from '../ui/layouts/AppNav';
 import useClientSearch from '../hooks/useClientSearch';
+import Pagination from '../ui/components/Pagination';
+import { getClassesCount } from '../services/apiClasses';
+
+function formatedstartTime(startTime) {
+  return moment
+    .tz(`2000-01-01T${startTime}Z`, 'Asia/Colombo|LMT MMT +0530 +06 +0630')
+    .format('hh:mm A');
+}
 
 function ClassesTable() {
   useSetRoot('');
@@ -22,11 +30,26 @@ function ClassesTable() {
     valueName: 'subject',
   });
 
-  if (isLoading) return <Spinner />;
-  if (error) return <Error errorMsg={error.message} />;
-
   function setSearchQuery(e) {
     setQuery(e.target.value.trim());
+  }
+
+  function displayClasses() {
+    if (!isLoading) {
+      if (!error) {
+        return classes?.map((classData, index) => {
+          return <CardItem classData={classData} key={index} />;
+        });
+      } else {
+        return <Error errorMsg={error.message} />;
+      }
+    } else {
+      return (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <Spinner />
+        </div>
+      );
+    }
   }
 
   return (
@@ -38,14 +61,8 @@ function ClassesTable() {
         onChange={setSearchQuery}
       />
       {tableView === 'card' ? (
-        <div
-          className="  relative mt-2 grid grow grid-cols-[repeat(auto-fill,minmax(220px,1fr))]
-           gap-2  rounded "
-        >
-          {classes.map((classData, index) => {
-            return <CardItem classData={classData} key={index} />;
-          })}
-          {/* <CardItem1 classData={classes[4]} /> */}
+        <div className=" mt-2 grid grow grid-cols-[repeat(auto-fill,minmax(13rem,1fr))] gap-2  rounded ">
+          {displayClasses()}
         </div>
       ) : (
         <div className={`mt-2 overflow-hidden rounded `}>
@@ -66,6 +83,12 @@ function ClassesTable() {
           </table>
         </div>
       )}
+      {
+        <div className=" mb-10 mt-2 flex w-full flex-col items-center justify-center">
+          <div className=" mb-4 h-[1px] w-full bg-bg--primary-100"></div>
+          <Pagination getTotal={getClassesCount} />
+        </div>
+      }
     </div>
   );
 }
@@ -88,7 +111,6 @@ function CardItem({ classData }) {
       mutate({ classId: _id, avatarDbUrl: avatar });
     }
   }
-  const formatedstartTime = moment.tz(`2000-01-01T${startTime}Z`, 'Asia').format('hh:mm A');
 
   return (
     <div
@@ -129,7 +151,7 @@ function CardItem({ classData }) {
         <p className="text-sm">{hall}</p>
 
         <p className=" text-sm">
-          <span className=" capitalize">{day}</span> {formatedstartTime}
+          <span className=" capitalize">{day}</span> {formatedstartTime(startTime)}
         </p>
       </div>
     </div>
@@ -139,7 +161,6 @@ function CardItem({ classData }) {
 function TableRow({ classData }) {
   const { isDeleting, mutate } = useDeleteClass();
   const { _id, teacher, subject, avatar, hall, startTime, grade, day } = classData;
-  const formatedstartTime = moment.tz(`2000-01-01T${startTime}Z`, 'Asia').format('hh:mm A');
 
   return (
     <tr className="shadow-sm">
@@ -160,7 +181,7 @@ function TableRow({ classData }) {
       <td className=" px-2 py-3">{grade}</td>
       <td className=" px-2 py-3">{hall}</td>
       <td className="  px-2 py-3 capitalize">{day}</td>
-      <td className=" px-2 py-3">{formatedstartTime}</td>
+      <td className=" px-2 py-3">{formatedstartTime(startTime)}</td>
       <td className="flex px-2 py-3 pr-4">
         <div className="flex  w-full  items-center justify-end gap-2">
           <Button to={`${_id}/update`} type="xsSecondery" icon="edit">

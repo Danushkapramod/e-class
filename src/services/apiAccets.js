@@ -26,7 +26,10 @@ export async function exportToCsv({category}) {
           endPoint = `${BASE_URL}/assets/teachers-csv/get`
         }
 
-       const response = await axios.get(endPoint, {responseType: 'blob'} );     
+       const response = await axios.get(endPoint, {
+        responseType: 'blob',
+        withCredentials:true
+    } );     
        blob(response,'classes.csv') 
 
     } catch (error) {
@@ -45,8 +48,11 @@ export async function exportToCsv({category}) {
         if(category === 'teacher'){
             endPoint = `${BASE_URL}/assets/teachers-pdf/get`
           }
-          
-        const response = await axios.get(endPoint,{responseType:'blob'});
+
+        const response = await axios.get(endPoint,{
+            responseType:'blob',
+            withCredentials:true
+        });
         blob(response,'classes.pdf')
     
     } catch (error) {
