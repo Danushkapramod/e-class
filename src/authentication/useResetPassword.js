@@ -4,7 +4,7 @@ import { resetPassword } from "../services/apiAuth";
 
 export function useResetPassword() {
   const queryClient = useQueryClient();
-  const { mutate, isPending, error } = useMutation({
+  const { mutate, isPending, error,isSuccess } = useMutation({
     mutationFn: resetPassword,
     onSuccess: () => {
       queryClient.invalidateQueries("user");
@@ -15,5 +15,5 @@ export function useResetPassword() {
       toast.error(err.message);
     },
   });
-  return { mutate, isPending, error };
+  return { mutate, isPending, error,isSuccess  };
 }

@@ -1,19 +1,19 @@
 import { Form, useForm } from 'react-hook-form';
 
 import Button from '../ui/components/Button';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import useSignup from '../authentication/useSignup';
+import { InputField } from './InputField';
 
 export default function SignupPage() {
-  const navigate = useNavigate();
   const {
     formState: { errors },
     control,
     handleSubmit,
-    register,
     getValues,
     setValue,
   } = useForm();
+
   const { mutate: signup, isPending } = useSignup();
 
   function onSubmit(data) {
@@ -31,103 +31,62 @@ export default function SignupPage() {
   }
 
   return (
-    <div
-      className="bg-dark-secondery flex h-screen items-center
-                justify-center text-dark-text-primary"
-    >
+    <div className=" bg-dark-secondery flex h-screen items-center justify-center text-slate-700">
       <Form
-        className="w-[28rem] rounded-lg  border border-slate-700 bg-dark-primary p-8"
+        className=" w-[28rem]  rounded p-8 shadow-2xl"
         onSubmit={handleSubmit(onSubmit)}
         control={control}
       >
-        <p className="  pb-6 text-center text-2xl font-medium">E-Class Sign Up</p>
-        <div className=" relative mb-6 flex flex-col">
-          <label className=" pl-px text-sm opacity-80 " htmlFor="email">
-            Name
-          </label>
-          <input
-            className=" rounded border border-slate-600
-             bg-white/20 px-6  py-3    
-             outline-slate-400 focus:outline"
+        <p className="pb-8 text-center text-2xl font-semibold">Signup</p>
+        <div className=" space-y-6">
+          <InputField
+            errors={errors.name}
+            name="name"
             type="text"
-            id="name"
-            required
-            disabled={isPending}
-            placeholder="name"
-            {...register('name', {
+            label="Name"
+            control={control}
+            icon="person"
+            rules={{
               required: 'Name is required',
-            })}
+            }}
           />
-          {errors.name && (
-            <p className=" absolute -bottom-6 mt-px text-sm  text-yellow-600">
-              {errors.name.message}
-            </p>
-          )}
-        </div>
-        <div className=" relative mb-6 flex flex-col">
-          <label className=" pl-px text-sm opacity-80 " htmlFor="email">
-            Email
-          </label>
-          <input
-            className=" rounded border border-slate-600
-             bg-white/20 px-6  py-3    
-             outline-slate-400 focus:outline"
-            type="email"
-            id="email"
-            required
-            disabled={isPending}
-            placeholder="email"
-            {...register('email', {
+
+          <InputField
+            errors={errors.email}
+            name="email"
+            type="text"
+            label="Email"
+            control={control}
+            icon="mail"
+            rules={{
               required: 'Email is required',
-            })}
-          />
-          {errors.email && (
-            <p className=" absolute -bottom-6 mt-px text-sm  text-yellow-600">
-              {errors.email.message}
-            </p>
-          )}
-        </div>
-        <div className=" relative mb-6 flex flex-col">
-          <label className=" pl-px text-sm opacity-80 " htmlFor="password">
-            Password
-          </label>
-          <input
-            className=" rounded border border-slate-600
-           bg-white/20 px-6  py-3  
-           outline-slate-400 focus:outline"
-            type="password"
-            id="password"
-            required
-            disabled={isPending}
-            placeholder="password"
-            {...register('password', {
-              required: 'Password is required',
-              minLength: {
-                value: 6,
-                message: 'Password must be at least 6 characters long',
+              pattern: {
+                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                message: 'Invalid email address',
               },
-            })}
+            }}
           />
-          {errors.password && (
-            <p className="absolute -bottom-6 mt-px text-sm  text-yellow-600">
-              {errors.password.message}
-            </p>
-          )}
-        </div>
-        <div className=" relative mb-4 flex flex-col">
-          <label className=" pl-px text-sm opacity-80 " htmlFor="confirmPassword">
-            confirm password
-          </label>
-          <input
-            className=" rounded border border-slate-600
-           bg-white/20 px-6  py-3  
-           outline-slate-400 focus:outline"
+          <InputField
+            errors={errors.password}
+            name="password"
             type="password"
-            id="confirmPassword"
-            required
-            disabled={isPending}
-            placeholder="confirmPassword"
-            {...register('confirmPassword', {
+            label="Password"
+            control={control}
+            icon="password"
+            rules={{
+              required: 'Password is required',
+              minLength: { value: 6, message: 'Password must be at least 6 characters long' },
+            }}
+          />
+
+          <InputField
+            errors={errors.confirmPassword}
+            name="confirmPassword"
+            type="password"
+            label="Confirm password"
+            control={control}
+            icon="password"
+            rules={{
               required: 'Confirm password is required',
               minLength: {
                 value: 6,
@@ -138,30 +97,24 @@ export default function SignupPage() {
                   value === getValues('password') || 'Password & confirmPassword should be same.'
                 );
               },
-            })}
+            }}
           />
-          {errors.confirmPassword && (
-            <p className="absolute -bottom-6 mt-px text-sm  text-yellow-600">
-              {errors.confirmPassword.message}
-            </p>
-          )}
         </div>
 
-        <div className=" flex justify-end gap-2 pt-6">
-          <Button
-            onClick={(e) => {
-              e.preventDefault();
-              navigate(-1);
-            }}
-            disabled={isPending}
-            spinner={isPending}
-            type="secondery"
-          >
-            Close
-          </Button>
-          <Button disabled={isPending} spinner={isPending} type="primary">
-            signup
-          </Button>
+        <Button
+          className="!mt-8 !w-full !justify-center !rounded !py-3"
+          disabled={isPending}
+          spinner={isPending}
+          type="primary"
+        >
+          signup
+        </Button>
+
+        <div className=" mt-4 text-center">
+          Already have an account?
+          <Link className="pl-2 text-blue-600 " to="/login">
+            Login
+          </Link>
         </div>
       </Form>
     </div>

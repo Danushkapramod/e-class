@@ -133,7 +133,7 @@ function Row({ classData, filterStatus }) {
   const [bajColor, setBajColor] = useState();
   const navigate = useNavigate();
   const { isDeleting, mutate } = useDeleteClass();
-  const { subject, status, grade, avatar, hallNumber, startTime, _id } = classData;
+  const { subject, status, grade, avatar, hall, startTime, _id } = classData;
 
   const formatedclassTime = moment.tz(`2000-01-01T${startTime}Z`, '').format('hh:mm A');
 
@@ -173,7 +173,7 @@ function Row({ classData, filterStatus }) {
           <span className=" line-clamp-1 max-w-36">{subject}</span>
         </td>
         <td className=" px-2 py-3">{grade}</td>
-        <td className=" px-2 py-3">{hallNumber}</td>
+        <td className=" px-2 py-3">{hall}</td>
         <td className=" px-2 py-3">{formatedclassTime}</td>
         <td className="  px-2 py-3 text-center">
           <span className={`rounded-full ${bajColor} px-2 py-1 text-xs uppercase text-slate-200`}>

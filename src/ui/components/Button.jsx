@@ -16,6 +16,7 @@ function Button({
   id,
   ref,
   htmlFor,
+  sp_color,
 }) {
   const theme = useOColor();
   const smallSecondery = `text--text-primary flex items-center 
@@ -222,9 +223,23 @@ function Button({
     }
 
     return (
-      <button disabled={disabled} type={onType} onClick={onClick} ref={ref} className={secondery}>
+      <button
+        disabled={disabled}
+        type={onType}
+        onClick={onClick}
+        ref={ref}
+        className={`${secondery} ${className}`}
+      >
         {icon && <span className=" material-symbols-outlined scale-90">{icon}</span>}
-        <span>{children}</span>
+        <span className={`${spinner && 'opacity-0'}`}>{children}</span>
+        {spinner && (
+          <div
+            className=" absolute flex  scale-[40%] items-center 
+          justify-center  text-center "
+          >
+            <FadeLoader margin={0} color={sp_color || '#FFFFFF'} />
+          </div>
+        )}
       </button>
     );
   }

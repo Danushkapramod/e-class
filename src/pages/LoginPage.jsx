@@ -1,16 +1,14 @@
 import { Form, useForm } from 'react-hook-form';
-
 import Button from '../ui/components/Button';
 import { useLogin } from '../authentication/useLogin';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { InputField } from './InputField';
 
 export default function LoginPage() {
-  const navigate = useNavigate();
   const {
     formState: { errors },
     control,
     handleSubmit,
-    register,
     setValue,
   } = useForm();
   const { mutate: login, isPending } = useLogin();
@@ -24,89 +22,62 @@ export default function LoginPage() {
   }
 
   return (
-    <div
-      className=" flex h-screen items-center
-                justify-center text-slate-900 "
-    >
+    <div className=" flex h-screen items-center justify-center bg-bg--primary-200 text-text--primary ">
       <Form
-        className="shadow-neumorphism border-border-1 w-[28rem] rounded-md border bg-bg--primary-300 p-8"
+        className=" w-[28rem] rounded px-8  py-12 shadow-2xl"
         onSubmit={handleSubmit(onSubmit)}
         control={control}
       >
-        <p className="  pb-6 text-center text-2xl font-medium">E-Class Log In</p>
-        <div className=" relative mb-6 flex flex-col">
-          <label className=" pl-px text-sm opacity-80 " htmlFor="email">
-            Email
-          </label>
-          <input
-            className=" rounded border border-bg--primary-100
-             bg-bg--primary-200 px-6  py-3    
-             outline-slate-400 focus:outline"
-            type="email"
-            id="email"
-            required
-            disabled={isPending}
-            placeholder="email"
-            {...register('email', {
+        <p className="  pb-8 text-center text-2xl font-medium">EduSuit</p>
+
+        <div className=" space-y-8">
+          <InputField
+            errors={errors.email}
+            name="email"
+            type="text"
+            label="Email"
+            control={control}
+            icon="mail"
+            rules={{
               required: 'Email is required',
               pattern: {
                 value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
                 message: 'Invalid email address',
               },
-            })}
-          />
-          {errors.email && (
-            <p className=" absolute -bottom-6 mt-px text-sm  text-yellow-600">
-              {errors.email.message}
-            </p>
-          )}
-        </div>
-        <div className=" relative mb-4 flex flex-col">
-          <label className=" pl-px text-sm opacity-80 " htmlFor="password">
-            Password
-          </label>
-          <input
-            className=" rounded border border-bg--primary-100
-           bg-bg--primary-200 px-6  py-3  
-           outline-slate-400 focus:outline"
-            type="password"
-            id="password"
-            required
-            disabled={isPending}
-            placeholder="password"
-            {...register('password', {
-              required: 'Password is required',
-            })}
-          />
-          {errors.password && (
-            <p className="absolute -bottom-6 mt-px text-sm  text-yellow-600">
-              {errors.password.message}
-            </p>
-          )}
-        </div>
-        <div className="  pr-2 text-right">
-          <Link
-            to="/forgot-password"
-            className="font-light text-bg--secondery-2  underline opacity-80"
-          >
-            Forgot your password?
-          </Link>
-        </div>
-        <div className=" flex justify-end gap-2 pt-6">
-          <Button
-            onClick={(e) => {
-              e.preventDefault();
-              navigate(-1);
             }}
+          />
+          <InputField
+            errors={errors.password}
+            name="password"
+            type="password"
+            label="Password"
+            control={control}
+            icon="password"
+            rules={{
+              required: 'Password is required',
+            }}
+          />
+        </div>
+        <div className="mt-4 w-full pr-2 text-right  text-blue-600 underline ">
+          <Link to="/forgot-password"> Forgot your password?</Link>
+        </div>
+
+        <div className=" flex justify-end gap-2 pt-4">
+          <Button
+            className="!w-full !justify-center !rounded !py-3"
             disabled={isPending}
             spinner={isPending}
-            type="secondery"
+            type="primary"
           >
-            Close
-          </Button>
-          <Button disabled={isPending} spinner={isPending} type="primary">
             Login
           </Button>
+        </div>
+
+        <div className=" mt-4 text-center">
+          Dont, have an account?
+          <Link className="pl-2 text-blue-600 " to="/signup">
+            SignUp
+          </Link>
         </div>
       </Form>
     </div>

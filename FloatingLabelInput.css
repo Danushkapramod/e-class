@@ -1,0 +1,36 @@
+.floating-label-input {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.form-label {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  font-size: 16px;
+  color: #aaa;
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+
+.form-input:focus + .form-label,
+.form-input:not(:placeholder-shown) + .form-label {
+  top: -10px;
+  left: 10px;
+  font-size: 12px;
+  color: #333;
+}
+
+.form-input:focus,
+.form-input:valid {
+  outline: none;
+  border-color: #333;
+}

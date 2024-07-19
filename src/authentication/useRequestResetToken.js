@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import { requestPasswordResetToken } from "../services/apiAuth";
 
 export function useRequestResetToken() {
-  const { mutate, isPending, error } = useMutation({
+  const { mutate, isPending, error,isSuccess } = useMutation({
     mutationFn: requestPasswordResetToken,
     onSuccess: () => {
       toast.success("token sended successfully");
@@ -13,5 +13,5 @@ export function useRequestResetToken() {
       toast.error(err.message);
     },
   });
-  return { mutate, isPending, error };
+  return { mutate, isPending, error,isSuccess };
 }

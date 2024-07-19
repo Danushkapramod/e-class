@@ -33,7 +33,7 @@ function Card() {
   ];
 
   return (
-    <div className="mt-4 flex gap-2">
+    <div className="mt-4 flex w-full gap-2">
       {cardsData.map((card, index) => {
         return <CardItem cardData={card} key={index} />;
       })}

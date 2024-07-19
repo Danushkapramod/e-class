@@ -3,18 +3,19 @@ import { useUpdate } from '../authentication/useUpdate';
 import { Controller, useForm } from 'react-hook-form';
 import { Form } from 'react-router-dom';
 import Button from '../ui/components/Button';
+import { useAuther } from '../authentication/useAuther';
 
-function ChangeProfile({ auther }) {
+function ChangeProfile() {
+  const { auther, isLoading } = useAuther();
   const { mutate: updateProfileData, isPending: isUpdatingProfileData } = useUpdate();
 
   const { register, setValue, handleSubmit, control } = useForm();
 
   useEffect(() => {
-    if (!auther) return;
-    setValue('name', auther.auther?.name);
-    setValue('email', auther.auther?.email);
-    setValue('phone', auther.auther?.phone);
-  }, [setValue, auther]);
+    setValue('name', auther?.auther?.name);
+    setValue('email', auther?.auther?.email);
+    setValue('phone', auther?.auther?.phone);
+  }, [setValue, auther, isLoading]);
 
   function onUpdateProfile(newData) {
     updateProfileData(newData);
@@ -89,7 +90,8 @@ function DataField({ options: { defaultV, id, placeholder, control } }) {
           render={({ field }) => (
             <input
               {...field}
-              className="w-full rounded border border-bg--primary-200 bg-bg--primary-200 px-4 py-2 shadow focus:outline focus:outline-slate-400"
+              className="w-full rounded border border-bg--primary-200 bg-bg--primary-200 
+              px-4 py-2 shadow focus:outline focus:outline-slate-400"
               type="text"
               id={id}
               placeholder={placeholder}

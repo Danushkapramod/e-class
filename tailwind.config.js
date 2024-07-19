@@ -5,11 +5,10 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    fontFamily:{
+    fontFamily: {
       sans: ['roboto', 'sans-serif'],
       serif: ['Merriweather', 'serif'],
     },
-
     extend: {
       colors: {
         'dark-primary': '#111214',
@@ -20,33 +19,25 @@ export default {
         'bg--primary-300': 'var(--color-primary-300)',
         'bg--primary-400': 'var(--color-primary-400)',
         'bg--primary-500': 'var(--color-primary-500)',
-
         'bg--secondery-1': 'var(--color-secondery-1)',
         'bg--secondery-2': 'var(--color-secondery-2)',
         'bg--secondery-3': 'var(--color-secondery-3)',
         'bg--secondery-4': 'var(--color-secondery-4)',
         'bg--secondery-5': 'var(--color-secondery-5)',
-
-         'text--primary': 'var(--color-text-primary)',
-         'text--secondery': 'var(--color-text-secondary)',
-         'text--muted': 'var(--color-text-muted)',
-
-         'border-1':'var(--color-border-1)',
-         'text--option-1':'var(--color-text-option-1)',
-
-         'opacity-overflow':'var(--color-overflow)'
-       
-
-
-        
+        'text--primary': 'var(--color-text-primary)',
+        'text--secondery': 'var(--color-text-secondary)',
+        'text--muted': 'var(--color-text-muted)',
+        'border-1': 'var(--color-border-1)',
+        'text--option-1': 'var(--color-text-option-1)',
+        'opacity-overflow': 'var(--color-overflow)',
       },
-      fontFamily:{
-        "roboto":"Roboto, sans-serif"
+      fontFamily: {
+        "roboto": "Roboto, sans-serif",
       },
-      animation:{
+      animation: {
         'alert-in': 'alertIn 0.5s ease-out forwards',
-        'disappearr': 'disappear 0.3s  ease-out  forwards',
-        'slideDown': "slideDown 0.15s ease-out forwards"
+        'disappear': 'disappear 0.3s ease-out forwards',
+        'slideDown': "slideDown 0.15s ease-out forwards",
       },
       boxShadow: {
         'soft': '0 4px 8px rgba(0, 0, 0, 0.1)',
@@ -56,9 +47,12 @@ export default {
         'floating': '0 8px 16px rgba(0, 0, 0, 0.2)',
         'card': '0 4px 8px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.12)',
       },
-
+    },
+  },
+  variants: {
+    extend: {
+      backgroundColor: ['group-hover', 'group-focus'],
     },
   },
   plugins: [],
 }
-

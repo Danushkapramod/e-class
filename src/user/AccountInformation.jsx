@@ -147,7 +147,7 @@ function RightSection({ auther }) {
         </div>
         <div className=" min-h-[16rem] px-2 pt-4">
           {isShow === 'editProfile' && (
-            <ChangeProfile auther={auther} window={emailWindow} setWindow={setEmailwindow} />
+            <ChangeProfile window={emailWindow} setWindow={setEmailwindow} />
           )}
           {isShow === 'changeEmail' && (
             <ChangeEmail window={emailWindow} setWindow={setEmailwindow} />
