@@ -6,7 +6,7 @@ import useOColor from '../utils/getOColor';
 
 export default function OptionTable({
   fieldName,
-  data,
+  data = [],
   isLoading,
   error,
   mutateCreate,

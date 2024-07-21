@@ -22,13 +22,13 @@ export default function LoginPage() {
   }
 
   return (
-    <div className=" flex h-screen items-center justify-center bg-bg--primary-200 text-text--primary ">
+    <div className="flex h-screen items-center justify-center">
       <Form
-        className=" w-[28rem] rounded px-8  py-12 shadow-2xl"
+        className=" mx-2 w-[28rem] min-w-72 rounded px-8  py-12 shadow-2xl"
         onSubmit={handleSubmit(onSubmit)}
         control={control}
       >
-        <p className="  pb-8 text-center text-2xl font-medium">EduSuit</p>
+        <p className=" pb-8 text-center text-2xl font-medium">EduSuit</p>
 
         <div className=" space-y-8">
           <InputField

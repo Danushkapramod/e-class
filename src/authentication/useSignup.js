@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import { signUp } from "../services/apiAuth";
 
 export default function useSignup() {
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending ,isSuccess,error} = useMutation({
     mutationFn:signUp,
     onSuccess: () => {
       toast.success("Accout succesfully created! Please verify the email addres")
@@ -13,5 +13,5 @@ export default function useSignup() {
       toast.error(`Error: ${err.message}`)
     },
   });
-  return { mutate, isPending };
+  return { mutate, isPending ,isSuccess,error};
 }

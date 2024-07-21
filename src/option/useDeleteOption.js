@@ -1,17 +1,17 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteSubject } from "../services/apiOptions";
+import { deleteOption } from "../services/apiOptions";
 import toast from "react-hot-toast";
 
-export default function useDeleteSubject() {
+export default function useDeleteOption(queryKey) {
   const queryClient = useQueryClient();
 
   const { isPending: isDeleting, mutate } = useMutation({
-    mutationFn: deleteSubject,
+    mutationFn: deleteOption,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["subjects"],
+        queryKey: [queryKey],
       });
-      toast.success("Subject deleted successfully.");
+      toast.success("Item deleted successfully.");
     },
     onError: (err) => {
       console.log(err.message);

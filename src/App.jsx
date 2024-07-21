@@ -16,6 +16,7 @@ import RecoveryPasswordPage from './pages/RecoveryPasswordPage';
 import { Toaster } from 'react-hot-toast';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import { queryClient } from './queryClient';
+import VerifyAccount from './pages/VerifyAccount';
 
 function App() {
   const router = createBrowserRouter([
@@ -30,6 +31,10 @@ function App() {
     {
       path: 'signup',
       element: <SignupPage />,
+    },
+    {
+      path: 'verify-email',
+      element: <VerifyAccount />,
     },
     {
       path: 'forgot-password',

@@ -7,7 +7,7 @@ function Pagination({ limit = 20, getTotal }) {
   const location = useLocation();
   const newParams = useMemo(() => new URLSearchParams(location.search), [location]);
 
-  const [_, setSearchParams] = useSearchParams();
+  const [, setSearchParams] = useSearchParams();
   const [currentPage, setCurrentPage] = useState(1);
   const [pageCount, setPageCount] = useState(1);
   const [btnList, setBtnList] = useState();

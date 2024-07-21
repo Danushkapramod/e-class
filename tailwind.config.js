@@ -28,6 +28,8 @@ export default {
         'text--secondery': 'var(--color-text-secondary)',
         'text--muted': 'var(--color-text-muted)',
         'border-1': 'var(--color-border-1)',
+        'border-2': 'var(--color-border-2)',
+        'optinal-1': 'var(--color-optinal-1)',
         'text--option-1': 'var(--color-text-option-1)',
         'opacity-overflow': 'var(--color-overflow)',
       },

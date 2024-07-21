@@ -1,8 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createHall } from "../services/apiOptions";
+import { createOption } from "../services/apiOptions";
 import toast from "react-hot-toast";
-
-export default function useCreateHall() {
+import 'react-toastify/dist/ReactToastify.css';
+import { renewTokenMsg } from "../utils/tost";
+export default function useCreateOption(queryKey) {
   const queryClient = useQueryClient();
 
   const {
@@ -10,12 +11,14 @@ export default function useCreateHall() {
     mutate,
     isSuccess,
   } = useMutation({
-    mutationFn: createHall,
-    onSuccess: () => {
+    mutationFn: createOption,
+    onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: ["halls"],
+        queryKey: [queryKey],
       });
-      toast.success("Hall created successfully!");
+      if(data){toast.success("Item created successfully!")}
+      else renewTokenMsg()
+      
     },
     onError: (err) => {
       console.log(err.message);

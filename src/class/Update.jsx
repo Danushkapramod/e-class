@@ -2,15 +2,12 @@ import Button from '../ui/components/Button';
 import { Form, useForm } from 'react-hook-form';
 import Select from '../ui/components/Select';
 import { useDispatch } from 'react-redux';
-import { setTempCreateFormData } from './classSlice';
-import useTeachers from '../teacher/useTeachers';
-import useHalls from '../option/useHalls';
-import useSubjects from '../option/useSubjects';
-import useGrades from '../option/useGrades';
+import { setTempCreateClassForm } from './classSlice';
 import useClasses from './useClasses';
 import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import useUpdateClass from './useUpdateClass';
+import useFormData from './useFormData';
 
 const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
@@ -18,14 +15,19 @@ function Update() {
   const dispatch = useDispatch();
   const { id: classId } = useParams();
   const { classes } = useClasses();
-
   const { isUpdating, mutate } = useUpdateClass();
-  const { teachers, isLoading: teachersIsloading } = useTeachers();
-  const { halls, isLoading: hallsIsloading } = useHalls();
-  const { subjects, isLoading: subjectsIsloading } = useSubjects();
-  const { grades, isLoading: gradesIsloading } = useGrades();
-
   const selectedClassData = classes?.find((classData) => classData._id === classId);
+
+  const {
+    teachers,
+    halls,
+    subjects,
+    grades,
+    teachersIsloading,
+    hallsIsloading,
+    subjectsIsloading,
+    gradesIsloading,
+  } = useFormData();
 
   const {
     register,
@@ -37,21 +39,23 @@ function Update() {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      classDay: selectedClassData?.day, // Set the default value here
+      classDay: selectedClassData?.day,
     },
   });
 
   useEffect(() => {
     if (selectedClassData) {
-      setValue('subject', selectedClassData.subject);
-      setValue('grade', selectedClassData.grade);
-      setValue('hallNumber', selectedClassData.hall);
-      setValue('classDay', selectedClassData.day);
-      setValue('classTime', selectedClassData.startTime);
-      setValue('teacher', selectedClassData.teacher.name);
-      setValue('duration', selectedClassData.duration);
-      setValue('charging', selectedClassData.charging);
-      setValue('teacherId', selectedClassData.teacher._id);
+      const { subject, grade, hall, day, startTime, name, duration, charging, _id } =
+        selectedClassData;
+      setValue('subject', subject);
+      setValue('grade', grade);
+      setValue('hallNumber', hall);
+      setValue('classDay', day);
+      setValue('classTime', startTime);
+      setValue('teacher', name);
+      setValue('duration', duration);
+      setValue('charging', charging);
+      setValue('teacherId', _id);
     }
   }, [selectedClassData, setValue]);
 
@@ -82,9 +86,8 @@ function Update() {
     <>
       <div className=" absolute inset-0  backdrop-blur-lg"></div>
       <div
-        className=" absolute right-[50%]  top-[50%] flex h-max w-full  
-                    max-w-[1000px] translate-x-[50%] translate-y-[-50%] flex-col space-y-4 
-                    rounded-lg  bg-bg--primary-500 p-6"
+        className=" absolute right-[50%] top-[50%] flex h-max w-full max-w-[1000px]
+       translate-x-[50%] translate-y-[-50%] flex-col space-y-4 rounded-lg bg-bg--primary-500 p-6"
       >
         <h1 className="py-2 text-start text-2xl font-medium">UPDATE CLASS</h1>
 

@@ -2,26 +2,39 @@ import Button from '../ui/components/Button';
 import { Form, useForm } from 'react-hook-form';
 import Select from '../ui/components/Select';
 import { useDispatch, useSelector } from 'react-redux';
-import { setTempCreateFormData } from './classSlice';
+import { setIsCreateClassOpen, setTempCreateClassForm } from './classSlice';
+import useCreateOption from '../option/useCreateOption';
 import useCreateClass from './useCreateClass';
-import useTeachers from '../teacher/useTeachers';
-import useHalls from '../option/useHalls';
-import useSubjects from '../option/useSubjects';
-import useGrades from '../option/useGrades';
-import useCreateSubject from '../option/useCreateSubject';
+import useFormData from './useFormData';
+import { useEffect } from 'react';
+import { AppInputField } from '../ui/components/AppInputField';
 
-const days = ['Mondaya', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const days = [
+  { day: 'Mondaya' },
+  { day: 'Tuesday' },
+  { day: 'Wednesday' },
+  { day: 'Thursday' },
+  { day: 'Friday' },
+  { day: 'Saturday' },
+  { day: 'Sunday' },
+];
 
-function ClassForm() {
+export default function ClassForm() {
   const dispatch = useDispatch();
-  const { tempCreateFormData } = useSelector((store) => store.class);
+  const { tempCreateClassForm } = useSelector((store) => store.class);
+  const { isCreating, mutate: createClass } = useCreateClass();
+  const { mutate: createSubject } = useCreateOption('subject');
 
-  const { isCreating, mutate } = useCreateClass();
-  const { teachers, isLoading: teachersIsloading } = useTeachers();
-  const { halls, isLoading: hallsIsloading } = useHalls();
-  const { subjects, isLoading: subjectsIsloading } = useSubjects();
-  const { grades, isLoading: gradesIsloading } = useGrades();
-  const { mutate: createSubjectMutate } = useCreateSubject();
+  const {
+    teachers,
+    halls,
+    subjects,
+    grades,
+    teachersIsloading,
+    hallsIsloading,
+    subjectsIsloading,
+    gradesIsloading,
+  } = useFormData();
 
   const {
     register,
@@ -29,11 +42,18 @@ function ClassForm() {
     getValues,
     control,
     setValue,
-    watch,
     formState: { errors },
   } = useForm({
-    defaultValues: tempCreateFormData,
+    defaultValues: tempCreateClassForm,
   });
+
+  useEffect(() => {
+    return () => {
+      dispatch(setTempCreateClassForm(getValues()));
+      dispatch(setIsCreateClassOpen(true));
+    };
+  }, [dispatch, getValues]);
+
   const onSubmit = (data) => {
     const classData = {
       subject: data.subject,
@@ -47,29 +67,23 @@ function ClassForm() {
       avatar: data.class_poster[0],
     };
 
-    dispatch(setTempCreateFormData({}));
     addSubject(data.subject);
-    mutate(classData);
+    createClass(classData);
+    dispatch(setTempCreateClassForm({}));
   };
 
   function addSubject(subject) {
     if (!subjects.some((sub) => sub.subjectName.toLowerCase() === subject.toLowerCase())) {
-      createSubjectMutate({ subjectName: subject });
+      createSubject({ subjectName: subject });
     }
-  }
-
-  function onSelectAdd() {
-    const formData = getValues();
-    dispatch(setTempCreateFormData(formData));
   }
 
   return (
     <>
       <div className=" absolute inset-0  backdrop-blur-lg"></div>
       <div
-        className=" absolute right-[50%]  top-[50%] flex h-max w-full  max-w-[1000px] 
-                     translate-x-[50%] translate-y-[-50%] flex-col space-y-4 
-                    rounded-lg bg-bg--primary-500 p-6"
+        className="max-w-[1000px absolute right-[50%] top-[50%] flex h-max w-full translate-x-[50%]
+         translate-y-[-50%] flex-col space-y-4 rounded-lg bg-bg--primary-500 p-6"
       >
         <h1 className=" py-2 text-start text-2xl font-medium">ADD CLASS</h1>
         <Form
@@ -81,24 +95,14 @@ function ClassForm() {
             <div className=" relative flex items-center justify-between">
               <label>Subject Name</label>
               <div className="relative flex basis-2/3 items-center justify-end">
-                <input
-                  className="w-full rounded border border-bg--primary-100 
-                  bg-bg--primary-200 px-4 py-2  pr-14 shadow outline-1 outline-text--muted focus:outline "
-                  type="text"
-                  id="subject"
-                  value={watch('subject')}
+                <AppInputField
+                  name="subject"
+                  errors={errors.subject}
+                  control={control}
                   placeholder="Subject"
-                  onChange={(e) => setValue('subject', e.target.value)}
-                  {...register('subject', {
-                    required: 'This field is required',
-                  })}
-                ></input>
-                {errors.subject && (
-                  <p className=" absolute mt-px pb-4 text-sm font-medium text-red-700">
-                    {errors.subject.message}
-                  </p>
-                )}
-                <div className=" absolute">
+                  rules={{ required: 'This field is required' }}
+                />
+                <div className="absolute">
                   <Select
                     setValue={(subject) => setValue('subject', subject)}
                     search={true}
@@ -114,23 +118,13 @@ function ClassForm() {
             <div className="flex items-center justify-between ">
               <label>Grade</label>
               <div className="relative flex basis-2/3 items-center justify-end">
-                <input
-                  className="w-full  rounded border border-bg--primary-100 
-                  bg-bg--primary-200 px-4 py-2  pr-14 shadow outline-1 outline-text--muted focus:outline "
-                  type="text"
-                  id="grade"
-                  value={watch('grade')}
-                  onChange={(e) => setValue('grade', e.target.value)}
-                  {...register('grade', {
-                    required: 'This field is required',
-                  })}
+                <AppInputField
+                  name="grade"
+                  errors={errors.grade}
+                  control={control}
                   placeholder="Grade"
-                ></input>
-                {errors.grade && (
-                  <p className=" absolute mt-px pb-4 text-sm font-medium text-red-700">
-                    {errors.grade.message}
-                  </p>
-                )}
+                  rules={{ required: 'This field is required' }}
+                />
                 <div className=" absolute ">
                   <Select
                     setValue={(grade) => setValue('grade', grade)}
@@ -147,23 +141,13 @@ function ClassForm() {
             <div className="flex items-center justify-between">
               <label>Hall number</label>
               <div className="relative flex basis-2/3 items-center justify-end">
-                <input
-                  className="w-full rounded border border-bg--primary-100 
-                  bg-bg--primary-200 px-4 py-2  pr-14 shadow outline-1 outline-text--muted focus:outline "
-                  type="text"
-                  id="hallNumber"
-                  value={watch('hallNumber')}
+                <AppInputField
+                  name="hallNumber"
+                  errors={errors.hallNumber}
+                  control={control}
                   placeholder="Select hall"
-                  disabled={true}
-                  {...register('hallNumber', {
-                    required: 'This field is required',
-                  })}
-                ></input>
-                {errors.hall && (
-                  <p className=" absolute mt-px pb-4 text-sm font-medium text-red-700">
-                    {errors.hall.message}
-                  </p>
-                )}
+                  rules={{ required: 'This field is required' }}
+                />
                 <div className="absolute">
                   <Select
                     setValue={(hall) => setValue('hallNumber', hall)}
@@ -179,27 +163,31 @@ function ClassForm() {
 
             <div className="flex items-center justify-between">
               <label>Class Day</label>
-              <select
-                className="w-full basis-2/3 rounded border border-bg--primary-100 
-                  bg-bg--primary-200 px-4 py-2  pr-14 shadow outline-1 outline-text--muted focus:outline "
-                id="classDay"
-                {...register('classDay')}
-              >
-                {days.map((day, index) => {
-                  return (
-                    <option className=" " key={index} value={day}>
-                      {day}
-                    </option>
-                  );
-                })}
-              </select>
+              <div className="relative flex basis-2/3 items-center justify-end">
+                <AppInputField
+                  name="classDay"
+                  errors={errors.hallNumber}
+                  control={control}
+                  placeholder="Select Day"
+                  rules={{ required: 'This field is required' }}
+                />
+                <div className="absolute">
+                  <Select
+                    setValue={(day) => setValue('classDay', day)}
+                    data={days}
+                    showValue={false}
+                    valueName="day"
+                  />
+                </div>
+              </div>
             </div>
 
             <div className="flex items-center justify-between">
               <label>Class Time</label>
               <input
-                className="w-full basis-2/3 rounded border border-bg--primary-100 
-                  bg-bg--primary-200 px-4 py-2 shadow outline-1 outline-text--muted focus:outline "
+                className="outline-border-2 w-full basis-2/3 
+                rounded bg-bg--primary-200 px-4  py-[10px] 
+                outline outline-1 focus:outline-2 focus:outline-blue-500"
                 type="time"
                 defaultChecked={false}
                 id="classTime"
@@ -209,34 +197,29 @@ function ClassForm() {
 
             <div className="flex items-center justify-between">
               <label>Class Duration</label>
-              <input
-                id="duration"
-                {...register('duration')}
-                className="w-full basis-2/3 rounded border border-bg--primary-100 
-                  bg-bg--primary-200 px-4 py-2 shadow outline-1 outline-text--muted focus:outline "
-                type="number"
-                placeholder="Duration"
-              ></input>
+              <div className=" basis-2/3">
+                <AppInputField
+                  name="duration"
+                  errors={errors.duration}
+                  control={control}
+                  placeholder="Duration"
+                />
+              </div>
             </div>
           </div>
+
           <div className=" w-[25rem flex w-[25rem] max-w-[30rem] grow  flex-col space-y-6">
             <div className="flex   justify-between">
               <label>Teacher Name</label>
 
               <div className="relative flex basis-2/3 items-center justify-end">
-                <input
-                  className="2/3 w-full rounded border border-bg--primary-100 
-                  bg-bg--primary-200 px-4 py-2 shadow outline-1 outline-text--muted focus:outline "
-                  type="text"
-                  id="teacher"
-                  value={watch('teacher')}
-                  disabled={true}
+                <AppInputField
+                  name="teacher"
+                  errors={errors.teacher}
+                  control={control}
                   placeholder="Select teacher"
-                  {...register('teacher', {
-                    required: 'This field is required',
-                  })}
-                ></input>
-
+                  rules={{ required: 'This field is required' }}
+                />
                 <input
                   hidden={true}
                   {...register('teacherId')}
@@ -244,11 +227,6 @@ function ClassForm() {
                   id="teacherId"
                   type="text"
                 />
-                {errors.hall && (
-                  <p className=" absolute mt-px pb-4 text-sm font-medium text-red-700">
-                    {errors.hall.message}
-                  </p>
-                )}
                 <div className=" absolute">
                   <Select
                     setValueId={(teacherId) => setValue('teacherId', teacherId)}
@@ -259,7 +237,6 @@ function ClassForm() {
                     showValue={false}
                     add={{
                       to: '/app/teachers/new',
-                      onClick: onSelectAdd,
                     }}
                     valueName="name"
                     idName="_id"
@@ -269,24 +246,25 @@ function ClassForm() {
             </div>
             <div className="flex items-center justify-between">
               <label>Charging</label>
-              <input
-                id="charging"
-                {...register('charging')}
-                className="w-full basis-2/3 rounded border border-bg--primary-100 
-                  bg-bg--primary-200 px-4 py-2 shadow outline-1 outline-text--muted focus:outline "
-                type="number"
-                placeholder="Optional*"
-              ></input>
+              <div className="basis-2/3">
+                <AppInputField
+                  name="charging"
+                  errors={errors.grade}
+                  control={control}
+                  placeholder="Optional*"
+                />
+              </div>
             </div>
+
             <div className=" flex  items-center justify-between ">
               <label>Class Poster</label>
               <div
-                className=" relative flex basis-2/3 items-center 
-              rounded border  border-bg--primary-100 px-2"
+                className=" border-border-2 relative flex basis-2/3
+                 items-center rounded border px-2"
               >
                 <label
-                  className=" absolute   inline-block  cursor-pointer 
-                  rounded bg-indigo-600 px-3 py-1.5 font-medium "
+                  className=" absolute   inline-block  cursor-pointer
+                  rounded bg-indigo-600 px-3 py-1.5 font-medium text-slate-200 "
                   htmlFor="class_poster"
                 >
                   Upload File
@@ -318,5 +296,3 @@ function ClassForm() {
     </>
   );
 }
-
-export default ClassForm;

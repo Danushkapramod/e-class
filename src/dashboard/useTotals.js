@@ -1,6 +1,4 @@
 import { useDispatch } from "react-redux";
-import { getClassesCount } from "../services/apiClasses";
-import { getTeachersCount } from "../services/apiTeachers";
 import { getOptionsCount } from "../services/apiOptions";
 import { totalClasses } from "../class/classSlice";
 import { totalTeachers } from "../teacher/teacherSlice";

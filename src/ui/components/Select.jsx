@@ -34,10 +34,10 @@ function Select({
 
   return (
     <AutoCloseWindow set={setIsOpen}>
-      <div className="relative ">
+      <div className="relative h-full">
         <button
           onClick={optionClick}
-          className="flex justify-center rounded-sm bg-bg--primary-100 px-3 py-[8px]"
+          className="bg-optinal-1  mr-0.5 flex justify-center  rounded-sm px-2 py-[8px]"
         >
           {value}
           <div className="material-symbols-outlined scale-75">unfold_more</div>

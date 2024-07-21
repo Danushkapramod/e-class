@@ -3,7 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   tableView: "card",
   totalClasses: 0,
-  tempCreateFormData: {},
+  tempCreateClassForm: {},
+  isCreateClassOpen: false,
   todayTotal: 0,
   todayUpcoming: 0,
   todayStarted: 0,
@@ -20,8 +21,8 @@ const classSlice = createSlice({
     setTableView(state, action) {
       state.tableView = action.payload;
     },
-    setTempCreateFormData(state, action) {
-      state.tempCreateFormData = action.payload;
+    setTempCreateClassForm(state, action) {
+      state.tempCreateClassForm = action.payload;
     },
     todayTotal(state, action) {
       state.todayTotal = action.payload;
@@ -35,6 +36,9 @@ const classSlice = createSlice({
     todayEnded(state, action) {
       state.todayEnded = action.payload;
     },
+    setIsCreateClassOpen(state, action) {
+      state.isCreateClassOpen = action.payload;
+    },
   },
 });
 
@@ -43,7 +47,8 @@ export default classReducer;
 
 export let {
   setTableView,
-  setTempCreateFormData,
+  setTempCreateClassForm,
+  setIsCreateClassOpen,
   todayEnded,
   todayTotal,
   todayStarted,

@@ -1,21 +1,21 @@
-import OptionTable from "./OptioTable";
-import useCreateHall from "./useCreateHall";
-import useDeleteHall from "./useDeleteHall";
-import useHalls from "./useHalls";
+import OptionTable from './OptioTable';
+import useCreateOption from './useCreateOption';
+import useDeleteOption from './useDeleteOption';
+import useOptions from './useOptions';
 
 export default function OptionHall() {
-  const { halls, isLoading, error } = useHalls();
-  const { isCreating, mutate: mutateCreate, isSuccess } = useCreateHall();
-  const { isDeleting, mutate: mutateDelete } = useDeleteHall();
+  const { options, isLoading, error } = useOptions('hall');
+  const { isCreating, mutate: mutateCreate, isSuccess } = useCreateOption('hall');
+  const { isDeleting, mutate: mutateDelete } = useDeleteOption('hall');
 
-  const data = halls?.map((hall) => [hall._id, hall.hallName]);
+  const data = options?.map((hall) => [hall._id, hall.hallName]);
 
   function createHandler(hall) {
-    mutateCreate({ hallName: hall });
+    mutateCreate({ option: 'hall', optionData: { hallName: hall } });
   }
 
-  function deleteHandler(hall) {
-    mutateDelete(hall);
+  function deleteHandler(hallId) {
+    mutateDelete({ option: 'hall', optionId: hallId });
   }
 
   return (

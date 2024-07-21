@@ -2,8 +2,6 @@ import { Outlet } from 'react-router-dom';
 import Button from '../ui/components/Button';
 import { useSelector } from 'react-redux';
 import Exports from '../ui/components/Exports';
-import Pagination from '../ui/components/Pagination';
-import { getClassesCount } from '../services/apiClasses';
 
 function ClassLayout() {
   const { root } = useSelector((store) => store.global);

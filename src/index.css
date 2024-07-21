@@ -40,7 +40,8 @@
   --color-text-muted: #90a4ae;
 
   --color-border-1: #334155;
-
+  --color-border-2: #909ead;
+  --color-optinal-1: var(--color-primary-100);
   --color-text-option-1: #d3d3d3;
 
   --color-overflow: white;
@@ -63,6 +64,8 @@
   --color-text-secondary: #181818;
   --color-text-muted: #424242;
   --color-border-1: #f8f8f8;
+  --color-border-2: #bdcad1;
+  --color-optinal-1: #e2e8f0;
   --color-text-option-1: #005fd8;
 
   --color-overflow: white;

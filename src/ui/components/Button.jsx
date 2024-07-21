@@ -215,7 +215,7 @@ function Button({
   if (type === 'secondery') {
     if (to === '-1') {
       return (
-        <Link to={-1} disabled={disabled} className={secondery}>
+        <Link to={-1} disabled={disabled} className={`${secondery} ${className}`}>
           {icon && <span className=" material-symbols-outlined scale-90">{icon}</span>}
           <span>{children}</span>
         </Link>

@@ -1,13 +1,13 @@
 import { Form, useForm } from 'react-hook-form';
 import Button from '../ui/components/Button';
 import useCreateTeacher from './useCreateTeacher';
-import useCreateSubject from '../option/useCreateSubject';
-import useSubjects from '../option/useSubjects';
+import useCreateOption from '../option/useCreateOption';
+import useOptions from '../option/useOptions';
 
 function CreateTeacher() {
   const { isCreating, mutate } = useCreateTeacher();
-  const { mutate: createSubjectMutate } = useCreateSubject();
-  const { subjects } = useSubjects();
+  const { mutate: createSubjectMutate } = useCreateOption();
+  const { options: subjects } = useOptions('subject');
 
   const {
     register,
@@ -30,7 +30,7 @@ function CreateTeacher() {
 
   function addSubject(subject) {
     if (!subjects.some((sub) => sub.subjectName.toLowerCase() === subject.toLowerCase())) {
-      createSubjectMutate({ subjectName: subject });
+      createSubjectMutate({ option: 'subject', optioData: { subjectName: subject } });
     }
   }
 

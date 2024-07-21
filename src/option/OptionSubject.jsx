@@ -1,22 +1,21 @@
-import OptionTable from "./OptioTable";
-import useCreateSubject from "./useCreateSubject";
-import useDeleteSubject from "./useDeleteSubject";
-import useSubjects from "./useSubjects";
+import OptionTable from './OptioTable';
+import useCreateOption from './useCreateOption';
+import useDeleteOption from './useDeleteOption';
+import useOptions from './useOptions';
 
 function OptionSubject() {
-  const { subjects, isLoading, error } = useSubjects();
-  const { isCreating, mutate: mutateCreate, isSuccess } = useCreateSubject();
-  const { isDeleting, mutate: mutateDelete } = useDeleteSubject();
+  const { options, isLoading, error } = useOptions('subject');
+  const { isCreating, mutate: mutateCreate, isSuccess } = useCreateOption('subject');
+  const { isDeleting, mutate: mutateDelete } = useDeleteOption('subject');
 
-  const data = subjects?.map((subject) => [subject._id, subject.subjectName]);
+  const data = options?.map((subject) => [subject._id, subject.subjectName]);
 
   function createHandler(subject) {
-    mutateCreate({ subjectName: subject });
+    mutateCreate({ optionData: { subjectName: subject }, option: 'subject' });
   }
-  function deleteHandler(subject) {
-    mutateDelete(subject);
+  function deleteHandler(subjectId) {
+    mutateDelete({ option: 'subject', optionId: subjectId });
   }
-
   return (
     <OptionTable
       fieldName="Subject"

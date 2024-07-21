@@ -112,7 +112,7 @@ function LeftSection({ auther }) {
   );
 }
 
-function RightSection({ auther }) {
+function RightSection() {
   const [isShow, setIsShow] = useState('editProfile');
   const [emailWindow, setEmailwindow] = useState('EmailChangeWindow');
 

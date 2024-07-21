@@ -13,6 +13,7 @@ import AppNav from '../ui/layouts/AppNav';
 import useClientSearch from '../hooks/useClientSearch';
 import Pagination from '../ui/components/Pagination';
 import { getClassesCount } from '../services/apiClasses';
+import { useEffect } from 'react';
 
 function formatedstartTime(startTime) {
   return moment
@@ -21,6 +22,13 @@ function formatedstartTime(startTime) {
 }
 
 function ClassesTable() {
+  const navigate = useNavigate();
+  const { isCreateClassOpen } = useSelector((store) => store.class);
+
+  useEffect(() => {
+    if (isCreateClassOpen) navigate('new');
+  }, [isCreateClassOpen, navigate]);
+
   useSetRoot('');
   const { tableView } = useSelector((store) => store.class);
   const { classes: data, isLoading, error } = useClasses();

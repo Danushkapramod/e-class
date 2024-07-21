@@ -5,7 +5,7 @@ export function InputField({ label, rules, control, name, type, errors, icon }) 
   const [visibility, setVisibility] = useState(false);
 
   return (
-    <div className=" relative flex flex-col">
+    <div className=" relative flex w-full flex-col">
       <div className="group relative z-0 flex w-full items-center">
         <Controller
           name={name}
@@ -41,7 +41,7 @@ export function InputField({ label, rules, control, name, type, errors, icon }) 
         )}
 
         <label
-          className="absolute left-2 origin-center -translate-y-6 scale-75 transform bg-white px-1
+          className="absolute left-2 origin-top-left -translate-y-6 scale-75 transform bg-white px-1
            text-gray-500 duration-300 peer-placeholder-shown:-z-20 peer-placeholder-shown:translate-x-10
             peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100  peer-focus:z-20 peer-focus:-translate-x-0
             peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:font-medium peer-focus:text-blue-600 peer-focus:dark:text-blue-500 "

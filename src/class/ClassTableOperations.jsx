@@ -2,11 +2,8 @@ import { useEffect, useState } from 'react';
 import FilterField from '../ui/components/FilterField';
 import Filters from '../ui/components/Filters';
 import { useLocation, useSearchParams } from 'react-router-dom';
-
-import useGrades from '../option/useGrades';
-import useHalls from '../option/useHalls';
-import useSubjects from '../option/useSubjects';
 import Sort from '../ui/components/Sort';
+import useOptions from '../option/useOptions';
 // const teachers = [
 //   "Amila disanayake",
 //   "Anurada perera",
@@ -21,9 +18,9 @@ const days = ['Mondaya', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday
 export function ClassFilter() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const { subjects } = useSubjects();
-  const { grades } = useGrades();
-  const { halls } = useHalls();
+  const { options: subjects } = useOptions('subject');
+  const { options: grades } = useOptions('grade');
+  const { options: halls } = useOptions('hall');
 
   const subjectFilterValue = searchParams.getAll('subject');
   const gradeFilterValue = searchParams.getAll('grade');

@@ -39,7 +39,7 @@ export default function ResetPasswordPage() {
     <div className="flex h-screen items-center justify-center">
       {!isSuccess ? (
         <Form
-          className="w-[28rem] rounded px-8 py-10 shadow-2xl"
+          className=" mx-2 w-[28rem] min-w-72 rounded px-8 py-10 shadow-2xl"
           onSubmit={handleSubmit(onSubmit)}
           control={control}
         >
@@ -103,7 +103,7 @@ function Step2() {
   const navigate = useNavigate();
 
   return (
-    <div className=" w-[28rem] rounded px-8 py-24 text-center shadow-2xl">
+    <div className="  mx-2 w-[28rem] min-w-72 rounded px-8 py-24 text-center shadow-2xl">
       <span
         className=" material-symbols-outlined h-max  origin-top 
                      scale-[280%] pb-14 font-light text-blue-600"
@@ -114,7 +114,7 @@ function Step2() {
       <p className=" pb-4 text-2xl">Password Changed</p>
       <p className=" pb-6 text-center align-middle">Your password has been changed successfully.</p>
       <Button
-        onClick={() => navigate('/app')}
+        onClick={() => navigate('/login')}
         type="primary"
         className=" !flex !w-full !justify-center !py-3 !normal-case"
       >

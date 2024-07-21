@@ -2,14 +2,13 @@ import { useEffect, useState } from 'react';
 import Filters from '../ui/components/Filters';
 import { useSearchParams } from 'react-router-dom';
 import FilterField from '../ui/components/FilterField';
-import useSubjects from '../option/useSubjects';
+import useOptions from '../option/useOptions';
 
 //const subjects = ['Physics', 'Chemistry', 'Maths', 'Biology', 'ICT'];
 
 export function TeacherFilter() {
   const [searchParams, setSearchParams] = useSearchParams();
-
-  const { subjects } = useSubjects();
+  const { options: subjects } = useOptions('subject');
   const [filterCount, setFilterCount] = useState(null);
   const subjectFilterValue = searchParams.getAll('subject');
   const [subject, setSubject] = useState(subjectFilterValue);
