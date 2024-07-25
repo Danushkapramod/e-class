@@ -1,19 +1,26 @@
 import Button from '../ui/components/Button';
 import { Form, useForm } from 'react-hook-form';
 import Select from '../ui/components/Select';
-import { useDispatch } from 'react-redux';
-import { setTempCreateClassForm } from './classSlice';
 import useClasses from './useClasses';
-import { useParams } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useMemo } from 'react';
 import useUpdateClass from './useUpdateClass';
 import useFormData from './useFormData';
+import { AppInputField } from '../ui/components/AppInputField';
 
-const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+const days = [
+  { day: 'Mondaya' },
+  { day: 'Tuesday' },
+  { day: 'Wednesday' },
+  { day: 'Thursday' },
+  { day: 'Friday' },
+  { day: 'Saturday' },
+  { day: 'Sunday' },
+];
 
 function Update() {
-  const dispatch = useDispatch();
   const { id: classId } = useParams();
+  const navigate = useNavigate();
   const { classes } = useClasses();
   const { isUpdating, mutate } = useUpdateClass();
   const selectedClassData = classes?.find((classData) => classData._id === classId);
@@ -35,52 +42,25 @@ function Update() {
     getValues,
     control,
     setValue,
-    watch,
     formState: { errors },
   } = useForm({
-    defaultValues: {
-      classDay: selectedClassData?.day,
-    },
+    defaultValues: useMemo(() => {
+      return {
+        ...selectedClassData,
+        teacher: selectedClassData?.teacher?.name,
+      };
+    }, [selectedClassData]),
   });
-
-  useEffect(() => {
-    if (selectedClassData) {
-      const { subject, grade, hall, day, startTime, name, duration, charging, _id } =
-        selectedClassData;
-      setValue('subject', subject);
-      setValue('grade', grade);
-      setValue('hallNumber', hall);
-      setValue('classDay', day);
-      setValue('classTime', startTime);
-      setValue('teacher', name);
-      setValue('duration', duration);
-      setValue('charging', charging);
-      setValue('teacherId', _id);
-    }
-  }, [selectedClassData, setValue]);
 
   const onSubmit = (data) => {
     const newData = {
-      subject: data.subject,
+      ...data,
       teacher: data.teacherId,
-      day: data.classDay,
-      grade: data.grade,
-      startTime: data.classTime,
-      charging: data.charging,
-      duration: data.duration,
-      hall: data.hallNumber,
       avatarDbUrl: selectedClassData.avatar,
       avatarFile: data.class_poster[0],
     };
-
-    dispatch(setTempCreateFormData({}));
     mutate({ classId, newData });
   };
-
-  function onSelectAdd() {
-    const formData = getValues();
-    dispatch(setTempCreateFormData(formData));
-  }
 
   return (
     <>
@@ -90,7 +70,6 @@ function Update() {
        translate-x-[50%] translate-y-[-50%] flex-col space-y-4 rounded-lg bg-bg--primary-500 p-6"
       >
         <h1 className="py-2 text-start text-2xl font-medium">UPDATE CLASS</h1>
-
         <Form
           onSubmit={handleSubmit(onSubmit)}
           control={control}
@@ -100,24 +79,14 @@ function Update() {
             <div className=" relative flex items-center justify-between">
               <label>Subject Name</label>
               <div className="relative flex basis-2/3 items-center justify-end">
-                <input
-                  className="w-full rounded border border-bg--primary-100  bg-bg--primary-200
-                  px-4 py-2 pr-14 shadow outline-1 outline-text--muted focus:outline "
-                  type="text"
-                  id="subject"
-                  value={watch('subject')}
+                <AppInputField
+                  name="subject"
+                  errors={errors.subject}
+                  control={control}
                   placeholder="Subject"
-                  onChange={(e) => setValue('subject', e.target.value)}
-                  {...register('subject', {
-                    required: 'This field is required',
-                  })}
-                ></input>
-                {errors.subject && (
-                  <p className=" absolute mt-px pb-4 text-sm font-medium text-red-700">
-                    {errors.subject.message}
-                  </p>
-                )}
-                <div className=" absolute ">
+                  rules={{ required: 'This field is required' }}
+                />
+                <div className="absolute">
                   <Select
                     setValue={(subject) => setValue('subject', subject)}
                     search={true}
@@ -129,27 +98,16 @@ function Update() {
                 </div>
               </div>
             </div>
-
             <div className="flex items-center justify-between ">
               <label>Grade</label>
               <div className="relative flex basis-2/3 items-center justify-end">
-                <input
-                  className="w-full rounded border border-bg--primary-100  bg-bg--primary-200
-                  px-4 py-2 pr-14 shadow outline-1 outline-text--muted focus:outline "
-                  type="text"
-                  id="grade"
-                  value={watch('grade')}
-                  onChange={(e) => setValue('grade', e.target.value)}
-                  {...register('grade', {
-                    required: 'This field is required',
-                  })}
+                <AppInputField
+                  name="grade"
+                  errors={errors.grade}
+                  control={control}
                   placeholder="Grade"
-                ></input>
-                {errors.grade && (
-                  <p className=" absolute mt-px pb-4 text-sm font-medium text-red-700">
-                    {errors.grade.message}
-                  </p>
-                )}
+                  rules={{ required: 'This field is required' }}
+                />
                 <div className=" absolute ">
                   <Select
                     setValue={(grade) => setValue('grade', grade)}
@@ -162,30 +120,19 @@ function Update() {
                 </div>
               </div>
             </div>
-
             <div className="flex items-center justify-between">
               <label>Hall number</label>
               <div className="relative flex basis-2/3 items-center justify-end">
-                <input
-                  className="w-full rounded border border-bg--primary-100  bg-bg--primary-200
-                  px-4 py-2 pr-14 shadow outline-1 outline-text--muted focus:outline "
-                  type="text"
-                  id="hallNumber"
-                  value={watch('hallNumber')}
+                <AppInputField
+                  name="hall"
+                  errors={errors.hall}
+                  control={control}
                   placeholder="Select hall"
-                  disabled={true}
-                  {...register('hallNumber', {
-                    required: 'This field is required',
-                  })}
-                ></input>
-                {errors.hall && (
-                  <p className=" absolute mt-px pb-4 text-sm font-medium text-red-700">
-                    {errors.hall.message}
-                  </p>
-                )}
-                <div className=" absolute ">
+                  rules={{ required: 'This field is required' }}
+                />
+                <div className="absolute">
                   <Select
-                    setValue={(hall) => setValue('hallNumber', hall)}
+                    setValue={(hall) => setValue('hall', hall)}
                     search={true}
                     data={halls}
                     isLoading={hallsIsloading}
@@ -195,80 +142,70 @@ function Update() {
                 </div>
               </div>
             </div>
-
             <div className="flex items-center justify-between">
               <label>Class Day</label>
-              <select
-                className="w-full basis-2/3 rounded border border-bg--primary-100  bg-bg--primary-200
-                  px-4 py-2 pr-14 shadow outline-1 outline-text--muted focus:outline "
-                id="classDay"
-                {...register('classDay')}
-              >
-                {days.map((day, index) => {
-                  return (
-                    <option className="capitalize" key={index} value={day}>
-                      {day.charAt(0).toUpperCase() + day.slice(1)}
-                    </option>
-                  );
-                })}
-              </select>
+              <div className="relative flex basis-2/3 items-center justify-end">
+                <AppInputField
+                  name="day"
+                  errors={errors.day}
+                  control={control}
+                  placeholder="Select Day"
+                  rules={{ required: 'This field is required' }}
+                />
+                <div className="absolute">
+                  <Select
+                    setValue={(day) => setValue('day', day)}
+                    data={days}
+                    showValue={false}
+                    valueName="day"
+                  />
+                </div>
+              </div>
             </div>
-
             <div className="flex items-center justify-between">
               <label>Class Time</label>
               <input
-                className="w-full basis-2/3 rounded border border-bg--primary-100 
-                  bg-bg--primary-200 px-4 py-2 shadow outline-1 outline-text--muted focus:outline "
+                className="w-full basis-2/3 rounded 
+                bg-bg--primary-200 px-4 py-[10px]  outline 
+                outline-1 outline-border-2 focus:outline-2 focus:outline-blue-500"
                 type="time"
                 defaultChecked={false}
-                id="classTime"
-                {...register('classTime')}
+                id="startTime"
+                {...register('startTime')}
               ></input>
             </div>
-
             <div className="flex items-center justify-between">
               <label>Class Duration</label>
-              <input
-                id="duration"
-                {...register('duration')}
-                className="w-full basis-2/3 rounded border border-bg--primary-100 
-                  bg-bg--primary-200 px-4 py-2 shadow outline-1 outline-text--muted focus:outline "
-                type="number"
-                placeholder="Duration"
-              ></input>
+              <div className=" basis-2/3">
+                <AppInputField
+                  name="duration"
+                  errors={errors.duration}
+                  control={control}
+                  placeholder="Duration"
+                />
+              </div>
             </div>
           </div>
           <div className=" w-[25rem flex w-[25rem] max-w-[30rem] grow  flex-col space-y-6">
             <div className="flex   justify-between">
               <label>Teacher Name</label>
-
               <div className="relative flex basis-2/3 items-center justify-end">
-                <input
-                  className="w-full rounded border border-bg--primary-100  bg-bg--primary-200
-                  px-4 py-2 pr-14 shadow outline-1 outline-text--muted focus:outline "
-                  type="text"
-                  id="teacher"
-                  value={watch('teacher')}
+                <AppInputField
+                  name="teacher"
+                  errors={errors.teacher}
                   disabled={true}
+                  control={control}
                   placeholder="Select teacher"
-                  {...register('teacher', {
-                    required: 'This field is required',
-                  })}
-                ></input>
-
+                  rules={{ required: 'This field is required' }}
+                />
                 <input
                   hidden={true}
                   {...register('teacherId')}
                   value={getValues('teacherId')}
                   id="teacherId"
-                  type="number"
+                  type="text"
                 />
-                {errors.hall && (
-                  <p className=" absolute mt-px pb-4 text-sm font-medium text-red-700">
-                    {errors.hall.message}
-                  </p>
-                )}
-                <div className="absolute">
+                <div className=" absolute">
                   <Select
                     setValueId={(teacherId) => setValue('teacherId', teacherId)}
                     setValue={(teacher) => setValue('teacher', teacher)}
@@ -278,7 +215,6 @@ function Update() {
                     showValue={false}
                     add={{
                       to: '/app/teachers/new',
-                      onClick: onSelectAdd,
                     }}
                     valueName="name"
                     idName="_id"
@@ -286,27 +222,26 @@ function Update() {
                 </div>
               </div>
             </div>
-
             <div className="flex items-center justify-between">
               <label>Charging</label>
-              <input
-                id="charging"
-                {...register('charging')}
-                className="w-full basis-2/3 rounded border border-bg--primary-100 
-                  bg-bg--primary-200 px-4 py-2 shadow outline-1 outline-text--muted focus:outline "
-                type="number"
-                placeholder="Optional*"
-              ></input>
+              <div className="basis-2/3">
+                <AppInputField
+                  name="charging"
+                  errors={errors.grade}
+                  control={control}
+                  placeholder="Optional*"
+                />
+              </div>
             </div>
             <div className=" flex  items-center justify-between ">
               <label>Class Poster</label>
               <div
-                className=" relative flex basis-2/3 items-center rounded 
-                               border border-bg--primary-200 px-2"
+                className=" relative flex basis-2/3 items-center
+                 rounded border border-border-2 px-2"
               >
                 <label
-                  className=" absolute inline-block  cursor-pointer 
-                  rounded bg-indigo-600 px-3 py-1.5 font-medium "
+                  className=" absolute   inline-block  cursor-pointer
+                  rounded bg-indigo-600 px-3 py-1.5 font-medium text-slate-200 "
                   htmlFor="class_poster"
                 >
                   Upload File
@@ -321,11 +256,18 @@ function Update() {
             </div>
           </div>
           <div className=" my-auto flex w-full justify-end gap-4 ">
-            <Button to="-1" onType="reset" type="secondery">
+            <Button
+              disabled={isUpdating}
+              onClick={(e) => {
+                e.preventDefault();
+                navigate(-1);
+              }}
+              type="secondery"
+            >
               Close
             </Button>
-            <Button disabled={isUpdating} ontype="submit" spinner={isUpdating} type="primary">
-              Update
+            <Button spinner={isUpdating} disabled={isUpdating} ontype="submit" type="primary">
+              Submit
             </Button>
           </div>
         </Form>

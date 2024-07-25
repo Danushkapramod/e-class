@@ -5,10 +5,11 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    fontFamily: {
-      sans: ['roboto', 'sans-serif'],
+      fontFamily: {
+      sans: ['Roboto', 'sans-serif'],
       serif: ['Merriweather', 'serif'],
     },
+ 
     extend: {
       colors: {
         'dark-primary': '#111214',
@@ -49,6 +50,11 @@ export default {
         'floating': '0 8px 16px rgba(0, 0, 0, 0.2)',
         'card': '0 4px 8px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.12)',
       },
+      clipPath: {
+        'custom-1': 'polygon(50% 0%, 0% 100%, 100% 100%)',
+        'custom-2': 'circle(50% at 50% 50%)',
+        'custom-3': 'circle(50% at 50% 50%)',
+      }
     },
   },
   variants: {
@@ -56,5 +62,18 @@ export default {
       backgroundColor: ['group-hover', 'group-focus'],
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addUtilities }) {
+      const newUtilities = {
+        '.clip-custom-1': {
+          'clip-path': 'polygon(0 0, 100% 0, 100% 50%, 0 70%)'
+        },
+        '.clip-custom-2': {
+          'clip-path': 'circle(50% at 50% 50%)'
+        }
+      }
+
+      addUtilities(newUtilities)
+    }
+  ]
 }

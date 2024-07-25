@@ -1,6 +1,6 @@
 import { Controller } from 'react-hook-form';
 
-export function AppInputField({ rules, placeholder, type, control, name, errors }) {
+export function AppInputField({ rules, disabled, placeholder, type, control, name, errors }) {
   return (
     <div className=" relative flex w-full flex-col">
       <div className="group relative z-0 flex w-full items-center">
@@ -16,6 +16,7 @@ export function AppInputField({ rules, placeholder, type, control, name, errors 
               outline outline-1 focus:outline-2 focus:outline-blue-500"
               type={type || 'text'}
               name={name}
+              disabled={disabled}
               placeholder={placeholder}
             ></input>
           )}

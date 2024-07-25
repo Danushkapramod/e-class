@@ -6,8 +6,9 @@ import { setIsCreateClassOpen, setTempCreateClassForm } from './classSlice';
 import useCreateOption from '../option/useCreateOption';
 import useCreateClass from './useCreateClass';
 import useFormData from './useFormData';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { AppInputField } from '../ui/components/AppInputField';
+import { useNavigate } from 'react-router-dom';
 
 const days = [
   { day: 'Mondaya' },
@@ -21,8 +22,10 @@ const days = [
 
 export default function ClassForm() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { tempCreateClassForm } = useSelector((store) => store.class);
-  const { isCreating, mutate: createClass } = useCreateClass();
+  const [isSubmit, setIsSubmit] = useState(false);
+  const { isCreating, mutate: createClass } = useCreateClass(setIsSubmit);
   const { mutate: createSubject } = useCreateOption('subject');
 
   const {
@@ -48,11 +51,19 @@ export default function ClassForm() {
   });
 
   useEffect(() => {
+    if (isSubmit) {
+      dispatch(setIsCreateClassOpen(false));
+      navigate(-1);
+    }
     return () => {
-      dispatch(setTempCreateClassForm(getValues()));
-      dispatch(setIsCreateClassOpen(true));
+      if (!isSubmit) {
+        dispatch(setTempCreateClassForm(getValues()));
+        dispatch(setIsCreateClassOpen(true));
+      } else {
+        dispatch(setTempCreateClassForm({}));
+      }
     };
-  }, [dispatch, getValues]);
+  }, [isSubmit, dispatch, getValues, navigate]);
 
   const onSubmit = (data) => {
     const classData = {
@@ -69,7 +80,6 @@ export default function ClassForm() {
 
     addSubject(data.subject);
     createClass(classData);
-    dispatch(setTempCreateClassForm({}));
   };
 
   function addSubject(subject) {
@@ -82,7 +92,7 @@ export default function ClassForm() {
     <>
       <div className=" absolute inset-0  backdrop-blur-lg"></div>
       <div
-        className="max-w-[1000px absolute right-[50%] top-[50%] flex h-max w-full translate-x-[50%]
+        className="absolute right-[50%] top-[50%] flex h-max w-full max-w-[1000px] translate-x-[50%]
          translate-y-[-50%] flex-col space-y-4 rounded-lg bg-bg--primary-500 p-6"
       >
         <h1 className=" py-2 text-start text-2xl font-medium">ADD CLASS</h1>
@@ -280,12 +290,14 @@ export default function ClassForm() {
           </div>
           <div className=" my-auto flex w-full justify-end gap-4 ">
             <Button
-              to="-1"
               disabled={isCreating}
-              onClick={(e) => e.preventDefault()}
+              onClick={(e) => {
+                e.preventDefault();
+                setIsSubmit(true);
+              }}
               type="secondery"
             >
-              Back
+              Close
             </Button>
             <Button spinner={isCreating} disabled={isCreating} ontype="submit" type="primary">
               Submit

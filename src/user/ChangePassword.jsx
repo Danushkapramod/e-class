@@ -33,10 +33,10 @@ function ChangePassword() {
     <Form onSubmit={handleSubmit(onUpdatePassword)} control={control}>
       <div className="mt-4 flex items-center justify-between">
         <label from="curent_password">Current Password</label>
-        <div className=" relative flex basis-[65%] flex-col">
+        <div className="relative flex basis-[65%] flex-col">
           <input
-            className=" border-border-1 rounded border bg-bg--primary-200 px-4 
-             py-2 shadow  focus:outline focus:outline-slate-400 "
+            className=" rounded border border-border-1 bg-bg--primary-200 px-4 
+             py-3 shadow focus:outline focus:outline-slate-400 "
             type="password"
             id="curent_password"
             placeholder="Current password"
@@ -55,8 +55,8 @@ function ChangePassword() {
         <label from="new_password">New Password</label>
         <div className=" relative flex basis-[65%] flex-col">
           <input
-            className="border-border-1 basis-[65%] rounded border bg-bg--primary-200
-             px-4 py-2  shadow focus:outline focus:outline-slate-400 "
+            className="basis-[65%] rounded border border-border-1 bg-bg--primary-200
+             px-4 py-3  shadow focus:outline focus:outline-slate-400 "
             type="password"
             required
             id="new_password"
@@ -80,8 +80,8 @@ function ChangePassword() {
         <label from="new_password">New Password</label>
         <div className=" relative  flex basis-[65%] flex-col">
           <input
-            className=" border-border-1 w-full rounded border bg-bg--primary-200 px-4
-             py-2 shadow  focus:outline focus:outline-slate-400 "
+            className=" w-full rounded border border-border-1 bg-bg--primary-200 px-4
+             py-3 shadow  focus:outline focus:outline-slate-400 "
             type="password"
             required
             placeholder="New password"

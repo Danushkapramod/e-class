@@ -22,16 +22,11 @@ export function ClassFilter() {
   const { options: grades } = useOptions('grade');
   const { options: halls } = useOptions('hall');
 
-  const subjectFilterValue = searchParams.getAll('subject');
-  const gradeFilterValue = searchParams.getAll('grade');
-  const hallFilterValue = searchParams.getAll('hall');
-  const dayFilterValue = searchParams.getAll('day');
-
   const [filterCount, setFilterCount] = useState(null);
-  const [subject, setSubject] = useState(subjectFilterValue);
-  const [grade, setGrade] = useState(gradeFilterValue);
-  const [hall, setHall] = useState(hallFilterValue);
-  const [day, setDay] = useState(dayFilterValue);
+  const [subject, setSubject] = useState(searchParams.getAll('subject'));
+  const [grade, setGrade] = useState(searchParams.getAll('grade'));
+  const [hall, setHall] = useState(searchParams.getAll('hall'));
+  const [day, setDay] = useState(searchParams.getAll('day'));
 
   useEffect(() => {
     setFilterCount([...subject, ...grade, ...hall, ...day].length);

@@ -21,7 +21,7 @@ function ViewTeacher() {
   if (isLoading) return <Spinner />;
   if (error) return <Error errorMsg={error.message} />;
 
-  const teacherData = teachers.filter((teacherData) => {
+  const teacherData = teachers?.filter((teacherData) => {
     return teacherData._id === teacherId;
   });
 
@@ -44,11 +44,11 @@ function ViewTeacher() {
   return (
     <div className="mt-4 flex flex-wrap items-start gap-4">
       <div
-        className=" relative  flex w-[25rem] flex-col items-center rounded-md border 
-          border-bg--primary-100  bg-bg--primary-200 p-8 shadow-md"
+        className=" relative flex w-full max-w-[30rem] flex-col items-center rounded-md border 
+          border-bg--primary-100 p-8 shadow"
       >
         <div
-          className=" items-centerw-32 flex h-32 w-32 justify-center
+          className=" items-centerw-32 flex aspect-square h-48 justify-center
          overflow-hidden rounded-full border-2 border-slate-300"
         >
           <img
@@ -72,13 +72,13 @@ function ViewTeacher() {
           />
         </div>
 
-        <div className=" mt-4 flex w-full flex-col  divide-y  divide-bg--primary-100">
+        <div className="mt-8 flex w-full flex-col divide-y  divide-bg--primary-100 text-lg">
           <div className="flex w-full items-center justify-between px-2 py-2">
             <div className="flex items-center gap-1">
               <span className="material-symbols-outlined scale-90 font-thin">person</span>
-              <div>Teacher</div>
+              <div className=" ">Teacher</div>
             </div>
-            <div className=" basis-[62%] capitalize">{name}</div>
+            <div className=" basis-[62%]  capitalize">{name}</div>
           </div>
 
           <div className="flex w-full items-center justify-between   px-2 py-2">
@@ -99,9 +99,9 @@ function ViewTeacher() {
         </div>
       </div>
 
-      <div className=" max-w-[28rem] grow rounded-md bg-bg--primary-200 p-4 shadow-md ">
+      <div className=" max-w-[30rem] grow rounded-md border border-bg--primary-100 p-4 shadow-md ">
         <div className=" uppercase opacity-60">Classes</div>
-        <ul className="mt-2 divide-y-2 divide-bg--primary-100 overflow-hidden rounded bg-bg--primary-300">
+        <ul className="mt-2 divide-y divide-border-2 overflow-hidden rounded bg-bg--primary-200 ">
           {!classesisLoading ? (
             classesError ? (
               classesError.message
@@ -150,15 +150,15 @@ function ClassItem({ classData }) {
   }
   return (
     <li
-      className=" flex h-fit justify-between  
+      className=" flex h-fit justify-between   
     "
     >
       <div className="flex">
-        <div className="flex h-24 w-24  items-center justify-center overflow-hidden ">
+        <div className="flex aspect-square h-24 items-center justify-center overflow-hidden">
           <img className="  h-full object-cover " src={class_poster} alt="class-avatar" />
         </div>
         <div className="flex flex-col  p-2">
-          <div className=" text-lg capitalize ">Grade {grade}</div>
+          <div className="  capitalize ">Grade {grade}</div>
           <div className=" mt-auto flex flex-col text-sm opacity-80">
             <span>{hallNumber}</span>
             <span>

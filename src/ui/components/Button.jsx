@@ -227,7 +227,6 @@ function Button({
         disabled={disabled}
         type={onType}
         onClick={onClick}
-        ref={ref}
         className={`${secondery} ${className}`}
       >
         {icon && <span className=" material-symbols-outlined scale-90">{icon}</span>}

@@ -142,3 +142,14 @@ a.active {
 ::-webkit-scrollbar-thumb:hover {
   background: #555; /* Color of the handle when hovered */
 }
+
+.clip-custom-1 {
+  clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
+}
+
+.clip-custom-2 {
+  clip-path: polygon(0 0%, 100% 0, 100% 100%, 0 100%);
+}
+.clip-custom-3 {
+  clip-path: circle(50% at 50% 50%);
+}

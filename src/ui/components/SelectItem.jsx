@@ -15,7 +15,7 @@ function SelectItem({ bg, items, size, disabled, icon, btnTitle, onClick, button
       <div className="relative">
         <div>
           <Button
-            className="!border-bg--primary-200 !bg-black/10"
+            className="!border-bg--primary-100 !bg-black/10"
             disabled={disabled}
             onClick={optionClick}
             type={buttonType || 'smallSecondery'}

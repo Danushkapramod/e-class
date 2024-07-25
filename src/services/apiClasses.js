@@ -62,13 +62,14 @@ export async function createClass(classData) {
     }
     // Try to save teacher data including the avatar URL if available
     try {
-      await axios.post(`${BASE_URL}/classes`, {
+     const response = await axios.post(`${BASE_URL}/classes`, {
         ...classData,
         avatar,
       },{
         withCredentials:true,
         timeout:10000
       });
+      return response.data
     } catch (apiError) {
       console.error("Error saving class data:", apiError);
       throw new Error("Failed to save class data. Please try again.");

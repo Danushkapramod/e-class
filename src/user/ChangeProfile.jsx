@@ -91,7 +91,7 @@ function DataField({ options: { defaultV, id, placeholder, control } }) {
             <input
               {...field}
               className="w-full rounded border border-bg--primary-200 bg-bg--primary-200 
-              px-4 py-2 shadow focus:outline focus:outline-slate-400"
+              px-4 py-3 shadow focus:outline focus:outline-slate-400"
               type="text"
               id={id}
               placeholder={placeholder}

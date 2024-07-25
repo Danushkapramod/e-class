@@ -7,6 +7,7 @@ import useSetRoot from '../utils/setRoot';
 import useDeleteClass from './useDeleteClass';
 import Button from '../ui/components/Button';
 import useClasses from './useClasses';
+import StudentTable from '../students/StudentTable';
 
 function ClassView() {
   useSetRoot('view');
@@ -18,7 +19,7 @@ function ClassView() {
   if (!isSuccess) return <Spinner />;
   if (error) return <Error errorMsg={error.message} />;
 
-  const classData = classes.filter((classData) => {
+  const classData = classes?.filter((classData) => {
     return classData._id === id;
   });
   const {
@@ -45,14 +46,14 @@ function ClassView() {
   const formatedclassTime = moment.tz(`2000-01-01T${classTime}Z`, 'Asia').format('hh:mm A');
 
   return (
-    <>
+    <div className="mt-2  flex flex-wrap items-start gap-4">
       <div
-        className=" relative mt-4 flex w-[28rem] flex-col items-center 
+        className=" relative flex min-w-[24rem] max-w-[28rem] grow  flex-col items-center 
            rounded-md bg-bg--primary-200 p-8 shadow-md "
       >
         <div
           className="items-centerw-24  flex h-24 w-24 justify-center overflow-hidden
-         rounded-full  border-2 border-slate-300"
+         rounded-full border-2 border-slate-300"
         >
           <img className="h-full object-cover" src={class_poster}></img>
         </div>
@@ -68,8 +69,8 @@ function ClassView() {
           />
         </div>
 
-        <div className=" mt-4 flex w-full flex-col  divide-y   divide-bg--primary-100">
-          <div className="flex w-full items-center justify-between   px-2 py-2">
+        <div className=" mt-4 flex w-full flex-col divide-y divide-bg--primary-100">
+          <div className="flex w-full  items-center justify-between   px-2 py-2">
             <div className="flex items-center gap-1">
               <span className="material-symbols-outlined scale-90 font-thin">subject</span>
               <div>Subject</div>
@@ -127,7 +128,9 @@ function ClassView() {
           </div>
         </div>
       </div>
-    </>
+
+      <StudentTable />
+    </div>
   );
 }
 

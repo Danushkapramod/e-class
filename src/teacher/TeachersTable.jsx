@@ -59,7 +59,7 @@ function TeachersTable() {
               <th className="  px-2 text-left">Phone</th>
               <th className="  px-2 text-left"></th>
             </tr>
-            {teachers.map((teacherData, index) => {
+            {teachers?.map((teacherData, index) => {
               return <TableRow teacherData={teacherData} key={index} />;
             })}
           </table>
@@ -78,7 +78,7 @@ function TeachersTable() {
 function CardItem({ teacherData }) {
   const navigate = useNavigate();
   const { isDeleting, mutate } = useDeleteTeacher();
-  const { _id: teacherId, name, subject, avatar: image, phone } = teacherData;
+  const { _id: teacherId, name, subject, avatar, phone } = teacherData;
 
   function onSelectHandler(e) {
     if (e.target.id === 'update') {
@@ -88,7 +88,7 @@ function CardItem({ teacherData }) {
       navigate(`/app/teachers/${teacherId}`);
     }
     if (e.target.id === 'delete') {
-      mutate({ teacherId, avatarDbUrl: image });
+      mutate({ teacherId, avatarDbUrl: avatar });
     }
   }
 
@@ -98,7 +98,7 @@ function CardItem({ teacherData }) {
                  items-center rounded-lg border border-b-4  border-bg--primary-100
                  border-b-bg--secondery-2 bg-bg--primary-200 px-2 py-4 text-text--secondery shadow-md "
     >
-      <div className=" absolute right-2 top-2 z-30">
+      <div className="absolute right-2 top-2 z-30">
         <SelectItem
           buttonType="xsSecondery"
           bg="bg-dark-primary"
@@ -114,24 +114,24 @@ function CardItem({ teacherData }) {
       <div className=" h-24 w-24 overflow-hidden rounded-full border-2 border-slate-400">
         <img
           className="h-full object-cover"
+          alt="avatar"
           src={
-            image
-              ? image
+            avatar
+              ? avatar
               : 'https://kjvgesvqoblnntmvqaid.supabase.co/storage/v1/object/public/teacher-avatars/Darshana%20kulathilaka_lmH0A2Ftjn.png'
           }
-          alt="image"
         />
       </div>
       <p className=" mb-1 line-clamp-1 flex items-center gap-1 pt-2 ">
         <span className=" material-symbols-outlined scale-90 font-light ">person</span>
         <span className=" text-md pr-1 capitalize text-text--primary">{name} </span>
       </p>
-      <div className=" mt-2 space-y-1 text-center  ">
-        <p className=" flex items-center gap-2 text-sm capitalize opacity-75">
+      <div className=" mt-2 space-y-1 text-center text-text--secondery">
+        <p className=" flex items-center gap-2 text-sm capitalize ">
           <span className=" material-symbols-outlined scale-90 font-light ">menu_book</span>
           {subject}
         </p>
-        <p className=" flex items-center gap-2 text-sm opacity-75 ">
+        <p className=" flex items-center gap-2 text-sm  ">
           <span className=" material-symbols-outlined scale-[60%]">call</span>
           {phone}
         </p>
@@ -142,15 +142,22 @@ function CardItem({ teacherData }) {
 
 function TableRow({ teacherData }) {
   const { isDeleting, mutate } = useDeleteTeacher();
-  const { teacherId, name, subject, image, phone } = teacherData;
+  const { _id: teacherId, name, subject, avatar, phone } = teacherData;
 
   return (
-    <tr className=" ">
-      <td
-        className="flex h-9 min-w-9 items-center 
-      justify-center overflow-hidden rounded-full pl-4"
-      >
-        <img className="h-full object-cover" src={image} alt="" />
+    <tr className="">
+      <td className="pl-4">
+        <div className="flex h-9 w-9 min-w-9 items-center justify-center overflow-hidden rounded-full ">
+          <img
+            className="h-full object-cover"
+            src={
+              avatar
+                ? avatar
+                : 'https://kjvgesvqoblnntmvqaid.supabase.co/storage/v1/object/public/teacher-avatars/Darshana%20kulathilaka_lmH0A2Ftjn.png'
+            }
+            alt=""
+          />
+        </div>
       </td>
       <td className=" max-w-44 px-2  py-3 capitalize">{name}</td>
       <td className=" max-w-38 px-2 py-3 capitalize">{subject}</td>
@@ -164,12 +171,7 @@ function TableRow({ teacherData }) {
         </Button>
         <Button
           disabled={isDeleting}
-          onClick={() =>
-            mutate({
-              teacherId,
-              avatarDbUrl: image,
-            })
-          }
+          onClick={() => mutate({ teacherId, avatarDbUrl: avatar })}
           className=" text-red-400"
           type="xsSecondery"
           icon="delete"

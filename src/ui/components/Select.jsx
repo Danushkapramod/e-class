@@ -37,13 +37,13 @@ function Select({
       <div className="relative h-full">
         <button
           onClick={optionClick}
-          className="bg-optinal-1  mr-0.5 flex justify-center  rounded-sm px-2 py-[8px]"
+          className="bg-optinal-1 mr-0.5 flex justify-center  rounded-sm px-2 py-[8px]"
         >
           {value}
           <div className="material-symbols-outlined scale-75">unfold_more</div>
         </button>
         {isOpen && (
-          <div className="absolute right-0 z-20 w-full min-w-max text-text--primary">
+          <div className="absolute right-0 z-20 mt-2 w-full min-w-max text-text--primary">
             <div className=" rounded border border-bg--primary-100  bg-bg--primary-400">
               <div>
                 {search && (

@@ -22,16 +22,15 @@ function formatedstartTime(startTime) {
 }
 
 function ClassesTable() {
+  useSetRoot('');
   const navigate = useNavigate();
-  const { isCreateClassOpen } = useSelector((store) => store.class);
+  const { classes: data, isLoading, error } = useClasses();
+  const { isCreateClassOpen, tableView } = useSelector((store) => store.class);
 
   useEffect(() => {
-    if (isCreateClassOpen) navigate('new');
+    if (!isCreateClassOpen) return;
+    navigate('new');
   }, [isCreateClassOpen, navigate]);
-
-  useSetRoot('');
-  const { tableView } = useSelector((store) => store.class);
-  const { classes: data, isLoading, error } = useClasses();
 
   const { searchResults: classes, setQuery } = useClientSearch(data, {
     type: 'obj',
@@ -41,7 +40,6 @@ function ClassesTable() {
   function setSearchQuery(e) {
     setQuery(e.target.value.trim());
   }
-
   function displayClasses() {
     if (!isLoading) {
       if (!error) {
@@ -124,7 +122,7 @@ function CardItem({ classData }) {
     <div
       className="relative flex flex-grow flex-col items-center justify-center rounded-lg 
                  border  border-b-4 border-bg--primary-100 border-b-bg--secondery-2
-                 bg-bg--primary-200 px-2 py-4 text-text--secondery shadow-md"
+                 bg-bg--primary-200 px-2 py-6 text-text--secondery shadow-md"
     >
       <div className="  absolute right-2 top-2">
         <SelectItem
@@ -139,15 +137,14 @@ function CardItem({ classData }) {
         />
       </div>
 
-      <p className=" mb-1 line-clamp-1 text-lg capitalize text-text--primary ">{subject}</p>
       <div
-        className="flex h-20 w-20 items-center justify-center overflow-hidden
-         rounded-full border-2 border-slate-300  "
+        className="mb-2 flex h-20 w-20 items-center justify-center overflow-hidden
+         rounded-full border-2 border-slate-300"
       >
         <img className="h-full object-cover" src={avatar} alt="image" />
       </div>
-
-      <div className=" mt-2 text-center opacity-70  ">
+      <p className="line-clamp-1 px-3 text-lg capitalize text-text--primary">{subject}</p>
+      <div className=" text-center text-text--secondery">
         <p className=" flex items-center text-center capitalize">
           {!teacher ? (
             <span className=" w-full text-center lowercase">---------</span>

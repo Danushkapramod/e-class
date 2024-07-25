@@ -1,11 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
 import { createClass } from "../services/apiClasses";
 import toast from "react-hot-toast";
 
-export default function useCreateClass() {
+export default function useCreateClass(setIsSubmit) {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
 
   const { isPending: isCreating, mutate } = useMutation({
     mutationFn: createClass,
@@ -13,12 +11,13 @@ export default function useCreateClass() {
       queryClient.invalidateQueries({
         queryKey: ["classes"],
       });
-      navigate("/app/classes");
+      setIsSubmit(true)
       toast.success("Class created successfully!");
+  
     },
     onError: (err) => {
       console.log(err.message);
-      toast.error("Failed to create class. Please try again.");
+      toast.error(err.message);
     },
   });
   return { isCreating, mutate };

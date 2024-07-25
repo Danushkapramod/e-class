@@ -5,9 +5,8 @@ import toast from "react-hot-toast";
 
 export default function useCreateTeacher() {
   const navigate = useNavigate();
-
   const queryClient = useQueryClient();
-
+  
   const { isPending: isCreating, mutate } = useMutation({
     mutationFn: createTeacher,
     onSuccess: () => {
