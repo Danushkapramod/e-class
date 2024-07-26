@@ -7,6 +7,7 @@ export function Exports({ category }) {
   const { isLoading: isLoadingPdf, mutate: exportPdf } = useExportToPdf();
 
   function onSelectHandler(e) {
+    console.log(e.target);
     if (e.target.id === 'Export to CSV') {
       exportCsv({ category });
     }

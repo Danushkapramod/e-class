@@ -1,19 +1,26 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
-function AutoCloseWindow({ children, set }) {
+function AutoCloseWindow({ children, set, refItems, className }) {
   const ref = useRef();
 
-  function clickOutside(e) {
-    if (ref.current && !ref.current.contains(e.target)) {
-      set(false);
-    }
-  }
+  const clickOutside = useCallback(
+    (e) => {
+      if (ref.current && !(ref.current.contains(e.target) || refItems.contains(e.target))) {
+        set(false);
+      }
+    },
+    [refItems, set]
+  );
   useEffect(() => {
     document.addEventListener('mousedown', clickOutside);
     return () => {
       document.removeEventListener('mousedown', clickOutside);
     };
-  }, []);
-  return <div ref={ref}>{children} </div>;
+  }, [clickOutside]);
+  return (
+    <div className={className} ref={ref}>
+      {children}{' '}
+    </div>
+  );
 }
 export default AutoCloseWindow;

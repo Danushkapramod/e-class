@@ -16,7 +16,7 @@ function useCreateStudent(){
         },
         onError:(err)=>{
             console.log(err.message);
-            toast.error("Failed to create Student. Please try again.");
+            toast.error(err.message);
         }
 
     })

@@ -1,19 +1,54 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Button from './Button';
 import AutoCloseWindow from './AutoCloseWindow';
+import Tooltip from './Potral';
 
 // eslint-disable-next-line react/prop-types
-function SelectItem({ bg, items, size, disabled, icon, btnTitle, onClick, buttonType }) {
-  const [isOpen, setIsOpen] = useState(false);
+function SelectItem({
+  width = 128,
+  bg,
+  items,
+  size,
+  btn,
+  disabled,
+  icon,
+  btnTitle,
+  isSuccess,
+  onClick,
+  buttonType,
+}) {
+  const [tooltipData, setTooltipData] = useState();
+  const btnRef = useRef();
 
-  function optionClick() {
-    setIsOpen(!isOpen);
+  useEffect(() => {
+    if (isSuccess) setTooltipData(null);
+  }, [isSuccess]);
+
+  function showTooltip(e) {
+    const btpRect = e.target.getBoundingClientRect();
+    setTooltipData({
+      position: {
+        top: btpRect.top + window.scrollY + btpRect.height,
+        left: btpRect.left + window.scrollX - width,
+      },
+    });
+  }
+  function optionClick(e) {
+    if (!tooltipData) {
+      showTooltip(e);
+    } else {
+      setTooltipData(null);
+    }
   }
 
   return (
-    <AutoCloseWindow set={setIsOpen}>
-      <div className="relative">
-        <div>
+    <>
+      {btn ? (
+        <button ref={btnRef} className="m-0 p-0" disabled={disabled} onClick={optionClick}>
+          {btn}
+        </button>
+      ) : (
+        <div ref={btnRef}>
           <Button
             className="!border-bg--primary-100 !bg-black/10"
             disabled={disabled}
@@ -24,11 +59,15 @@ function SelectItem({ bg, items, size, disabled, icon, btnTitle, onClick, button
             {btnTitle}
           </Button>
         </div>
-        {isOpen && (
-          <div
-            className={`absolute right-0 z-50 mt-1 flex min-w-max animate-slideDown
-           flex-col divide-y divide-bg--primary-100  rounded text-text--primary
-           shadow transition-all duration-200  ${bg ? bg : 'bg-bg--primary-500'}`}
+      )}
+      {tooltipData && (
+        <Tooltip position={tooltipData.position}>
+          <AutoCloseWindow
+            refItems={btnRef.current}
+            set={setTooltipData}
+            className={` mt-2 flex  min-w-32 animate-slideDown flex-col rounded 
+              text-text--primary shadow-xl transition-all duration-200 
+            ${bg ? bg : 'bg-bg--primary-500'} ${width ? width + `w-[${width}px]` : 'w-max'}`}
           >
             {items.map((item, index) => {
               return (
@@ -42,10 +81,10 @@ function SelectItem({ bg, items, size, disabled, icon, btnTitle, onClick, button
                 />
               );
             })}
-          </div>
-        )}
-      </div>
-    </AutoCloseWindow>
+          </AutoCloseWindow>
+        </Tooltip>
+      )}
+    </>
   );
 }
 
@@ -55,7 +94,7 @@ function Item({ item, onClick, size, icon, disabled }) {
     return (
       <button
         disabled={disabled}
-        className="px flex items-center gap-1  px-4 py-2  text-text--primary hover:bg-white/5"
+        className="px flex items-center gap-1 px-4 py-2  text-text--primary hover:bg-white/5"
         onClick={onClick}
         id={item}
       >
@@ -67,11 +106,11 @@ function Item({ item, onClick, size, icon, disabled }) {
     return (
       <button
         disabled={disabled}
-        className="flex items-center gap-1 px-3 py-1 text-sm text-text--primary hover:bg-white/5"
+        className=" flex items-center gap-1 px-3 py-1 text-sm capitalize text-text--primary hover:bg-white/5"
         onClick={onClick}
         id={item}
       >
-        <span className=" material-symbols-outlined scale-[0.70]">{icon}</span>
+        <span className=" material-symbols-outlined text-lg font-light">{icon}</span>
         {item}
       </button>
     );

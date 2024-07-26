@@ -50,3 +50,51 @@ export async function createStudent(stdData) {
       }
     }
   }
+
+  export async function updateStudent({studentId, newData }) {
+      try {
+        const response = await axios.patch(`${BASE_URL}/students/${studentId}`, newData,{
+          withCredentials:true,
+          timeout:10000
+        });
+        return response.data
+      } catch (error) {
+        if (error.response) {
+            console.error("Server responded with an error:", error.response.data);
+            throw new Error(
+              `Server error: ${error.response.data.message || "An unexpected server error occurred."} `,
+            );
+          } else if (error.request) {
+            console.error("No response received:", error.request);
+            throw new Error("No response received from the server.");
+          } else {
+            console.error("Error update student:", error.message);
+            throw new Error("Error update student.");
+          }
+      }
+
+  }
+
+
+  export async function deleteStudent(studentId) {
+      try {
+        await axios.delete(`${BASE_URL}/students/${studentId}`,{
+          withCredentials:true,
+          timeout:10000
+        });
+      } catch (error) {
+        if (error.response) {
+           console.error("Server responded with an error:", error.response.data);
+            throw new Error(
+              `Server error: ${error.response.data.message || "An unexpected server error occurred."} `,
+            );
+           } else if (error.request) {
+            console.error("No response received:", error.request);
+            throw new Error("No response received from the server.");
+           } else {
+            console.error("Error deleting student from database:", error.message);
+            throw new Error("Failed to delete student. Please try again.");
+           }
+      }
+
+  }
