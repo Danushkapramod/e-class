@@ -7,9 +7,9 @@ export default function useClasses(query) {
   const location = useLocation();
   const [queryParams, setQueryParams] = useState();
 
-  useEffect(() => {
-    setQueryParams(query || location.search);
-  }, [location.search, query]);
+  // useEffect(() => {
+  //   setQueryParams(query || location.search);
+  // }, [location.search, query]);
 
   const {
     data: classes,

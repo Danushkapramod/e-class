@@ -1,15 +1,19 @@
 import { useEffect, useRef, useState } from 'react';
 import Button from '../ui/components/Button';
 import useCreateStudent from './useCreateStudent';
-import useStudents from './useStudents';
+import { useStudentsInTeacher } from './useStudents';
 import { useForm } from 'react-hook-form';
 import { Form } from 'react-router-dom';
 import SelectItem from '../ui/components/SelectItem';
 import Tooltip from '../ui/components/Potral';
 import useUpdateStudent from './useUpdateStudent';
 import useDeleteStudent from './useDeleteStudent';
+import { StudentFilter, StudentSearch } from './StudentTableOperations';
+import { useSelector } from 'react-redux';
 
 function StudentTable() {
+  const [searchQuery, setSearchQuery] = useState();
+  const [filterQuery, setFilterQuery] = useState();
   const [fIsopen, setFIsOpen] = useState(false);
 
   return (
@@ -20,29 +24,13 @@ function StudentTable() {
         bg-bg--primary-200 pb-2 pt-3 text-text--primary"
       >
         <div className=" flex items-end justify-between px-2">
-          <div className=" relative flex items-center">
-            <input
-              placeholder="Find"
-              className=" rounded border border-border-2 
-              bg-bg--primary-200 px-8 py-[0.375rem] text-sm outline-none "
-              type="text"
-            />
-            <span className="material-symbols-outlined absolute rounded-sm pl-2 text-lg ">
-              search
-            </span>
-          </div>
+          <StudentSearch setQuery={setSearchQuery} />
           <div className=" flex gap-2">
-            <button
-              className=" flex items-center gap-1 rounded border border-border-2 
-             bg-white/5 py-1 pl-2 pr-3 text-sm "
-            >
-              <span className=" material-symbols-outlined text-base">filter_alt</span>
-              Filter
-            </button>
-
+            <StudentsOnTable />
+            <StudentFilter setQuery={setFilterQuery} />
             <button
               onClick={() => setFIsOpen(!fIsopen)}
-              className="rounded bg-blue-600 px-6 py-[4px] 
+              className="rounded bg-blue-600 px-6 
                 text-sm uppercase text-slate-100 hover:bg-blue-700"
             >
               ADD Student
@@ -52,13 +40,19 @@ function StudentTable() {
 
         {fIsopen && <StdForm set={setFIsOpen} />}
       </div>
-      <Table />
+      <Table queries={[searchQuery, filterQuery]} />
     </div>
   );
 }
 
-function Table() {
-  const { students, isLoading } = useStudents();
+function StudentsOnTable() {
+  const { totalStudentsOntable } = useSelector((store) => store.student);
+  return <div className=" flex items-end px-2 text-sm">{totalStudentsOntable} results</div>;
+}
+
+function Table({ queries }) {
+  const { students, isLoading } = useStudentsInTeacher(queries);
+
   return (
     <div className=" z-0 max-h-[30rem] overflow-auto rounded-b  ">
       <table
@@ -299,7 +293,7 @@ function HoverInfo({ student }) {
                 <p className="w-full pl-2 capitalize"> {status}</p>
               </div>
               <div className="flex  justify-between">
-                <p className="basis-[60%]">Status set</p>:{' '}
+                <p className="basis-[60%] ">Status At</p>:{' '}
                 <p className="w-full pl-2">
                   {' '}
                   {new Date(statusChangedAt).toLocaleString() || '-----'}
@@ -315,7 +309,7 @@ function HoverInfo({ student }) {
 
 function StdForm({ set }) {
   const { isPending, mutate } = useCreateStudent();
-  const { setValue, setFocus, handleSubmit, register, control } = useForm();
+  const { setValue, getValues, setFocus, watch, handleSubmit, register, control } = useForm();
 
   useEffect(() => {
     setFocus('name');
@@ -337,45 +331,69 @@ function StdForm({ set }) {
       className=" flex items-center justify-between border-b border-t border-bg--primary-100 px-2 py-2"
     >
       <div className=" flex items-end gap-2">
-        <div>
-          <input
-            {...register('name')}
-            name="name"
-            placeholder="Name"
-            className="  rounded border border-border-2 
+        <input
+          {...register('name')}
+          name="name"
+          placeholder="Name"
+          className="  rounded border border-border-2 
                 bg-bg--primary-200 px-4 py-2 text-sm outline-none"
-            type="text"
-          />
-        </div>
-        <div>
+          type="text"
+        />
+        <input
+          {...register('phone')}
+          name="phone"
+          placeholder="Phone"
+          className="  rounded border border-border-2 bg-bg--primary-200 px-4 py-2 text-sm outline-none"
+          type="text"
+        />
+        {watch('sendQr_gmail') && (
           <input
-            {...register('phone')}
-            name="phone"
-            placeholder="Phone"
+            {...register('gmail')}
+            name="gmail"
+            placeholder="Gmail"
             className="  rounded border border-border-2 bg-bg--primary-200 px-4 py-2 text-sm outline-none"
-            type="text"
+            type="email"
           />
+        )}
+
+        <div className=" flex flex-col justify-center  text-sm">
+          <div className="text-gray-400">SEND-QR</div>
+          <div className=" flex gap-2">
+            <div className=" flex items-center">
+              <input
+                {...register('sendQr_whatsapp')}
+                id="checkbox"
+                name="sendQr_whatsapp"
+                type="checkbox"
+                defaultChecked
+                className="h-4 w-4 rounded border-gray-300 bg-gray-600 text-blue-600 focus:ring-2 focus:ring-blue-500"
+              />
+              <label htmlFor="checkbox" className="ms-2 text-sm font-medium text-gray-400 ">
+                Whatsapp
+              </label>
+            </div>
+
+            <div className=" flex items-center">
+              <input
+                {...register('sendQr_gmail')}
+                id="checkbox"
+                name="sendQr_gmail"
+                type="checkbox"
+                className="h-4 w-4 rounded border-gray-300 bg-gray-600 text-blue-600 focus:ring-2 focus:ring-blue-500"
+              />
+              <label htmlFor="checkbox" className="ms-2 text-sm font-medium text-gray-400 ">
+                Gmail
+              </label>
+            </div>
+          </div>
         </div>
-        <div className=" flex items-center">
-          <input
-            {...register('sendQr')}
-            id="checkbox"
-            name="sendQr"
-            type="checkbox"
-            defaultChecked
-            className="h-4 w-4 rounded border-gray-300 bg-gray-600 text-blue-600 focus:ring-2 focus:ring-blue-500"
-          />
-          <label htmlFor="checkbox" className="ms-2 text-sm font-medium text-gray-400 ">
-            send-qr
-          </label>
-          <input
-            {...register('status')}
-            value="unpaid"
-            name="status"
-            type="text"
-            className="hidden"
-          />
-        </div>
+        <input
+          {...register('status')}
+          value="unpaid"
+          name="status"
+          type="text"
+          className="hidden"
+        />
       </div>
 
       <div className=" flex items-center gap-3 ">

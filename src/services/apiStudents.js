@@ -1,6 +1,7 @@
 import axios from "axios";
 import { BASE_URL } from "./apiData";
 
+
 export async function createStudent(stdData) {
     try {
     const res = await axios.post(`${BASE_URL}/students`, stdData,{
@@ -26,19 +27,22 @@ export async function createStudent(stdData) {
   }
   
 
-  export async function getStudents() {
+  export async function getStudents({queryParams,signal}) {
     try {
-      const response = await axios.get(`${BASE_URL}/students`,{
+        let query;
+        queryParams ? (query = `?${queryParams}`) : (query = "");
+
+        const response = await axios.get(`${BASE_URL}/students${query}`,{
         withCredentials:true,
+        signal,
         timeout:6000
       });
       return response.data.body.students;
-    
+      
     } catch (error) {
       if (error.response) {
-      
         console.error('Error Data:', error.response.data);
-        throw new Error('Failed to fetch students. Server responded with error.');
+        throw new Error('Error Data:', error.response.data);
       } else if (error.request) {
   
         console.error('No response received:', error.request);
@@ -48,7 +52,7 @@ export async function createStudent(stdData) {
         console.error('Error during request setup:', error.message);
         throw new Error('Failed to fetch students. Request setup error.');
       }
-    }
+    } 
   }
 
   export async function updateStudent({studentId, newData }) {

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 
-function AutoCloseWindow({ children, set, refItems, className }) {
+function AutoCloseWindow({ children, set, refItems = [], className }) {
   const ref = useRef();
 
   const clickOutside = useCallback(

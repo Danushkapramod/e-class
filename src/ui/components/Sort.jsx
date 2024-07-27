@@ -1,15 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Button from './Button';
 import AutoCloseWindow from './AutoCloseWindow';
 //import SelectItem from "./SelectItem";
 
-function Sort({ sortData, setSort, isSorted }) {
+function Sort({ settled, sortData, icon, btnText, setSort, isSorted }) {
   const [isOpen, setIsOpen] = useState(false);
   const [select, setSelect] = useState('none');
+  const btnRef = useRef();
 
   useEffect(() => {
     setSort(select);
   }, [select, setSort]);
+
+  useEffect(() => {
+    setIsOpen(false);
+  }, [settled]);
 
   function optionClick() {
     setIsOpen(!isOpen);
@@ -18,47 +23,49 @@ function Sort({ sortData, setSort, isSorted }) {
   function selectHandler() {}
 
   return (
-    <AutoCloseWindow set={setIsOpen}>
-      <div className=" relative">
+    <div className=" relative">
+      <div ref={btnRef}>
         <Button
           className={'!border-bg--primary-100 !text-text--primary'}
           onClick={optionClick}
           type="smallSecondery"
-          icon="sort"
+          icon={icon || 'sort'}
         >
-          Sort
+          {btnText || 'Sort'}
         </Button>
-        {isSorted ? (
-          <div
-            className="
-             te absolute  right-0  top-0 flex h-4 w-4
+      </div>
+      {isSorted ? (
+        <div
+          className="
+             te absolute right-0 top-0 flex aspect-square h-3
               -translate-y-[50%] translate-x-[20%] items-center justify-center 
               rounded-full   bg-bg--secondery-2 text-sm "
-          ></div>
-        ) : null}
-        {isOpen && (
-          <div
-            className={` absolute  right-0 z-50 mt-1 flex   
+        ></div>
+      ) : null}
+      {isOpen && (
+        <AutoCloseWindow
+          set={setIsOpen}
+          refItems={btnRef.current}
+          className={` absolute  right-0 z-50 mt-1 flex   
             flex-col divide-y
            divide-bg--primary-100 rounded border
            border-bg--primary-100 bg-bg--primary-300 `}
-          >
-            {sortData.map((item, index) => {
-              return (
-                <Item
-                  title={item.title}
-                  select={select}
-                  onClick={selectHandler}
-                  sortBy={item.sortBy}
-                  setSelect={setSelect}
-                  key={index}
-                />
-              );
-            })}
-          </div>
-        )}
-      </div>
-    </AutoCloseWindow>
+        >
+          {sortData.map((item, index) => {
+            return (
+              <Item
+                title={item.title}
+                select={select}
+                onClick={selectHandler}
+                sortBy={item.sortBy}
+                setSelect={setSelect}
+                key={index}
+              />
+            );
+          })}
+        </AutoCloseWindow>
+      )}
+    </div>
   );
 }
 
