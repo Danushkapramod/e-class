@@ -75,7 +75,7 @@ export default function ClassForm() {
       startTime: data.classTime,
       duration: data.duration,
       charging: data.charging,
-      avatar: data.class_poster[0],
+      avatar: data.avatar[0] || undefined,
     };
 
     addSubject(data.subject);
@@ -195,9 +195,9 @@ export default function ClassForm() {
             <div className="flex items-center justify-between">
               <label>Class Time</label>
               <input
-                className="outline-border-2 w-full basis-2/3 
-                rounded bg-bg--primary-200 px-4  py-[10px] 
-                outline outline-1 focus:outline-2 focus:outline-blue-500"
+                className="w-full basis-2/3 rounded 
+                bg-bg--primary-200 px-4 py-[10px]  outline 
+                outline-1 outline-border-2 focus:outline-2 focus:outline-blue-500"
                 type="time"
                 defaultChecked={false}
                 id="classTime"
@@ -269,19 +269,19 @@ export default function ClassForm() {
             <div className=" flex  items-center justify-between ">
               <label>Class Poster</label>
               <div
-                className=" border-border-2 relative flex basis-2/3
-                 items-center rounded border px-2"
+                className=" relative flex basis-2/3 items-center
+                 rounded border border-border-2 px-2"
               >
                 <label
                   className=" absolute   inline-block  cursor-pointer
                   rounded bg-indigo-600 px-3 py-1.5 font-medium text-slate-200 "
-                  htmlFor="class_poster"
+                  htmlFor="avatar"
                 >
                   Upload File
                 </label>
                 <input
-                  id="class_poster"
-                  {...register('class_poster')}
+                  id="avatar"
+                  {...register('avatar')}
                   className=" -z-10 w-full py-2 pl-1 "
                   type="file"
                 ></input>

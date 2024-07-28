@@ -309,7 +309,7 @@ function HoverInfo({ student }) {
 
 function StdForm({ set }) {
   const { isPending, mutate } = useCreateStudent();
-  const { setValue, getValues, setFocus, watch, handleSubmit, register, control } = useForm();
+  const { setValue, setFocus, watch, handleSubmit, register, control } = useForm();
 
   useEffect(() => {
     setFocus('name');

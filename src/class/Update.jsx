@@ -47,7 +47,9 @@ function Update() {
     defaultValues: useMemo(() => {
       return {
         ...selectedClassData,
+        avatar: undefined,
         teacher: selectedClassData?.teacher?.name,
+        teacherId: selectedClassData?.teacher?._id,
       };
     }, [selectedClassData]),
   });
@@ -56,8 +58,8 @@ function Update() {
     const newData = {
       ...data,
       teacher: data.teacherId,
-      avatarDbUrl: selectedClassData.avatar,
-      avatarFile: data.class_poster[0],
+      avatarDbUrl: selectedClassData.avatar || undefined,
+      avatarFile: data.avatar[0],
     };
     mutate({ classId, newData });
   };
@@ -242,13 +244,13 @@ function Update() {
                 <label
                   className=" absolute   inline-block  cursor-pointer
                   rounded bg-indigo-600 px-3 py-1.5 font-medium text-slate-200 "
-                  htmlFor="class_poster"
+                  htmlFor="avatar"
                 >
                   Upload File
                 </label>
                 <input
-                  id="class_poster"
-                  {...register('class_poster')}
+                  id="avatar"
+                  {...register('avatar')}
                   className=" -z-10 w-full py-2 pl-1 "
                   type="file"
                 ></input>

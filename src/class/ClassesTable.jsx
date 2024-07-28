@@ -114,7 +114,7 @@ function CardItem({ classData }) {
       navigate(`/app/classes/${_id}`);
     }
     if (e.target.id === 'delete') {
-      mutate({ classId: _id, avatarDbUrl: avatar });
+      mutate(_id);
     }
   }
 

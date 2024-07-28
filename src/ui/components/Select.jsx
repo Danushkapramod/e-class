@@ -21,7 +21,6 @@ function Select({
   const [isOpen, setIsOpen] = useState(false);
   const [value, setValue_] = useState(initial);
 
-  const { theme } = useSelector((store) => store.global);
   const { searchResults, setQuery } = useClientSearch(data, {
     type: 'obj',
     valueName: valueName,
@@ -37,7 +36,7 @@ function Select({
       <div className="relative h-full">
         <button
           onClick={optionClick}
-          className="bg-optinal-1 mr-0.5 flex justify-center  rounded-sm px-2 py-[8px]"
+          className="mr-0.5 flex justify-center rounded-sm  bg-optinal-1 px-2 py-[8px]"
         >
           {value}
           <div className="material-symbols-outlined scale-75">unfold_more</div>
@@ -64,31 +63,20 @@ function Select({
                   )}
                 </div>
               </div>
-              <ul
-                onClick={(e) => {
-                  setIsOpen(false);
-                  if (setValueId) {
-                    setValueId(e.target.getAttribute('data-valueId'));
-                  }
-                  if (showValue) {
-                    setValue_(e.target.getAttribute('data-value'));
-                  }
-
-                  setValue(e.target.getAttribute('data-value'));
-                }}
-                className=" mt-2 max-h-60 w-full   divide-y divide-bg--primary-100 overflow-auto  rounded-b text-base "
-              >
+              <ul className=" mt-2 max-h-60 w-full   divide-y divide-bg--primary-100 overflow-auto  rounded-b text-base ">
                 {!isLoading ? (
                   searchResults.map((data, index) => {
                     return (
-                      <li
-                        data-value={data[valueName || 'name']}
-                        data-valueId={data[idName || 'id']}
+                      <SelectOption
+                        value={data[valueName]}
                         key={index}
-                        className={`cursor-pointer  px-3 py-1 ${theme === 'dark' ? 'hover:bg-white/5' : 'hover:bg-black/5'}`}
-                      >
-                        {data[valueName || 'name']}
-                      </li>
+                        valueId={data[idName]}
+                        showValue={showValue}
+                        setValue_={setValue_}
+                        setValue={setValue}
+                        setValueId={setValueId}
+                        setIsOpen={setIsOpen}
+                      />
                     );
                   })
                 ) : (
@@ -102,6 +90,31 @@ function Select({
         )}
       </div>
     </AutoCloseWindow>
+  );
+}
+
+function SelectOption({ value, valueId, setIsOpen, setValueId, setValue, showValue, setValue_ }) {
+  const { theme } = useSelector((store) => store.global);
+  function clickHandler() {
+    if (setValueId) {
+      setValueId(valueId);
+    }
+    if (showValue) {
+      setValue_(value);
+    }
+    if (setValue) {
+      setValue(value);
+    }
+    setIsOpen(false);
+  }
+
+  return (
+    <li
+      onClick={clickHandler}
+      className={`cursor-pointer  px-3 py-1 ${theme === 'dark' ? 'hover:bg-white/5' : 'hover:bg-black/5'}`}
+    >
+      {value}
+    </li>
   );
 }
 

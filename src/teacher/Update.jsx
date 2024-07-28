@@ -13,9 +13,7 @@ function Update() {
   const { teachers } = useTeachers();
   const { isUpdating, mutate } = useUpdateTeacher();
 
-  const teacherData = teachers?.filter((teacherData) => {
-    return teacherData._id === id;
-  });
+  const teacherData = teachers?.find((teacherData) => teacherData._id === id);
 
   const {
     register,
@@ -24,15 +22,15 @@ function Update() {
     formState: { errors },
   } = useForm({
     defaultValues: useMemo(() => {
-      return teacherData ? teacherData[0] : [];
+      return { ...teacherData, avatar: undefined };
     }, [teacherData]),
   });
 
   const onSubmit = (data) => {
     const newData = {
       ...data,
-      avatarFile: data.image[0],
-      avatarDbUrl: teacherData[0]?.image,
+      avatarDbUrl: teacherData.avatar || undefined,
+      avatarFile: data.avatar[0],
     };
     mutate({ teacherId: id, newData });
   };
@@ -81,21 +79,21 @@ function Update() {
         </div>
 
         <div className=" flex  items-center justify-between ">
-          <label>Class Poster</label>
+          <span>Class Poster</span>
           <div
-            className=" border-bg--secondery-300 relative flex basis-2/3 
+            className=" border-bg--secondery-300 relative z-0 flex basis-2/3 
               items-center rounded border border-border-2 px-2"
           >
             <label
-              className=" absolute inline-block cursor-pointer 
-                 rounded bg-indigo-600 px-3 py-1.5 font-medium "
-              htmlFor="image"
+              className="absolute inline-block cursor-pointer 
+                  rounded bg-indigo-600 px-3 py-1.5 font-medium "
+              htmlFor="avatar"
             >
               Upload File
             </label>
             <input
-              id="image"
-              {...register('image')}
+              id="avatar"
+              {...register('avatar')}
               className=" -z-10 w-full py-2 pl-1 "
               type="file"
             ></input>

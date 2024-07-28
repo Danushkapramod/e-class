@@ -1,6 +1,6 @@
 import axios from "axios";
 import { BASE_URL } from "./apiData";
-import { deleteFile, updateAvatar, uploadFile } from "./apiUploads";
+import { deleteFile} from "./apiUploads";
 
 
 
@@ -33,90 +33,80 @@ export async function getTeachers(queryParams) {
 
 export async function createTeacher(teacherData) {
   try {
-    let avatar;
-    if (teacherData.avatar) {
-      try {
-        avatar = await uploadFile("assets/images/teacher-avatars", teacherData.avatar);
-      } catch (uploadError) {
-        console.error('Error uploading avatar image:', uploadError);
-        throw new Error('Failed to upload avatar image. Please try again.');
-      }
-    }
-    //  save teacher data including the avatar URL if available
-    try {
-      await axios.post(`${BASE_URL}/teachers`, { ...teacherData, avatar },{
-        withCredentials:true,
-        timeout:10000
+      const formData = new FormData();
+      Object.entries(teacherData).forEach(([key, value]) => {
+         formData.append(key, value); 
       });
+  
+      if (!teacherData.avatar) {
+         formData.delete('avatar') 
+       }
+      const response = await axios.post(`${BASE_URL}/teachers`,formData,{
+          withCredentials:true,
+          timeout:10000
+       });
+       return response.data
     } catch (apiError) {
       console.error('Error saving teacher data:', apiError);
       throw new Error('Failed to save teacher data. Please try again.');
     }
-  } catch (error) {
-    console.error('Error creating teacher:', error);
-  }
+  
 }
+
+function formDataToObject(formData) {
+  const obj = {};
+  formData.forEach((value, key) => {
+    // If the key already exists, convert the value to an array
+    if (obj.hasOwnProperty(key)) {
+      obj[key] = [].concat(obj[key], value);
+    } else {
+      obj[key] = value;
+    }
+  });
+  return obj;
+}
+
 
 export async function updateTeacher({teacherId, newData }) {
   try {
-    let avatar;
-    // Update avatar if a new avatar file is provided
-    if (newData.avatarFile) {
-      try {
-        avatar = await updateAvatar(newData.avatarFile, newData.avatarDbUrl, "assets/images/teacher-avatars");
-      } catch (updateAvatarError) {
-        console.error('Error updating avatar:', updateAvatarError);
-        throw new Error('Failed to update avatar. Please try again.');
-      }
-    } else {
-      avatar = newData.avatarDbUrl;
-    }
-    // Clean up newData object
-    delete newData.avatarDbUrl;
-    delete newData.avatarFile;
-    // Update teacher data
-    try {
-      await axios.patch(`${BASE_URL}/teachers/${teacherId}`, { ...newData, avatar },{
-        withCredentials:true,
-        timeout:10000
-      });
+    const formData = new FormData();
+    Object.entries(newData).forEach(([key, value]) => {
+     if (key !== 'avatarFile' && key !== 'avatarDbUrl' && key !== 'avatar') { 
+       formData.append(key, value);
+     }
+   });
+   
+   if (newData.avatarFile && newData.avatarDbUrl) {
+     formData.append('avatar', newData.avatarFile); 
+     formData.append('oldAvatar', newData.avatarDbUrl); 
+
+   }else if (newData.avatarFile) {
+     formData.append('avatar', newData.avatarFile); 
+   }
+    await axios.patch(`${BASE_URL}/teachers/${teacherId}`, formData,{
+       withCredentials:true,
+       timeout:10000,
+     });
+     
     } catch (apiError) {
       console.error('Error updating teacher data:', apiError);
       throw new Error('Failed to update teacher data. Please try again.');
     }
-  } catch (error) {
-    console.error('Error in updateTeacher:', error);
-  }
 }
 
 
-export async function deleteTeacher({teacherId, avatarDbUrl}) {
+export async function deleteTeacher(teacherId) {
   try {
-     
-    try {
-      await axios.delete(`${BASE_URL}/teachers/${teacherId}`,{
-        withCredentials:true,
-        timeout:10000
-      });
-    } catch (apiError) {
-      console.error('Error deleting teacher from database:', apiError);
-      throw new Error('Failed to delete teacher data. Please try again.');
-    }
-  // If an avatar URL is provided, attempt to delete the avatar image from S3
-    if (avatarDbUrl) {
-      try {
-        await deleteFile(avatarDbUrl.split("amazonaws.com/")[1]);
+    await axios.delete(`${BASE_URL}/teachers/${teacherId}`,{
+      withCredentials:true,
+      timeout:10000
+     });
       } catch (s3Error) {
-        console.error('Error deleting avatar image from S3:', s3Error);
+        console.error('Error deleting avatar:', s3Error);
         throw new Error('Failed to delete avatar image. Please try again.');
       }
-    }
-  } catch (error) {
-    console.error('Error deleting teacher:', error);
-    alert(error.message);
   }
-}
-
+ 
 
 export async function getTeachersCount() {
   try {

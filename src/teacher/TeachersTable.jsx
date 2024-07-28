@@ -88,7 +88,7 @@ function CardItem({ teacherData }) {
       navigate(`/app/teachers/${teacherId}`);
     }
     if (e.target.id === 'delete') {
-      mutate({ teacherId, avatarDbUrl: avatar });
+      mutate(teacherId);
     }
   }
 
