@@ -31,8 +31,9 @@ function Button({
   const smallPrimary = `text-slate-200 flex items-center 
                           rounded transition-all duration-100
                           hover:bg-blue-700 active:bg-blue-500 shadow-sm
-                          bg-blue-600 px-2 py-1 text-sm uppercase
-                          ${children && icon && 'gap-1'}`;
+                          bg-blue-600  py-1 text-sm uppercase
+                          ${children && icon && 'gap-1'}
+                          ${!children && icon ? 'px-1' : 'px-3'}`;
 
   const primary = `text-slate-200 flex items-center 
                          gap-2 rounded  bg-blue-600 px-[15px] py-[7px] text-base 

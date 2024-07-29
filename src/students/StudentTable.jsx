@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import Button from '../ui/components/Button';
 import useCreateStudent from './useCreateStudent';
 import { useStudentsInTeacher } from './useStudents';
@@ -10,76 +10,133 @@ import useUpdateStudent from './useUpdateStudent';
 import useDeleteStudent from './useDeleteStudent';
 import { StudentFilter, StudentSearch } from './StudentTableOperations';
 import { useSelector } from 'react-redux';
+import { StdTableContext } from './TableContext';
 
 function StudentTable() {
-  const [searchQuery, setSearchQuery] = useState();
-  const [filterQuery, setFilterQuery] = useState();
-  const [fIsopen, setFIsOpen] = useState(false);
+  const { state, updateFormState } = useContext(StdTableContext);
 
   return (
     <div className=" flex min-w-[30rem] max-w-[80rem] grow flex-col  ">
       <div
-        className="flex w-full  flex-col justify-between gap-2 rounded-t 
-        border border-bg--primary-100 
-        bg-bg--primary-200 pb-2 pt-3 text-text--primary"
+        className="flex w-full  flex-col justify-between gap-2 rounded-t border 
+        border-bg--primary-100 bg-bg--primary-200 pb-2 pt-3 text-text--primary"
       >
         <div className=" flex items-end justify-between px-2">
-          <StudentSearch setQuery={setSearchQuery} />
+          <StudentSearch />
           <div className=" flex gap-2">
             <StudentsOnTable />
-            <StudentFilter setQuery={setFilterQuery} />
-            <button
-              onClick={() => setFIsOpen(!fIsopen)}
-              className="rounded bg-blue-600 px-6 
-                text-sm uppercase text-slate-100 hover:bg-blue-700"
-            >
-              ADD Student
-            </button>
+            <StudentFilter />
+            <Button onClick={() => updateFormState(!state.addFormIsOpen)} type="smallPrimary">
+              ADD ATUDENT
+            </Button>
           </div>
         </div>
-
-        {fIsopen && <StdForm set={setFIsOpen} />}
+        {state.addFormIsOpen && <StdForm />}
+        {state.selectedList.length > 0 && <Operation />}
       </div>
-      <Table queries={[searchQuery, filterQuery]} />
+      <Table />
+    </div>
+  );
+}
+
+export function Operation() {
+  const { state, updateSelectedList } = useContext(StdTableContext);
+  const { students, isLoading } = useStudentsInTeacher([state.searchQuery, state.filterQuery]);
+
+  return (
+    <div className="flex h-14 w-full items-center gap-1 px-4">
+      <div className=" mr-2">
+        <Checkbox
+          id="dgtfuy"
+          trueCall={() => {
+            const allIdList = students?.map((std) => std._id);
+            updateSelectedList('addAll', allIdList);
+          }}
+          falseCall={() => {
+            if (state.selectedList.length > 1) {
+              updateSelectedList('clear');
+            }
+          }}
+        />
+      </div>
+      <SelectItem
+        buttonType="smallSecondery"
+        btnTitle="Export"
+        icon={'download'}
+        items={[
+          ['update', 'edit'],
+          ['view', 'wysiwyg'],
+          ['delete', 'delete'],
+        ]}
+      />
+
+      <SelectItem
+        buttonType="smallSecondery"
+        btnTitle="Delete"
+        icon="delete"
+        items={[
+          ['update', 'edit'],
+          ['view', 'wysiwyg'],
+          ['delete', 'delete'],
+        ]}
+      />
+      <SelectItem
+        buttonType="smallSecondery"
+        btnTitle="Status"
+        icon="delete"
+        items={[
+          ['update', 'edit'],
+          ['view', 'wysiwyg'],
+          ['delete', 'delete'],
+        ]}
+      />
     </div>
   );
 }
 
 function StudentsOnTable() {
   const { totalStudentsOntable } = useSelector((store) => store.student);
-  return <div className=" flex items-end px-2 text-sm">{totalStudentsOntable} results</div>;
+  return <div className=" flex items-end px-2 text-sm">{`${totalStudentsOntable} results`}</div>;
 }
 
-function Table({ queries }) {
-  const { students, isLoading } = useStudentsInTeacher(queries);
+function Table() {
+  const { state } = useContext(StdTableContext);
+  const { students, isLoading } = useStudentsInTeacher([state.searchQuery, state.filterQuery]);
 
   return (
-    <div className=" z-0 max-h-[30rem] overflow-auto rounded-b  ">
-      <table
-        className=" text-smbg-bg--primary-200 w-full rounded-b border-b border-l 
+    <div className=" fle flex-col">
+      <div className=" z-0 max-h-[30rem] overflow-auto  ">
+        <table
+          className=" text-smbg-bg--primary-200 w-full  border-b border-l 
          border-r border-bg--primary-100 bg-bg--primary-200"
-      >
-        <thead>
-          <tr
-            className="sticky -top-[1px] z-10  bg-bg--primary-200 py-2 text-base
+        >
+          <thead>
+            <tr
+              className="sticky -top-[1px] z-10  bg-bg--primary-200 py-2 text-base
              font-medium shadow transition-all duration-100"
-          >
-            <th className=" w-1 py-2 pr-6 text-start "></th>
-            <th className="max-w-[130px] py-2 text-start ">#ID</th>
-            <th className=" py-2 text-start ">Student name</th>
-            <th className="py-2 text-start ">Phone</th>
-            <th className=" py-2 text-start ">Statu</th>
-            <th className="py-2 text-start"></th>
-          </tr>
-        </thead>
-        <tbody className=" divide-y divide-bg--primary-100">
-          {!isLoading
-            ? students?.map((student, index) => {
-                return <TableRow key={index} student={{ ...student, index }} />;
-              })
-            : ''}
-        </tbody>
-      </table>
+            >
+              <th className=" w-1 px-4 py-2 text-start text-text--muted "></th>
+              <th className=" w-1 px-4 py-2 text-start text-text--muted ">#</th>
+              <th className="max-w-[130px] py-2 text-start ">ID</th>
+              <th className=" py-2 text-start ">Student name</th>
+              <th className="py-2 text-start ">Phone</th>
+              <th className=" py-2 text-start ">Status</th>
+              <th className="py-2 text-start"></th>
+            </tr>
+          </thead>
+          <tbody className=" divide-y divide-bg--primary-100">
+            {!isLoading
+              ? students?.map((student, index) => {
+                  return <TableRow key={index} student={{ ...student, index }} />;
+                })
+              : ''}
+          </tbody>
+        </table>
+      </div>
+      <div
+        className=" h-4 w-full rounded-b border 
+      border-bg--primary-100 bg-bg--primary-200"
+      ></div>
     </div>
   );
 }
@@ -93,21 +150,36 @@ const statusOptions = [
 
 function TableRow({ student }) {
   const { name, phone, status, studentId, index, _id } = student;
-
+  const { updateSelectedList, state } = useContext(StdTableContext);
   const { isUpdating, isSuccess, mutate, status: _status } = useUpdateStudent();
   const { isDeleting, mutate: deleteStudent, status: __status } = useDeleteStudent();
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState();
   const [formState, setFormState] = useState({ name, phone });
+  const [isSelected, setIsSelected] = useState();
   const ref1 = useRef();
+
+  console.log(state.selectedList);
+
+  useEffect(() => {
+    const isSelected = state.selectedList.find((itemId) => itemId === _id);
+    if (isSelected) {
+      setIsSelected(true);
+    } else if (!isSelected) {
+      setIsSelected(false);
+    }
+  }, [state]);
 
   useEffect(() => {
     if (isEditing) ref1.current.focus();
   }, [isEditing]);
 
+  useEffect(() => {
+    if (isSuccess) setIsEditing(false);
+  }, [isSuccess]);
+
   function onStatusHandler(e) {
     mutate({ studentId: _id, newData: { status: e.target.id } });
   }
-
   function onSubmitHandler() {
     mutate({
       studentId: _id,
@@ -118,10 +190,8 @@ function TableRow({ student }) {
     });
   }
 
-  useEffect(() => {
-    if (isSuccess) setIsEditing(false);
-  }, [isSuccess]);
-
+  function a() {}
+  function a() {}
   function onSelectHandler(e) {
     if (e.target.id === 'update') {
       setIsEditing(!isEditing);
@@ -131,15 +201,24 @@ function TableRow({ student }) {
       deleteStudent(_id);
     }
   }
-
   let color;
   if (status === 'paid') color = 'bg-green-600';
   if (status === 'unpaid') color = 'bg-orange-600';
   if (status === 'free') color = 'bg-slate-600';
   if (status === 'half') color = 'bg-sky-600';
   return (
-    <tr className=" text-sm">
-      <td className="px-4 py-3 pr-6 ">{(index + 1).toString().padStart(2, '0')}</td>
+    <tr className={`text-sm ${isSelected ? 'bg-bg--primary-300 ' : ''}`}>
+      <td className="px-4">
+        <div className="">
+          <Checkbox
+            id={_id}
+            trueCall={() => updateSelectedList('add', _id)}
+            falseCall={() => updateSelectedList('remove', _id)}
+            _checked={isSelected}
+          />
+        </div>
+      </td>
+      <td className=" py-3 pr-6 text-text--muted ">{(index + 1).toString().padStart(2, '0')}</td>
       <td className="py-3">{studentId}</td>
       <td className="relative py-3 ">
         {isEditing ? (
@@ -162,7 +241,7 @@ function TableRow({ student }) {
           <div className="flex  items-center">
             <input
               onChange={(e) => setFormState({ ...formState, phone: e.target.value })}
-              className=" w-max rounded border  border-border-1
+              className=" w-max rounded border border-border-1
                bg-bg--primary-300 px-2 py-1.5 outline-none"
               type="text"
               value={formState.phone}
@@ -296,7 +375,7 @@ function HoverInfo({ student }) {
                 <p className="basis-[60%] ">Status At</p>:{' '}
                 <p className="w-full pl-2">
                   {' '}
-                  {new Date(statusChangedAt).toLocaleString() || '-----'}
+                  {statusChangedAt ? new Date(statusChangedAt).toLocaleString() : '----------'}
                 </p>
               </div>
             </div>
@@ -307,7 +386,8 @@ function HoverInfo({ student }) {
   );
 }
 
-function StdForm({ set }) {
+function StdForm() {
+  const { updateFormState } = useContext(StdTableContext);
   const { isPending, mutate } = useCreateStudent();
   const { setValue, setFocus, watch, handleSubmit, register, control } = useForm();
 
@@ -404,7 +484,7 @@ function StdForm({ set }) {
           <div
             onClick={(e) => {
               e.preventDefault();
-              set(false);
+              updateFormState(false);
             }}
             className=" material-symbols-outlined flex aspect-square h-8 items-center justify-center
                rounded-full bg-bg--primary-300  text-lg"
@@ -418,3 +498,62 @@ function StdForm({ set }) {
 }
 
 export default StudentTable;
+
+function Checkbox({
+  width,
+  checked,
+  trueCall,
+  falseCall,
+  border,
+  _checked,
+  unchecked,
+  borderColor,
+  setFn,
+  id,
+}) {
+  const [isChecked, seIschecked] = useState(_checked);
+
+  useEffect(() => {
+    if (isChecked) {
+      trueCall();
+    } else {
+      falseCall();
+    }
+  }, [isChecked]);
+
+  return (
+    <div
+      className={`relative z-0 flex aspect-square items-center justify-center
+       ${width ? `w-[${width}] ` : 'w-4'}  ${
+         border ? `border-[${border}]` : ''
+       } ${unchecked ? `bg-[${unchecked}]` : ''}`}
+    >
+      <input
+        id={id}
+        onClick={(e) => seIschecked(e.target.checked)}
+        type="checkbox"
+        checked={_checked}
+        className={`peer h-full w-full appearance-none
+         rounded-sm border bg-transparent ${
+           borderColor ? `border-[${borderColor}]` : 'border-slate-400'
+         }`}
+      />
+      <label
+        className=" absolute inset-0 hidden bg-transparent
+       peer-checked:z-20 peer-checked:flex"
+        htmlFor={id}
+      >
+        <svg
+          className={`rounded-sm ${checked ? `bg-[${checked}]` : ` bg-blue-600`}`}
+          width="100%"
+          height="100%"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 -960 960 960"
+          fill="#e8eaed"
+        >
+          <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z" />
+        </svg>
+      </label>
+    </div>
+  );
+}

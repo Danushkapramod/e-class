@@ -16,6 +16,7 @@ function Select({
   idName,
   isLoading,
   valueName,
+  className,
   showValue,
 }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,63 +33,62 @@ function Select({
   }
 
   return (
-    <AutoCloseWindow set={setIsOpen}>
-      <div className="relative h-full">
-        <button
-          onClick={optionClick}
-          className="mr-0.5 flex justify-center rounded-sm  bg-optinal-1 px-2 py-[8px]"
-        >
-          {value}
-          <div className="material-symbols-outlined scale-75">unfold_more</div>
-        </button>
-        {isOpen && (
-          <div className="absolute right-0 z-20 mt-2 w-full min-w-max text-text--primary">
-            <div className=" rounded border border-bg--primary-100  bg-bg--primary-400">
-              <div>
-                {search && (
-                  <div>
-                    <SearchField
-                      onChange={(e) => setQuery(e.target.value)}
-                      className="w-full rounded-b-none border-0 !bg-bg--primary-200 py-2"
-                    />
-                  </div>
-                )}
-                <div className=" absolute right-1 top-1">
-                  {add && (
-                    <button>
-                      <Button to={add.to} onClick={add.onClick} type="smallSecondery" icon="add">
-                        ADD
-                      </Button>
-                    </button>
-                  )}
+    <AutoCloseWindow className="relative h-full" set={setIsOpen}>
+      <button
+        onClick={optionClick}
+        className={`${className} mr-0.5 flex justify-center rounded-sm bg-optinal-1 px-2 py-[8px] text-sm`}
+      >
+        {value}
+        <div className="material-symbols-outlined scale-75">unfold_more</div>
+      </button>
+
+      {isOpen && (
+        <div className="absolute right-0 z-20 mt-2 w-full min-w-max text-text--primary">
+          <div className=" rounded border border-bg--primary-100  bg-bg--primary-400">
+            <div>
+              {search && (
+                <div>
+                  <SearchField
+                    onChange={(e) => setQuery(e.target.value)}
+                    className="w-full rounded-b-none !border-b border-l-0 border-r-0 border-t-0 !bg-bg--primary-300 py-1.5"
+                  />
                 </div>
-              </div>
-              <ul className=" mt-2 max-h-60 w-full   divide-y divide-bg--primary-100 overflow-auto  rounded-b text-base ">
-                {!isLoading ? (
-                  searchResults.map((data, index) => {
-                    return (
-                      <SelectOption
-                        value={data[valueName]}
-                        key={index}
-                        valueId={data[idName]}
-                        showValue={showValue}
-                        setValue_={setValue_}
-                        setValue={setValue}
-                        setValueId={setValueId}
-                        setIsOpen={setIsOpen}
-                      />
-                    );
-                  })
-                ) : (
-                  <div className=" my-2 flex h-[30px]  scale-[45%]  items-center justify-center">
-                    <FadeLoader color="#FFFFFF" />
-                  </div>
+              )}
+              <div className=" absolute right-1 top-1">
+                {add && (
+                  <button>
+                    <Button to={add.to} onClick={add.onClick} type="smallSecondery" icon="add">
+                      ADD
+                    </Button>
+                  </button>
                 )}
-              </ul>
+              </div>
             </div>
+            <ul className=" max-h-60 w-full overflow-auto rounded text-sm ">
+              {!isLoading ? (
+                searchResults.map((data, index) => {
+                  return (
+                    <SelectOption
+                      value={data[valueName]}
+                      key={index}
+                      valueId={data[idName]}
+                      showValue={showValue}
+                      setValue_={setValue_}
+                      setValue={setValue}
+                      setValueId={setValueId}
+                      setIsOpen={setIsOpen}
+                    />
+                  );
+                })
+              ) : (
+                <div className=" my-2 flex h-[30px]  scale-[45%]  items-center justify-center">
+                  <FadeLoader color="#FFFFFF" />
+                </div>
+              )}
+            </ul>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </AutoCloseWindow>
   );
 }
@@ -111,7 +111,7 @@ function SelectOption({ value, valueId, setIsOpen, setValueId, setValue, showVal
   return (
     <li
       onClick={clickHandler}
-      className={`cursor-pointer  px-3 py-1 ${theme === 'dark' ? 'hover:bg-white/5' : 'hover:bg-black/5'}`}
+      className={`cursor-pointer bg-bg--primary-500 px-3 py-1.5 ${theme === 'dark' ? 'hover:bg-white/5' : 'hover:bg-black/5'}`}
     >
       {value}
     </li>

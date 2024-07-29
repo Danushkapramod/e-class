@@ -124,7 +124,7 @@ function CardItem({ classData }) {
                  border  border-b-4 border-bg--primary-100 border-b-bg--secondery-2
                  bg-bg--primary-200 px-2 py-6 text-text--secondery shadow-md"
     >
-      <div className="  absolute right-2 top-2">
+      <div className="absolute right-2 top-2">
         <SelectItem
           disabled={isDeleting}
           buttonType="xsSecondery"
