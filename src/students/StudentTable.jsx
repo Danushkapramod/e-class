@@ -11,6 +11,7 @@ import useDeleteStudent from './useDeleteStudent';
 import { StudentFilter, StudentSearch } from './StudentTableOperations';
 import { useSelector } from 'react-redux';
 import { StdTableContext } from './TableContext';
+import useOColor from '../utils/getOColor';
 
 function StudentTable() {
   const { state, updateFormState } = useContext(StdTableContext);
@@ -43,21 +44,20 @@ export function Operation() {
   const { state, updateSelectedList } = useContext(StdTableContext);
   const { students, isLoading } = useStudentsInTeacher([state.searchQuery, state.filterQuery]);
 
+  const allIdList = students?.map((std) => std._id);
+
+  function onSelect() {
+    updateSelectedList('addAll', allIdList);
+  }
+  function onUnSelect() {
+    if (state.selectedList.length > 1) {
+      updateSelectedList('clear');
+    }
+  }
   return (
-    <div className="flex h-14 w-full items-center gap-1 px-4">
+    <div className="flex h-14 w-full items-center gap-1.5 px-4">
       <div className=" mr-2">
-        <Checkbox
-          id="dgtfuy"
-          trueCall={() => {
-            const allIdList = students?.map((std) => std._id);
-            updateSelectedList('addAll', allIdList);
-          }}
-          falseCall={() => {
-            if (state.selectedList.length > 1) {
-              updateSelectedList('clear');
-            }
-          }}
-        />
+        <Checkbox id="stdAllSelect" trueCall={onSelect} falseCall={onUnSelect} />
       </div>
       <SelectItem
         buttonType="smallSecondery"
@@ -149,6 +149,7 @@ const statusOptions = [
 ];
 
 function TableRow({ student }) {
+  const theam = useOColor();
   const { name, phone, status, studentId, index, _id } = student;
   const { updateSelectedList, state } = useContext(StdTableContext);
   const { isUpdating, isSuccess, mutate, status: _status } = useUpdateStudent();
@@ -158,16 +159,9 @@ function TableRow({ student }) {
   const [isSelected, setIsSelected] = useState();
   const ref1 = useRef();
 
-  console.log(state.selectedList);
-
   useEffect(() => {
-    const isSelected = state.selectedList.find((itemId) => itemId === _id);
-    if (isSelected) {
-      setIsSelected(true);
-    } else if (!isSelected) {
-      setIsSelected(false);
-    }
-  }, [state]);
+    setIsSelected(state.selectedList.includes(_id));
+  }, [state.selectedList, _id]);
 
   useEffect(() => {
     if (isEditing) ref1.current.focus();
@@ -190,8 +184,14 @@ function TableRow({ student }) {
     });
   }
 
-  function a() {}
-  function a() {}
+  function onAddhandler() {
+    updateSelectedList('add', _id);
+  }
+
+  function onRemoveHandler() {
+    updateSelectedList('remove', _id);
+  }
+
   function onSelectHandler(e) {
     if (e.target.id === 'update') {
       setIsEditing(!isEditing);
@@ -201,19 +201,21 @@ function TableRow({ student }) {
       deleteStudent(_id);
     }
   }
+
   let color;
   if (status === 'paid') color = 'bg-green-600';
   if (status === 'unpaid') color = 'bg-orange-600';
   if (status === 'free') color = 'bg-slate-600';
   if (status === 'half') color = 'bg-sky-600';
+  const bgColor = isSelected ? (theam ? 'bg-black/10' : 'bg-blue-50') : '';
   return (
-    <tr className={`text-sm ${isSelected ? 'bg-bg--primary-300 ' : ''}`}>
+    <tr className={`text-sm ${bgColor}`}>
       <td className="px-4">
         <div className="">
           <Checkbox
             id={_id}
-            trueCall={() => updateSelectedList('add', _id)}
-            falseCall={() => updateSelectedList('remove', _id)}
+            trueCall={onAddhandler}
+            falseCall={onRemoveHandler}
             _checked={isSelected}
           />
         </div>
@@ -398,8 +400,8 @@ function StdForm() {
   function onSubmit(data) {
     mutate(data, {
       onSettled: () => {
-        setValue('name', '');
-        setValue('phone', '');
+        // setValue('name', '');
+        // setValue('phone', '');
         setFocus('name');
       },
     });
@@ -477,7 +479,7 @@ function StdForm() {
       </div>
 
       <div className=" flex items-center gap-3 ">
-        <Button disabled={isPending} spinner={isPending} type="primary">
+        <Button spinner={isPending} type="primary">
           Submit
         </Button>
         <button className=" ">
@@ -511,16 +513,13 @@ function Checkbox({
   setFn,
   id,
 }) {
-  const [isChecked, seIschecked] = useState(_checked);
-
-  useEffect(() => {
-    if (isChecked) {
+  function onCheckHandler(e) {
+    if (e.target.checked) {
       trueCall();
     } else {
       falseCall();
     }
-  }, [isChecked]);
-
+  }
   return (
     <div
       className={`relative z-0 flex aspect-square items-center justify-center
@@ -530,7 +529,7 @@ function Checkbox({
     >
       <input
         id={id}
-        onClick={(e) => seIschecked(e.target.checked)}
+        onClick={onCheckHandler}
         type="checkbox"
         checked={_checked}
         className={`peer h-full w-full appearance-none

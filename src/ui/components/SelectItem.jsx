@@ -50,7 +50,7 @@ function SelectItem({
       ) : (
         <div ref={btnRef}>
           <Button
-            className="!border-bg--primary-100 !bg-black/10"
+            className="!border-border-2  "
             disabled={disabled}
             onClick={optionClick}
             type={buttonType || 'smallSecondery'}

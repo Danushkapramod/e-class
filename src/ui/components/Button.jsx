@@ -154,7 +154,7 @@ function Button({
         className={`${smallSecondery} ${className} `}
       >
         {icon && !spinner && (
-          <span className="material-symbols-outlined scale-[0.80]  ">{icon}</span>
+          <span className="material-symbols-outlined scale-[0.80] font-light  ">{icon}</span>
         )}
         <span className="pt-px">{children}</span>
         {spinner && (
