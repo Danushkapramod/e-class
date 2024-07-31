@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import Button from '../ui/components/Button';
 import useCreateStudent from './useCreateStudent';
 import { useStudentsInTeacher } from './useStudents';
@@ -6,18 +6,28 @@ import { useForm } from 'react-hook-form';
 import { Form } from 'react-router-dom';
 import SelectItem from '../ui/components/SelectItem';
 import Tooltip from '../ui/components/Potral';
-import useUpdateStudent from './useUpdateStudent';
-import useDeleteStudent from './useDeleteStudent';
+import useUpdateStudent, { useUpdateManyStudents } from './useUpdateStudent';
+import useDeleteStudent, { useDeleteManyStudents } from './useDeleteStudent';
 import { StudentFilter, StudentSearch } from './StudentTableOperations';
 import { useSelector } from 'react-redux';
 import { StdTableContext } from './TableContext';
 import useOColor from '../utils/getOColor';
+import Exports from '../ui/components/Exports';
+import Pagination from '../ui/components/Pagination';
+import { getStudentsCount } from '../services/apiStudents';
+
+const statusOptions = [
+  ['paid', 'paid'],
+  ['unpaid', 'pending'],
+  ['half', 'side_navigation'],
+  ['free', 'published_with_changes'],
+];
 
 function StudentTable() {
   const { state, updateFormState } = useContext(StdTableContext);
 
   return (
-    <div className=" flex min-w-[30rem] max-w-[80rem] grow flex-col  ">
+    <div className=" flex min-w-[30rem] max-w-[80rem] grow flex-col shadow">
       <div
         className="flex w-full  flex-col justify-between gap-2 rounded-t border 
         border-bg--primary-100 bg-bg--primary-200 pb-2 pt-3 text-text--primary"
@@ -26,6 +36,17 @@ function StudentTable() {
           <StudentSearch />
           <div className=" flex gap-2">
             <StudentsOnTable />
+            <Pagination getTotal={getStudentsCount} />
+            <Exports
+              size="small"
+              category="student"
+              btnType="smallSecondery"
+              items={[
+                ['Payments Sheet', 'edit'],
+                ['Export to PDF', 'wysiwyg'],
+                ['Export to CSV', 'delete'],
+              ]}
+            />
             <StudentFilter />
             <Button onClick={() => updateFormState(!state.addFormIsOpen)} type="smallPrimary">
               ADD ATUDENT
@@ -42,11 +63,20 @@ function StudentTable() {
 
 export function Operation() {
   const { state, updateSelectedList } = useContext(StdTableContext);
-  const { students, isLoading } = useStudentsInTeacher([state.searchQuery, state.filterQuery]);
+  const { students } = useStudentsInTeacher([state.searchQuery, state.filterQuery]);
+  const { isDeleting, mutate: deleteMany } = useDeleteManyStudents();
+  const { isUpdating, mutate: updateMany } = useUpdateManyStudents();
 
-  const allIdList = students?.map((std) => std._id);
+  function onDeletsHandler() {
+    deleteMany({ studentIds: state.selectedList });
+  }
+
+  function onUpdateStatusHandler(selected) {
+    updateMany({ studentIds: state.selectedList, newData: { status: selected } });
+  }
 
   function onSelect() {
+    const allIdList = students?.map((std) => std._id);
     updateSelectedList('addAll', allIdList);
   }
   function onUnSelect() {
@@ -70,25 +100,23 @@ export function Operation() {
         ]}
       />
 
-      <SelectItem
-        buttonType="smallSecondery"
-        btnTitle="Delete"
+      <Button
+        className="!border-border-2"
+        type="smallSecondery"
+        disabled={isDeleting}
         icon="delete"
-        items={[
-          ['update', 'edit'],
-          ['view', 'wysiwyg'],
-          ['delete', 'delete'],
-        ]}
-      />
+        onClick={onDeletsHandler}
+      >
+        Delete
+      </Button>
+
       <SelectItem
         buttonType="smallSecondery"
         btnTitle="Status"
-        icon="delete"
-        items={[
-          ['update', 'edit'],
-          ['view', 'wysiwyg'],
-          ['delete', 'delete'],
-        ]}
+        disabled={isUpdating}
+        onClick={onUpdateStatusHandler}
+        icon="currency_exchange"
+        items={statusOptions}
       />
     </div>
   );
@@ -141,13 +169,6 @@ function Table() {
   );
 }
 
-const statusOptions = [
-  ['paid', 'paid'],
-  ['unpaid', 'pending'],
-  ['half', 'side_navigation'],
-  ['free', 'published_with_changes'],
-];
-
 function TableRow({ student }) {
   const theam = useOColor();
   const { name, phone, status, studentId, index, _id } = student;
@@ -171,8 +192,8 @@ function TableRow({ student }) {
     if (isSuccess) setIsEditing(false);
   }, [isSuccess]);
 
-  function onStatusHandler(e) {
-    mutate({ studentId: _id, newData: { status: e.target.id } });
+  function onStatusHandler(selected) {
+    mutate({ studentId: _id, newData: { status: selected } });
   }
   function onSubmitHandler() {
     mutate({
@@ -192,12 +213,12 @@ function TableRow({ student }) {
     updateSelectedList('remove', _id);
   }
 
-  function onSelectHandler(e) {
-    if (e.target.id === 'update') {
+  function onSelectHandler(selected) {
+    if (selected === 'update') {
       setIsEditing(!isEditing);
     }
 
-    if (e.target.id === 'delete') {
+    if (selected === 'delete') {
       deleteStudent(_id);
     }
   }
@@ -400,8 +421,9 @@ function StdForm() {
   function onSubmit(data) {
     mutate(data, {
       onSettled: () => {
-        // setValue('name', '');
-        // setValue('phone', '');
+        setValue('name', '');
+        setValue('phone', '');
+        setValue('email', '');
         setFocus('name');
       },
     });
@@ -510,7 +532,6 @@ function Checkbox({
   _checked,
   unchecked,
   borderColor,
-  setFn,
   id,
 }) {
   function onCheckHandler(e) {

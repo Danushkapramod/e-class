@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-
 import { useLocation, useSearchParams } from 'react-router-dom';
 
 function Pagination({ limit = 20, getTotal }) {

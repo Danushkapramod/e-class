@@ -33,11 +33,11 @@ function ClassView() {
     day: classDay,
   } = classData[0];
 
-  function onSelectHandler(e) {
-    if (e.target.id === 'update') {
+  function onSelectHandler(selected) {
+    if (selected === 'update') {
       navigate(`/app/classes/${id}/update`);
     }
-    if (e.target.id === 'delete') {
+    if (selected === 'delete') {
       mutate(id);
       navigate(-1);
     }

@@ -57,7 +57,7 @@ function Select({
               <div className=" absolute right-1 top-1">
                 {add && (
                   <button>
-                    <Button to={add.to} onClick={add.onClick} type="smallSecondery" icon="add">
+                    <Button to={add.to} onClick={add.onClick} type="xsSecondery" icon="add">
                       ADD
                     </Button>
                   </button>

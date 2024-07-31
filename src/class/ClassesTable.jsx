@@ -106,14 +106,14 @@ function CardItem({ classData }) {
 
   const { _id, teacher, subject, avatar, hall, startTime, grade, day } = classData;
 
-  function onSelectHandler(e) {
-    if (e.target.id === 'update') {
+  function onSelectHandler(selected) {
+    if (selected === 'update') {
       navigate(`/app/classes/${_id}/update`);
     }
-    if (e.target.id === 'view') {
+    if (selected === 'view') {
       navigate(`/app/classes/${_id}`);
     }
-    if (e.target.id === 'delete') {
+    if (selected === 'delete') {
       mutate(_id);
     }
   }
@@ -229,13 +229,13 @@ function TableRow({ classData }) {
 //   } = classData;
 
 //   function onSelectHandler(e) {
-//     if (e.target.id === "update") {
+//     if (selected === "update") {
 //       navigate(`/app/classes/${_id}/update`);
 //     }
-//     if (e.target.id === "view") {
+//     if (selected === "view") {
 //       navigate(`/app/classes/${_id}`);
 //     }
-//     if (e.target.id === "delete") {
+//     if (selected === "delete") {
 //       mutate(_id);
 //     }
 //   }

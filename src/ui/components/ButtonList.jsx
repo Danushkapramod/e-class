@@ -12,7 +12,10 @@ function ButtonList({ data, onClick }) {
         return (
           <button
             id={item.label}
-            onClick={() => setActive(item)}
+            onClick={() => {
+              setActive(item);
+              onClick(item.label);
+            }}
             className={`${isActive ? ' bg-bg--secondery-1 !text-slate-200' : ''} rounded px-2.5 py-1   transition-all duration-200`}
             key={index}
           >

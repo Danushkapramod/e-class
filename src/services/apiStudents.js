@@ -66,7 +66,8 @@ export async function createStudent(stdData) {
         if (error.response) {
             console.error("Server responded with an error:", error.response.data);
             throw new Error(
-              `Server error: ${error.response.data.message || "An unexpected server error occurred."} `,
+              `Server error: ${error.response.data.message ||
+               "An unexpected server error occurred."} `,
             );
           } else if (error.request) {
             console.error("No response received:", error.request);
@@ -79,6 +80,33 @@ export async function createStudent(stdData) {
 
   }
 
+  export async function updateManyStudent({studentIds, newData }) {
+    try {
+      const response = await axios.post(`${BASE_URL}/students/updateMany`,
+        {studentIds, newData },
+        {
+          withCredentials:true,
+          timeout:10000
+        });
+      return response.data
+    } catch (error) {
+      if (error.response) {
+          console.error("Server responded with an error:", error.response.data);
+          throw new Error(
+            `Server error: ${error.response.data.message ||
+             "An unexpected server error occurred."} `,
+          );
+        } else if (error.request) {
+          console.error("No response received:", error.request);
+          throw new Error("No response received from the server.");
+        } else {
+          console.error("Error update students:", error.message);
+          throw new Error("Error update students.");
+        }
+    }
+
+}
+
 
   export async function deleteStudent(studentId) {
       try {
@@ -90,7 +118,8 @@ export async function createStudent(stdData) {
         if (error.response) {
            console.error("Server responded with an error:", error.response.data);
             throw new Error(
-              `Server error: ${error.response.data.message || "An unexpected server error occurred."} `,
+              `Server error: ${error.response.data.message ||
+               "An unexpected server error occurred."} `,
             );
            } else if (error.request) {
             console.error("No response received:", error.request);
@@ -100,5 +129,46 @@ export async function createStudent(stdData) {
             throw new Error("Failed to delete student. Please try again.");
            }
       }
-
   }
+
+
+  export async function deleteManyStudents(studentIds) {
+    try {
+      await axios.post(`${BASE_URL}/students/deleteMany`,studentIds,
+        {
+        withCredentials:true,
+        timeout:10000
+      });
+    } catch (error) {
+      if (error.response) {
+         console.error("Server responded with an error:", error.response.data);
+          throw new Error(
+            `Server error: ${error.response.data.message ||
+             "An unexpected server error occurred."} `,
+          );
+         } else if (error.request) {
+          console.error("No response received:", error.request);
+          throw new Error("No response received from the server.");
+         } else {
+          console.error("Error deleting students from database:", error.message);
+          throw new Error("Failed to delete students. Please try again.");
+         }
+    }
+}
+
+
+
+
+export async function getStudentsCount() {
+  try {
+    const response = await axios.get(`${BASE_URL}/students/total`,{
+      withCredentials:true
+    });
+    return response.data.body.total;
+  } catch (error) {
+
+     console.error("Error during request setup:", error.message);
+     throw new Error("Failed to fetch total. Request setup error.");
+    
+  }
+}

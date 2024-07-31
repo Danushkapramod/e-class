@@ -10,7 +10,7 @@ export default function useExportToPdf() {
     },
     onError: (err) => {
       console.log(err.message);
-      toast.error("Failed to export. Please try again.");
+      toast.error(err.message);
     },
   });
 

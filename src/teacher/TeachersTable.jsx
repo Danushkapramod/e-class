@@ -80,14 +80,14 @@ function CardItem({ teacherData }) {
   const { isDeleting, mutate } = useDeleteTeacher();
   const { _id: teacherId, name, subject, avatar, phone } = teacherData;
 
-  function onSelectHandler(e) {
-    if (e.target.id === 'update') {
+  function onSelectHandler(selected) {
+    if (selected === 'update') {
       navigate(`/app/teachers/${teacherId}/update`);
     }
-    if (e.target.id === 'view') {
+    if (selected === 'view') {
       navigate(`/app/teachers/${teacherId}`);
     }
-    if (e.target.id === 'delete') {
+    if (selected === 'delete') {
       mutate(teacherId);
     }
   }

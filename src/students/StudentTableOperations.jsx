@@ -49,6 +49,7 @@ export function StudentFilter() {
 
   return (
     <Sort
+      className="!border !border-border-2"
       settled={isFilter}
       sortData={sortData}
       icon="filter_alt"

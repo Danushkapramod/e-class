@@ -3,7 +3,7 @@ import Button from './Button';
 import AutoCloseWindow from './AutoCloseWindow';
 //import SelectItem from "./SelectItem";
 
-function Sort({ settled, sortData, icon, btnText, setSort, isSorted }) {
+function Sort({ settled, sortData, icon, btnText, setSort, isSorted, className }) {
   const [isOpen, setIsOpen] = useState(false);
   const [select, setSelect] = useState('none');
   const btnRef = useRef();
@@ -26,7 +26,7 @@ function Sort({ settled, sortData, icon, btnText, setSort, isSorted }) {
     <div className=" relative">
       <div ref={btnRef}>
         <Button
-          className={'!border-bg--primary-100 !text-text--primary'}
+          className={className ? className : `!border-bg--primary-100 !text-text--primary`}
           onClick={optionClick}
           type="smallSecondery"
           icon={icon || 'sort'}
@@ -49,7 +49,7 @@ function Sort({ settled, sortData, icon, btnText, setSort, isSorted }) {
           className={` absolute  right-0 z-50 mt-1 flex   
             flex-col divide-y
            divide-bg--primary-100 rounded border
-           border-bg--primary-100 bg-bg--primary-300 `}
+           border-bg--primary-100 bg-bg--primary-500 `}
         >
           {sortData.map((item, index) => {
             return (

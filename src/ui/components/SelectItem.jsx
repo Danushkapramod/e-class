@@ -95,8 +95,7 @@ function Item({ item, onClick, size, icon, disabled }) {
       <button
         disabled={disabled}
         className="px flex items-center gap-1 px-4 py-2  text-text--primary hover:bg-white/5"
-        onClick={onClick}
-        id={item}
+        onClick={() => onClick(item)}
       >
         <span className=" material-symbols-outlined scale-[0.80]">{icon}</span>
         {item}
@@ -107,10 +106,14 @@ function Item({ item, onClick, size, icon, disabled }) {
       <button
         disabled={disabled}
         className=" flex items-center gap-1 px-3 py-1 text-sm capitalize text-text--primary hover:bg-white/5"
-        onClick={onClick}
-        id={item}
+        onClick={() => onClick(item)}
       >
-        <span className=" material-symbols-outlined text-lg font-light">{icon}</span>
+        <span
+          onClick={() => onClick(item)}
+          className=" material-symbols-outlined text-lg font-light"
+        >
+          {icon}
+        </span>
         {item}
       </button>
     );

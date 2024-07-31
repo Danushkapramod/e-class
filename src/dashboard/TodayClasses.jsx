@@ -18,17 +18,17 @@ function TodayClasses() {
   dispatch(todayTotal(classes?.length));
 
   const [status, setStatus] = useState('all');
-  function listButtonHandler(e) {
-    if (e.target.id === 'UPCOMING') {
+  function listButtonHandler(selected) {
+    if (selected === 'UPCOMING') {
       setStatus('upcoming');
     }
-    if (e.target.id === 'STARTED') {
+    if (selected === 'STARTED') {
       setStatus('started');
     }
-    if (e.target.id === 'ENDED') {
+    if (selected === 'ENDED') {
       setStatus('ended');
     }
-    if (e.target.id === 'ALL') {
+    if (selected === 'ALL') {
       setStatus('all');
     }
   }
@@ -149,14 +149,14 @@ function Row({ classData, filterStatus }) {
     }
   }, [status]);
 
-  function onSelectHandler(e) {
-    if (e.target.id === 'update') {
+  function onSelectHandler(selected) {
+    if (selected === 'update') {
       navigate(`/app/classes/${_id}/update`);
     }
-    if (e.target.id === 'view') {
+    if (selected === 'view') {
       navigate(`/app/classes/${_id}`);
     }
-    if (e.target.id === 'delete') {
+    if (selected === 'delete') {
       mutate({ classId: _id, avatarDbUrl: avatar });
     }
   }

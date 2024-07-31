@@ -18,19 +18,22 @@ function blob(response,fileName){
 
 export async function exportToCsv({category}) {
     let endPoint;
+    let fileName = `${category}s.csv`
     try {
         if(category === 'class'){
           endPoint = `${BASE_URL}/assets/classes-csv/get`
         }
-        if(category === 'teacher'){
+        else if(category === 'teacher'){
           endPoint = `${BASE_URL}/assets/teachers-csv/get`
+        }else if(category === 'student'){
+          endPoint = `${BASE_URL}/assets/students-csv/get`
         }
 
        const response = await axios.get(endPoint, {
         responseType: 'blob',
         withCredentials:true
     } );     
-       blob(response,'classes.csv') 
+       blob(response,fileName) 
 
     } catch (error) {
        console.error("Error during request setup:", error.message);
@@ -39,21 +42,30 @@ export async function exportToCsv({category}) {
     }
   }
 
-  export async function exportToPdf({category}) {
+  export async function exportToPdf({category,subCategory}) {
     let endPoint;
+    let fileName = `${category}s.pdf`
     try {
         if(category === 'class'){
             endPoint = `${BASE_URL}/assets/classes-pdf/get`
           }
-        if(category === 'teacher'){
+        else if(category === 'teacher'){
             endPoint = `${BASE_URL}/assets/teachers-pdf/get`
-          }
+         }
+         else if(category === 'student'){
+           if(subCategory === 'payments_sheet'){
+            endPoint = `${BASE_URL}/assets/paymentsSheet-pdf/get`
+            fileName = 'paymentsSheet.pdf'
+           }else if(!subCategory){
+            endPoint = `${BASE_URL}/assets/students-pdf/get`
+           }
+         }
 
         const response = await axios.get(endPoint,{
             responseType:'blob',
             withCredentials:true
         });
-        blob(response,'classes.pdf')
+        blob(response,fileName)
     
     } catch (error) {
        console.error("Error during request setup:", error.message);

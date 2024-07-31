@@ -31,11 +31,11 @@ function ViewTeacher() {
 
   const { name, subject, phone, avatar } = teacherData[0];
 
-  function onSelectHandler(e) {
-    if (e.target.id === 'update') {
+  function onSelectHandler(selected) {
+    if (selected === 'update') {
       navigate(`/app/teachers/${teacherId}/update`);
     }
-    if (e.target.id === 'delete') {
+    if (selected === 'delete') {
       mutate(teacherId);
       navigate(-1);
     }
@@ -137,14 +137,14 @@ function ClassItem({ classData }) {
 
   const formattedclassTime = moment('2000-01-01T' + classTime + 'Z').format('LT');
 
-  function onSelectHandler(e) {
-    if (e.target.id === 'update') {
+  function onSelectHandler(selected) {
+    if (selected === 'update') {
       navigate(`/app/classes/${classId}/update`);
     }
-    if (e.target.id === 'view') {
+    if (selected === 'view') {
       navigate(`/app/classes/${classId}`);
     }
-    if (e.target.id === 'delete') {
+    if (selected === 'delete') {
       mutate(classId);
     }
   }
