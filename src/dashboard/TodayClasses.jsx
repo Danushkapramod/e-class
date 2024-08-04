@@ -38,7 +38,7 @@ function TodayClasses() {
     const newClassesArray = [];
     if (isLoading) return;
 
-    classes.map((classData) => {
+    classes?.map((classData) => {
       const { startTime, duration } = classData;
       const classStartTime = new Date(
         `${new Date().toDateString()} ${startTime} GMT+0530 (India Standard Time)`

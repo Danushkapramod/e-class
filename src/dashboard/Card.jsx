@@ -7,6 +7,7 @@ function Card() {
   useTotals();
 
   const { totalClasses: _classes } = useSelector((store) => store.class);
+  const { totalStudents: _students } = useSelector((store) => store.student);
   const { totalTeachers: _teachers } = useSelector((store) => store.teacher);
   const { totalOptions: _options } = useSelector((store) => store.options);
 
@@ -29,6 +30,12 @@ function Card() {
       count: _options,
       to: '/app/options',
       icon: 'style',
+    },
+    {
+      title: 'Students',
+      count: _students,
+      to: '/app/options',
+      icon: 'settings_accessibility',
     },
   ];
 

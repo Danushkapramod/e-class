@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit"
 
 const initialState ={
     searchQuery:'',
+    totalStudents: 0,
     totalStudentsOntable: 0,
 }
 
@@ -15,10 +16,13 @@ const studentSlice = createSlice({
         setTotalStudentsOntable(state,action){
             state.totalStudentsOntable = action.payload
         },
+        setTotalStudents(state,action){
+            state.totalStudents = action.payload
+        },
     }
 })
 
 const studentReducer = studentSlice.reducer
 export default studentReducer
 
-export const {setSearchQuery,setTotalStudentsOntable} = studentSlice.actions
+export const {setSearchQuery,setTotalStudents,setTotalStudentsOntable} = studentSlice.actions

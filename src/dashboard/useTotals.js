@@ -2,11 +2,13 @@ import { useDispatch } from "react-redux";
 import { getOptionsCount } from "../services/apiOptions";
 import { totalClasses } from "../class/classSlice";
 import { totalTeachers } from "../teacher/teacherSlice";
-import { totalGrades, totalHalls, totalOptions, totalSubjects } from "../option/optionSclice";
+import { totalGrades, totalHalls, totalOptions,
+ totalSubjects } from "../option/optionSclice";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import useClassTotal from "./useClassTotal";
 import useTeachersTotal from "./useTeachersTotal";
+import { setTotalStudents } from "../students/studentSlice";
 
 
 function useTotals(){
@@ -29,19 +31,24 @@ function useTotals(){
       queryKey: ['hallsCount'],
       queryFn: () => getOptionsCount('hall'),
     });
+    const { data: students } = useQuery({
+      queryKey: ['studentsCount'],
+      queryFn: () => getOptionsCount('student'),
+    });
   
     useEffect(() => {
       dispatch(totalClasses(classes));
       dispatch(totalTeachers(teachers));
-  
+
+      dispatch(setTotalStudents(students));
       dispatch(totalHalls(halls));
       dispatch(totalSubjects(subjects));
       dispatch(totalGrades(grades));
       dispatch(totalOptions(halls + subjects + grades));
-    }, [teachers, classes, halls, subjects, grades, dispatch]);
+    }, [teachers, classes, halls,students ,subjects, grades, dispatch]);
   
 
-return {classes,teachers,grades,subjects,halls}
+return {classes,teachers,grades,subjects,halls,students}
 
 }
 export default useTotals;

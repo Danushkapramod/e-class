@@ -3,12 +3,14 @@ import { createContext, useReducer } from 'react';
 const initialState = {
   searchQuery: '',
   filterQuery: '',
+  paginationQuery: '',
   addFormIsOpen: false,
   selectedList: [],
 };
 
 const SET_SEARCH_QUERY = 'SET_SEARCH_QUERY';
 const SET_FILTER_QUERY = 'SET_FILTER_QUERY';
+const SET_PAGINATION_QUERY = 'SET_PAGINATION_QUERY';
 const SET_ADD_FORM_STATE = 'SET_ADD_FORM_STATE';
 const SET_SELECTD_LIST = 'SET_SELECTD_LIST';
 
@@ -22,6 +24,9 @@ const reducer = (state, action) => {
 
     case SET_ADD_FORM_STATE:
       return { ...state, addFormIsOpen: action.payload };
+
+    case SET_PAGINATION_QUERY:
+      return { ...state, paginationQuery: action.payload };
 
     case SET_SELECTD_LIST:
       if (action.payload.operation === 'add') {
@@ -52,6 +57,9 @@ function TableProvider({ children }) {
   const updateFlterhQuery = (query) => {
     dispatch({ type: SET_FILTER_QUERY, payload: query });
   };
+  const updatePaginationQuery = (query) => {
+    dispatch({ type: SET_PAGINATION_QUERY, payload: query });
+  };
   const updateFormState = (state) => {
     dispatch({ type: SET_ADD_FORM_STATE, payload: state });
   };
@@ -61,7 +69,14 @@ function TableProvider({ children }) {
 
   return (
     <StdTableContext.Provider
-      value={{ state, updateSearchQuery, updateSelectedList, updateFormState, updateFlterhQuery }}
+      value={{
+        state,
+        updateSearchQuery,
+        updateSelectedList,
+        updateFormState,
+        updateFlterhQuery,
+        updatePaginationQuery,
+      }}
     >
       {children}
     </StdTableContext.Provider>

@@ -3,7 +3,7 @@ import Button from '../ui/components/Button';
 import useCreateStudent from './useCreateStudent';
 import { useStudentsInTeacher } from './useStudents';
 import { useForm } from 'react-hook-form';
-import { Form } from 'react-router-dom';
+import { Form, useParams } from 'react-router-dom';
 import SelectItem from '../ui/components/SelectItem';
 import Tooltip from '../ui/components/Potral';
 import useUpdateStudent, { useUpdateManyStudents } from './useUpdateStudent';
@@ -24,10 +24,10 @@ const statusOptions = [
 ];
 
 function StudentTable() {
-  const { state, updateFormState } = useContext(StdTableContext);
-
+  const { id } = useParams();
+  const { state, updateFormState, updatePaginationQuery } = useContext(StdTableContext);
   return (
-    <div className=" flex min-w-[30rem] max-w-[80rem] grow flex-col shadow">
+    <div className=" flex min-w-[40rem]  grow flex-col shadow">
       <div
         className="flex w-full  flex-col justify-between gap-2 rounded-t border 
         border-bg--primary-100 bg-bg--primary-200 pb-2 pt-3 text-text--primary"
@@ -36,8 +36,15 @@ function StudentTable() {
           <StudentSearch />
           <div className=" flex gap-2">
             <StudentsOnTable />
-            <Pagination getTotal={getStudentsCount} />
+            <Pagination
+              type="simple"
+              url={false}
+              limit={10}
+              set={updatePaginationQuery}
+              getTotal={() => getStudentsCount(id)}
+            />
             <Exports
+              classId={id}
               size="small"
               category="student"
               btnType="smallSecondery"
@@ -62,6 +69,7 @@ function StudentTable() {
 }
 
 export function Operation() {
+  const { id } = useParams();
   const { state, updateSelectedList } = useContext(StdTableContext);
   const { students } = useStudentsInTeacher([state.searchQuery, state.filterQuery]);
   const { isDeleting, mutate: deleteMany } = useDeleteManyStudents();
@@ -70,36 +78,41 @@ export function Operation() {
   function onDeletsHandler() {
     deleteMany({ studentIds: state.selectedList });
   }
-
   function onUpdateStatusHandler(selected) {
     updateMany({ studentIds: state.selectedList, newData: { status: selected } });
   }
-
   function onSelect() {
     const allIdList = students?.map((std) => std._id);
     updateSelectedList('addAll', allIdList);
   }
   function onUnSelect() {
-    if (state.selectedList.length > 1) {
-      updateSelectedList('clear');
-    }
+    updateSelectedList('clear');
   }
   return (
-    <div className="flex h-14 w-full items-center gap-1.5 px-4">
+    <div className="flex h-12 w-full items-center gap-1.5 px-4">
       <div className=" mr-2">
         <Checkbox id="stdAllSelect" trueCall={onSelect} falseCall={onUnSelect} />
       </div>
-      <SelectItem
-        buttonType="smallSecondery"
-        btnTitle="Export"
-        icon={'download'}
+      <Exports
+        classId={id}
+        selected={state.selectedList}
+        size="small"
+        category="student"
+        btnType="smallSecondery"
         items={[
-          ['update', 'edit'],
-          ['view', 'wysiwyg'],
-          ['delete', 'delete'],
+          ['Payments Sheet', 'edit'],
+          ['Export to PDF', 'wysiwyg'],
+          ['Export to CSV', 'delete'],
         ]}
       />
-
+      <SelectItem
+        buttonType="smallSecondery"
+        btnTitle="Status"
+        disabled={isUpdating}
+        onClick={onUpdateStatusHandler}
+        icon="currency_exchange"
+        items={statusOptions}
+      />
       <Button
         className="!border-border-2"
         type="smallSecondery"
@@ -109,15 +122,18 @@ export function Operation() {
       >
         Delete
       </Button>
+      <div className=" mb-1 ml-2 self-end text-sm text-text--secondery">
+        {state.selectedList.length.toString().padStart(2, '0')}
+        <span> selected</span>
+      </div>
 
-      <SelectItem
-        buttonType="smallSecondery"
-        btnTitle="Status"
-        disabled={isUpdating}
-        onClick={onUpdateStatusHandler}
-        icon="currency_exchange"
-        items={statusOptions}
-      />
+      <button
+        onClick={onUnSelect}
+        className=" material-symbols-outlined ml-auto flex aspect-square h-8 items-center 
+        justify-center rounded-full bg-bg--primary-300  text-lg"
+      >
+        close
+      </button>
     </div>
   );
 }
@@ -128,12 +144,16 @@ function StudentsOnTable() {
 }
 
 function Table() {
+  const { id: classId } = useParams();
   const { state } = useContext(StdTableContext);
-  const { students, isLoading } = useStudentsInTeacher([state.searchQuery, state.filterQuery]);
+  const { students, isLoading } = useStudentsInTeacher(
+    [state.searchQuery, state.filterQuery, state.paginationQuery],
+    classId
+  );
 
   return (
     <div className=" fle flex-col">
-      <div className=" z-0 max-h-[30rem] overflow-auto  ">
+      <div className="z-0 max-h-[calc(100vh-18.75rem)] overflow-auto  ">
         <table
           className=" text-smbg-bg--primary-200 w-full  border-b border-l 
          border-r border-bg--primary-100 bg-bg--primary-200"
@@ -144,7 +164,7 @@ function Table() {
              font-medium shadow transition-all duration-100"
             >
               <th className=" w-1 px-4 py-2 text-start text-text--muted "></th>
-              <th className=" w-1 px-4 py-2 text-start text-text--muted ">#</th>
+              <th className=" w-1  py-2 text-start text-text--muted ">#</th>
               <th className="max-w-[130px] py-2 text-start ">ID</th>
               <th className=" py-2 text-start ">Student name</th>
               <th className="py-2 text-start ">Phone</th>
@@ -410,6 +430,7 @@ function HoverInfo({ student }) {
 }
 
 function StdForm() {
+  const { id } = useParams();
   const { updateFormState } = useContext(StdTableContext);
   const { isPending, mutate } = useCreateStudent();
   const { setValue, setFocus, watch, handleSubmit, register, control } = useForm();
@@ -419,14 +440,18 @@ function StdForm() {
   }, [setFocus]);
 
   function onSubmit(data) {
-    mutate(data, {
-      onSettled: () => {
-        setValue('name', '');
-        setValue('phone', '');
-        setValue('email', '');
-        setFocus('name');
-      },
-    });
+    if (!id) return;
+    mutate(
+      { ...data, classId: id },
+      {
+        onSettled: () => {
+          setValue('name', '');
+          setValue('phone', '');
+          setValue('gmail', '');
+          setFocus('name');
+        },
+      }
+    );
   }
   return (
     <Form
@@ -470,7 +495,8 @@ function StdForm() {
                 name="sendQr_whatsapp"
                 type="checkbox"
                 defaultChecked
-                className="h-4 w-4 rounded border-gray-300 bg-gray-600 text-blue-600 focus:ring-2 focus:ring-blue-500"
+                className="h-4 w-4 rounded  text-blue-600 
+                accent-blue-600 focus:ring-2 focus:ring-blue-500"
               />
               <label htmlFor="checkbox" className="ms-2 text-sm font-medium text-gray-400 ">
                 Whatsapp
@@ -483,7 +509,8 @@ function StdForm() {
                 id="checkbox"
                 name="sendQr_gmail"
                 type="checkbox"
-                className="h-4 w-4 rounded border-gray-300 bg-gray-600 text-blue-600 focus:ring-2 focus:ring-blue-500"
+                className="h-4 w-4 rounded  text-blue-600
+                 accent-blue-600 focus:ring-2 focus:ring-blue-500"
               />
               <label htmlFor="checkbox" className="ms-2 text-sm font-medium text-gray-400 ">
                 Gmail
@@ -504,17 +531,15 @@ function StdForm() {
         <Button spinner={isPending} type="primary">
           Submit
         </Button>
-        <button className=" ">
-          <div
-            onClick={(e) => {
-              e.preventDefault();
-              updateFormState(false);
-            }}
-            className=" material-symbols-outlined flex aspect-square h-8 items-center justify-center
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            updateFormState(false);
+          }}
+          className=" material-symbols-outlined flex aspect-square h-8 items-center justify-center
                rounded-full bg-bg--primary-300  text-lg"
-          >
-            close
-          </div>
+        >
+          close
         </button>
       </div>
     </Form>

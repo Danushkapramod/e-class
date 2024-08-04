@@ -1,11 +1,12 @@
+
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {  updateUserAvatar } from "../services/apiAuth";
+import { updateAuther } from "../services/apiAuth";
 import toast from "react-hot-toast";
 
-export default function useUpdateUserAvatar() {
+export default function useUpdateAvatar() {
   const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation({
-    mutationFn: updateUserAvatar,
+    mutationFn: updateAuther,
     onSuccess: () => {
       queryClient.invalidateQueries("user");
     },

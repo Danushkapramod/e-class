@@ -2,19 +2,19 @@ import SelectItem from './SelectItem';
 import useExportToCsv from '../../class/useExportCsv';
 import useExportToPdf from '../../class/useExportPdf';
 
-export function Exports({ category, btnType, items, size }) {
+export function Exports({ selected: _selected, category, btnType, items, size, classId }) {
   const { isLoading: isLoadingCsv, mutate: exportCsv } = useExportToCsv();
   const { isLoading: isLoadingPdf, mutate: exportPdf } = useExportToPdf();
 
   function onSelectHandler(selected) {
     if (selected === 'Export to CSV') {
-      exportCsv({ category });
+      exportCsv({ category, _selected, classId });
     }
     if (selected === 'Export to PDF') {
-      exportPdf({ category });
+      exportPdf({ category, _selected, classId });
     }
     if (selected === 'Payments Sheet') {
-      exportPdf({ category, subCategory: 'payments_sheet' });
+      exportPdf({ category, subCategory: 'payments_sheet', _selected, classId });
     }
   }
   return (

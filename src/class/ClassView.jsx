@@ -8,6 +8,7 @@ import useDeleteClass from './useDeleteClass';
 import Button from '../ui/components/Button';
 import useClasses from './useClasses';
 import StudentTable from '../students/StudentTable';
+import { useMemo } from 'react';
 
 function ClassView() {
   useSetRoot('view');
@@ -15,23 +16,16 @@ function ClassView() {
   const navigate = useNavigate();
 
   const { isDeleting, mutate } = useDeleteClass();
-  const { classes, error, isSuccess } = useClasses();
-  if (!isSuccess) return <Spinner />;
+  const { classes, error, isLoading } = useClasses();
+
+  const classData = useMemo(() => {
+    return classes?.find((classData) => classData._id === id);
+  }, [classes, id]);
+
+  if (isLoading) return <Spinner />;
   if (error) return <Error errorMsg={error.message} />;
 
-  const classData = classes?.filter((classData) => {
-    return classData._id === id;
-  });
-  const {
-    teacher,
-    subject,
-    duration,
-    avatar: class_poster,
-    hall: hallNumber,
-    startTime: classTime,
-    grade,
-    day: classDay,
-  } = classData[0];
+  const { subject, teacher, duration, avatar, charging, hall, startTime, grade, day } = classData;
 
   function onSelectHandler(selected) {
     if (selected === 'update') {
@@ -43,11 +37,73 @@ function ClassView() {
     }
   }
 
-  const formatedclassTime = moment.tz(`2000-01-01T${classTime}Z`, 'Asia').format('hh:mm A');
+  const formatedclassTime = moment.tz(`2000-01-01T${startTime}Z`, 'Asia').format('hh:mm A');
 
   return (
-    <div className="mt-2  flex flex-wrap items-start gap-4">
-      <div
+    <div className="mt-2">
+      <div className=" mb-4 flex h-[5.625rem] w-full gap-4 rounded bg-bg--primary-200 p-2 shadow-md">
+        <img className=" aspect-square h-full overflow-hidden" src={avatar} alt="avatar" />
+        <div className="flex grow flex-col justify-between text-sm capitalize">
+          <div className="flex">
+            <span className=" basis-20">Subject </span> <span>: {subject}</span>
+          </div>
+          <div className="flex">
+            <span className=" basis-20">Teacher</span>{' '}
+            <span className=" flex items-center gap-1">
+              :{' '}
+              <Button to={`/app/teachers/${teacher?._id}`} type="link">
+                {teacher?.name}
+              </Button>
+            </span>
+          </div>
+          <div className="flex">
+            <span className=" basis-20">Grade</span> <span>: {grade}</span>
+          </div>
+        </div>
+
+        <div className=" flex grow flex-col justify-between text-sm">
+          <div className=" flex">
+            <span className=" basis-14">Hall</span> <span>: {hall}</span>
+          </div>
+          <div className="flex capitalize">
+            <span className=" basis-14">Date</span> <span>: {day}</span>
+          </div>
+          <div className="flex">
+            <span className=" basis-14">Time</span> <span>: {formatedclassTime}</span>
+          </div>
+        </div>
+
+        <div className=" flex grow flex-col justify-between text-sm">
+          <div className=" flex">
+            <span className=" basis-20">Duration </span> <span>: {duration} hours</span>
+          </div>
+          <div className="flex">
+            <span className=" basis-20">Charging </span> <span>: LKR {charging}</span>
+          </div>
+          <div className="flex">
+            <span className=" basis-20"></span> <span></span>
+          </div>
+        </div>
+        <SelectItem
+          disabled={isDeleting}
+          onClick={onSelectHandler}
+          buttonType="xsSecondery"
+          items={[
+            ['update', 'edit'],
+            ['delete', 'delete'],
+          ]}
+        />
+      </div>
+
+      <StudentTable />
+    </div>
+  );
+}
+
+export default ClassView;
+
+{
+  /* <div
         className=" relative flex min-w-[24rem] max-w-[28rem] grow  flex-col items-center 
            rounded-md bg-bg--primary-200 p-8 shadow-md "
       >
@@ -127,11 +183,5 @@ function ClassView() {
             <div className="basis-[62%]">{duration} Hours</div>
           </div>
         </div>
-      </div>
-
-      <StudentTable />
-    </div>
-  );
+      </div> */
 }
-
-export default ClassView;

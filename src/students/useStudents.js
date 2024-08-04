@@ -23,9 +23,10 @@ export default function useStudents(query) {
   return { students, isSuccess, isLoading, error };
 }
 
-export function useStudentsInTeacher(queries) {
+export function useStudentsInTeacher(queries,classId) {
   const dispatch = useDispatch() 
   const queryList = [...queries]
+
   let query = '';
   for(let i = 0; i < queryList.length; i++){
     if(queryList[i]){
@@ -35,7 +36,8 @@ export function useStudentsInTeacher(queries) {
   const {data:students,isLoading,isSuccess, error,}= useBackendSearch({
     queryFn:getStudents,
     queryKey:'students',
-    query
+    query:{query,classId}
+    
   })
   useEffect(()=>{
     dispatch(setTotalStudentsOntable(students?.length || 0))

@@ -147,9 +147,9 @@ function CardItem({ classData }) {
       <div className=" text-center text-text--secondery">
         <p className=" flex items-center text-center capitalize">
           {!teacher ? (
-            <span className=" w-full text-center lowercase">---------</span>
+            <span>---------</span>
           ) : (
-            teacher?.name
+            <span className="w-full text-center">{teacher?.name}</span>
           )}
         </p>
         <p className="text-sm">Grade {grade}</p>

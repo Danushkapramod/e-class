@@ -8,7 +8,7 @@ function useBackendSearch({queryFn,queryKey,query}){
       error,
     } = useQuery({
       queryKey: [queryKey,query],
-      queryFn:({signal})=>queryFn({queryParams:query,signal})
+      queryFn:({signal})=>queryFn({query,signal})
     });
 return {data,isLoading,isSuccess, error,}
 }

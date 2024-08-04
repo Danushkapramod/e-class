@@ -35,9 +35,9 @@ function Button({
                           ${children && icon && 'gap-1'}
                           ${!children && icon ? 'px-1' : 'px-3'}`;
 
-  const primary = `text-slate-200 flex items-center 
-                         gap-2 rounded  bg-blue-600 px-[15px] py-[7px] text-base 
-                         border border-blue-600 
+  const primary = `text-slate-200 flex items-center text-base 
+                         gap-2 rounded  bg-blue-600 px-[15px] py-[7px] 
+                         border border-blue-600 relative w-max justify-center
                          transition-all duration-100 shadow-sm
                          hover:bg-blue-700 active:bg-blue-500
                          uppercase ${children && icon && 'gap-1'}
@@ -197,15 +197,12 @@ function Button({
         disabled={disabled}
         onClick={onClick}
         ref={ref}
-        className={`${primary}  relative w-max ${className}`}
+        className={`${primary} ${className}`}
       >
         {icon && <span className=" material-symbols-outlined scale-90">{icon}</span>}
         <span className={`${spinner && 'opacity-0'}`}>{children}</span>
         {spinner && (
-          <div
-            className=" absolute flex  scale-[40%] items-center 
-          justify-center  text-center "
-          >
+          <div className="absolute flex scale-[40%] items-center justify-center">
             <FadeLoader margin={0} color="#FFFFFF" />
           </div>
         )}

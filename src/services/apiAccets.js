@@ -16,7 +16,7 @@ function blob(response,fileName){
 }
 
 
-export async function exportToCsv({category}) {
+export async function exportToCsv({category,_selected,classId}) {
     let endPoint;
     let fileName = `${category}s.csv`
     try {
@@ -26,10 +26,10 @@ export async function exportToCsv({category}) {
         else if(category === 'teacher'){
           endPoint = `${BASE_URL}/assets/teachers-csv/get`
         }else if(category === 'student'){
-          endPoint = `${BASE_URL}/assets/students-csv/get`
+          endPoint = `${BASE_URL}/assets/students-csv/get/${classId}`
         }
 
-       const response = await axios.get(endPoint, {
+       const response = await axios.post(endPoint,{_selected:_selected}, {
         responseType: 'blob',
         withCredentials:true
     } );     
@@ -42,7 +42,8 @@ export async function exportToCsv({category}) {
     }
   }
 
-  export async function exportToPdf({category,subCategory}) {
+  export async function exportToPdf({category,subCategory,_selected,classId}) {
+
     let endPoint;
     let fileName = `${category}s.pdf`
     try {
@@ -54,14 +55,14 @@ export async function exportToCsv({category}) {
          }
          else if(category === 'student'){
            if(subCategory === 'payments_sheet'){
-            endPoint = `${BASE_URL}/assets/paymentsSheet-pdf/get`
+            endPoint = `${BASE_URL}/assets/paymentsSheet-pdf/get/${classId}`
             fileName = 'paymentsSheet.pdf'
            }else if(!subCategory){
-            endPoint = `${BASE_URL}/assets/students-pdf/get`
+            endPoint = `${BASE_URL}/assets/students-pdf/get/${classId}`
            }
          }
 
-        const response = await axios.get(endPoint,{
+        const response = await axios.post(endPoint,{_selected:_selected},{
             responseType:'blob',
             withCredentials:true
         });
