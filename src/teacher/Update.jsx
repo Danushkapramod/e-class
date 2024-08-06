@@ -1,11 +1,11 @@
 import { Form, useForm } from 'react-hook-form';
-import Button from '../ui/components/Button';
 import { useParams } from 'react-router-dom';
 import useSetRoot from '../utils/setRoot';
 import useUpdateTeacher from './useUpdateTeacher';
 import useTeachers from './useTeachers';
 import { AppInputField } from '../ui/components/AppInputField';
 import { useMemo } from 'react';
+import { Button } from '../ui/components/ButtonNew';
 
 function Update() {
   useSetRoot('update');
@@ -101,12 +101,8 @@ function Update() {
         </div>
 
         <div className=" flex justify-end gap-4 pt-4">
-          <Button to="-1" onType="reset" type="secondery">
-            Close
-          </Button>
-          <Button disabled={isUpdating} ontype="submit" spinner={isUpdating} type="primary">
-            Submit
-          </Button>
+          <Button to={-1} variant="outline" label="CLOSE" />
+          <Button disabled={isUpdating} spinner={isUpdating} label="SUBMIT" />
         </div>
       </Form>
     </div>

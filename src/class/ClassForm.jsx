@@ -1,4 +1,3 @@
-import Button from '../ui/components/Button';
 import { Form, useForm } from 'react-hook-form';
 import Select from '../ui/components/Select';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,6 +8,7 @@ import useFormData from './useFormData';
 import { useEffect, useState } from 'react';
 import { AppInputField } from '../ui/components/AppInputField';
 import { useNavigate } from 'react-router-dom';
+import { Button } from '../ui/components/ButtonNew';
 
 const days = [
   { day: 'Mondaya' },
@@ -67,14 +67,8 @@ export default function ClassForm() {
 
   const onSubmit = (data) => {
     const classData = {
-      subject: data.subject,
-      grade: data.grade,
-      hall: data.hallNumber,
+      ...data,
       teacher: data.teacherId,
-      day: data.classDay,
-      startTime: data.classTime,
-      duration: data.duration,
-      charging: data.charging,
       avatar: data.avatar[0] || undefined,
     };
 
@@ -152,15 +146,15 @@ export default function ClassForm() {
               <label>Hall number</label>
               <div className="relative flex basis-2/3 items-center justify-end">
                 <AppInputField
-                  name="hallNumber"
-                  errors={errors.hallNumber}
+                  name="hall"
+                  errors={errors.hall}
                   control={control}
                   placeholder="Select hall"
                   rules={{ required: 'This field is required' }}
                 />
                 <div className="absolute">
                   <Select
-                    setValue={(hall) => setValue('hallNumber', hall)}
+                    setValue={(hall) => setValue('hall', hall)}
                     search={true}
                     data={halls}
                     isLoading={hallsIsloading}
@@ -175,15 +169,15 @@ export default function ClassForm() {
               <label>Class Day</label>
               <div className="relative flex basis-2/3 items-center justify-end">
                 <AppInputField
-                  name="classDay"
-                  errors={errors.hallNumber}
+                  name="day"
+                  errors={errors.day}
                   control={control}
                   placeholder="Select Day"
                   rules={{ required: 'This field is required' }}
                 />
                 <div className="absolute">
                   <Select
-                    setValue={(day) => setValue('classDay', day)}
+                    setValue={(day) => setValue('day', day)}
                     data={days}
                     showValue={false}
                     valueName="day"
@@ -200,8 +194,8 @@ export default function ClassForm() {
                 outline-1 outline-border-2 focus:outline-2 focus:outline-blue-500"
                 type="time"
                 defaultChecked={false}
-                id="classTime"
-                {...register('classTime')}
+                id="startTime"
+                {...register('startTime')}
               ></input>
             </div>
 
@@ -290,18 +284,15 @@ export default function ClassForm() {
           </div>
           <div className=" my-auto flex w-full justify-end gap-4 ">
             <Button
-              disabled={isCreating}
               onClick={(e) => {
                 e.preventDefault();
                 setIsSubmit(true);
               }}
-              type="secondery"
-            >
-              Close
-            </Button>
-            <Button spinner={isCreating} disabled={isCreating} ontype="submit" type="primary">
-              Submit
-            </Button>
+              disabled={isCreating}
+              label="CLOSE"
+              variant="outline"
+            />
+            <Button disabled={isCreating} spinner={isCreating} label="SUBMIT" />
           </div>
         </Form>
       </div>

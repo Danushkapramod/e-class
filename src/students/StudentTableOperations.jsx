@@ -49,11 +49,10 @@ export function StudentFilter() {
 
   return (
     <Sort
-      className="!border !border-border-2"
       settled={isFilter}
       sortData={sortData}
       icon="filter_alt"
-      btnText={isFilter === 'none' ? 'all' : isFilter}
+      btnText={isFilter === 'none' ? 'All' : isFilter?.charAt(0).toUpperCase() + isFilter?.slice(1)}
       setSort={setIsFilter}
     />
   );

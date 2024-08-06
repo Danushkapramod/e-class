@@ -1,12 +1,10 @@
-import Logo from '../ui/components/Logo';
-
 function Index() {
   return (
     <div className=" bg-gradient-to-tr from-sky-100 to-indigo-200">
       <div className=" flex  h-[80vh] justify-center">
         <div
-          className=" clip-custom-1 flex h-full w-full justify-center 
-             bg-gradient-to-r from-sky-300 to-indigo-400"
+          className=" flex h-full w-full justify-center bg-gradient-to-r 
+             from-sky-300 to-indigo-400 clip-custom-1"
         >
           <div className="flex h-full w-full max-w-[1400px] flex-col ">
             <Nav />

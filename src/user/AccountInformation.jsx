@@ -1,4 +1,3 @@
-import Button from '../ui/components/Button';
 import { useEffect, useMemo, useState } from 'react';
 import { FadeLoader } from 'react-spinners';
 import { useAuther } from '../authentication/useAuther';
@@ -12,6 +11,7 @@ import { Form } from 'react-router-dom';
 import { AppInputField } from '../ui/components/AppInputField';
 import { useUpdate } from '../authentication/useUpdate';
 import useUpdateUserAvatar from './useUploadImage';
+import { Button } from '../ui/components/ButtonNew';
 
 function AccountInformation() {
   const { auther, isLoading, error } = useAuther();
@@ -55,8 +55,7 @@ function MetaInfo({ auther }) {
     <Form
       control={control}
       onSubmit={handleSubmit(onSubmit)}
-      className="w-full rounded border 
-       border-border-1 p-6 shadow-md"
+      className="w-full rounded border border-border-1 p-6 shadow-md"
     >
       <div className=" flex justify-between text-text--secondery">
         <p className=" text-xl uppercase text-text--muted">Institute Information</p>
@@ -104,9 +103,11 @@ function MetaInfo({ auther }) {
         </div>
       </div>
       <div className="mt-6 flex justify-end">
-        <Button spinner={isPending} disabled={isPending} type="primary">
-          {auther?.auther.metaData ? 'Update' : 'save'}
-        </Button>
+        <Button
+          spinner={isPending}
+          disabled={isPending}
+          label={auther?.auther.metaData ? 'UPDATE' : 'SAVE'}
+        />
       </div>
     </Form>
   );
@@ -183,11 +184,11 @@ function LeftSection({ auther }) {
             delecteUserAvatar();
           }}
           disabled={isDeletingImage}
-          type="xsSecondery"
+          size="xs"
+          variant="outline"
           spinner={isDeletingImage}
-        >
-          delete
-        </Button>
+          label="DELETE"
+        />
       </form>
 
       <p className=" mr-4 mt-4 flex items-center gap-1 text-xl font-medium">

@@ -1,4 +1,3 @@
-import Button from '../ui/components/Button';
 import Spinner from '../ui/components/Spinner';
 import moment from 'moment-timezone';
 import Error from '../ui/components/Error';
@@ -14,12 +13,8 @@ import useClientSearch from '../hooks/useClientSearch';
 import Pagination from '../ui/components/Pagination';
 import { getClassesCount } from '../services/apiClasses';
 import { useEffect } from 'react';
-
-function formatedstartTime(startTime) {
-  return moment
-    .tz(`2000-01-01T${startTime}Z`, 'Asia/Colombo|LMT MMT +0530 +06 +0630')
-    .format('hh:mm A');
-}
+import { Button } from '../ui/components/ButtonNew';
+import { formatLocalTime } from '../utils/formateDates&Times';
 
 function ClassesTable() {
   useSetRoot('');
@@ -40,6 +35,7 @@ function ClassesTable() {
   function setSearchQuery(e) {
     setQuery(e.target.value.trim());
   }
+
   function displayClasses() {
     if (!isLoading) {
       if (!error) {
@@ -83,7 +79,7 @@ function ClassesTable() {
               <th className="  px-2 text-left">Time</th>
               <th className="  px-2 text-left"></th>
             </tr>
-            {classes.map((classData, index) => {
+            {classes?.map((classData, index) => {
               return <TableRow classData={classData} key={index} />;
             })}
           </table>
@@ -127,6 +123,7 @@ function CardItem({ classData }) {
       <div className="absolute right-2 top-2">
         <SelectItem
           disabled={isDeleting}
+          btn="more_vert"
           buttonType="xsSecondery"
           onClick={onSelectHandler}
           items={[
@@ -156,7 +153,7 @@ function CardItem({ classData }) {
         <p className="text-sm">{hall}</p>
 
         <p className=" text-sm">
-          <span className=" capitalize">{day}</span> {formatedstartTime(startTime)}
+          <span className=" capitalize">{day}</span> {formatLocalTime(startTime)}
         </p>
       </div>
     </div>
@@ -164,7 +161,7 @@ function CardItem({ classData }) {
 }
 
 function TableRow({ classData }) {
-  const { isDeleting, mutate } = useDeleteClass();
+  const { mutate } = useDeleteClass();
   const { _id, teacher, subject, avatar, hall, startTime, grade, day } = classData;
 
   return (
@@ -186,26 +183,36 @@ function TableRow({ classData }) {
       <td className=" px-2 py-3">{grade}</td>
       <td className=" px-2 py-3">{hall}</td>
       <td className="  px-2 py-3 capitalize">{day}</td>
-      <td className=" px-2 py-3">{formatedstartTime(startTime)}</td>
+      <td className=" px-2 py-3">{formatLocalTime(startTime)}</td>
       <td className="flex px-2 py-3 pr-4">
         <div className="flex  w-full  items-center justify-end gap-2">
-          <Button to={`${_id}/update`} type="xsSecondery" icon="edit">
-            Updte
-          </Button>
-          <Button to={`${_id}`} type="xsSecondery" icon="wysiwyg">
-            view
-          </Button>
           <Button
-            disabled={isDeleting}
+            to={`${_id}/update`}
+            className="rounded"
+            size="xs"
+            icon="edit"
+            variant="outline"
+            label="UPDATE"
+          />
+          <Button
+            to={`${_id}`}
+            className="rounded"
+            size="xs"
+            icon="wysiwyg"
+            variant="outline"
+            label="VIEW"
+          />
+          <Button
             onClick={() =>
               mutate({
                 classId: _id,
                 avatarDbUrl: avatar,
               })
             }
-            className=" text-red-400"
-            type="xsSecondery"
+            className="rounded"
+            size="xs"
             icon="delete"
+            variant="outline"
           />
         </div>
       </td>

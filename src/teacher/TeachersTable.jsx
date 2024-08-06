@@ -1,6 +1,5 @@
 import Spinner from '../ui/components/Spinner';
 import Error from '../ui/components/Error';
-import Button from '../ui/components/Button';
 import useSetRoot from '../utils/setRoot';
 import useTeachers from './useTeachers';
 import { useNavigate } from 'react-router-dom';
@@ -12,6 +11,7 @@ import { setTableView } from './teacherSlice';
 import useClientSearch from '../hooks/useClientSearch';
 import { getTeachersCount } from '../services/apiTeachers';
 import Pagination from '../ui/components/Pagination';
+import { Button } from '../ui/components/ButtonNew';
 
 function TeachersTable() {
   const { tableView } = useSelector((store) => store.teacher);
@@ -100,8 +100,7 @@ function CardItem({ teacherData }) {
     >
       <div className="absolute right-2 top-2 z-30">
         <SelectItem
-          buttonType="xsSecondery"
-          bg="bg-dark-primary"
+          btn="more_vert"
           disabled={isDeleting}
           onClick={onSelectHandler}
           items={[
@@ -163,17 +162,13 @@ function TableRow({ teacherData }) {
       <td className=" max-w-38 px-2 py-3 capitalize">{subject}</td>
       <td className=" px-2 py-3">{phone}</td>
       <td className="flex justify-end gap-2 px-2 py-3 pr-4">
-        <Button to={`${teacherId}/update`} type="xsSecondery" icon="edit">
-          Updte
-        </Button>
-        <Button to={`${teacherId}`} type="xsSecondery" icon="wysiwyg">
-          view
-        </Button>
+        <Button to={`${teacherId}/update`} variant="outline" size="xs" label="UPDATE" icon="edit" />
+        <Button to={`${teacherId}`} variant="outline" size="xs" icon="wysiwyg" label="VIEW" />
         <Button
+          variant="outline"
           disabled={isDeleting}
           onClick={() => mutate({ teacherId, avatarDbUrl: avatar })}
-          className=" text-red-400"
-          type="xsSecondery"
+          size="xs"
           icon="delete"
         />
       </td>

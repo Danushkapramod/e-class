@@ -11,31 +11,22 @@ export default function FilterField({ data, value, setValu, name }) {
   }
 
   return (
-    <div className="border-x border-bg--primary-100 px-2 py-2  text-text--primary">
+    <div className="min-w-[200px] border-bg--primary-100 px-2 py-2  text-text--primary">
       <p className=" px-3 pb-2 font-normal ">{name}</p>
       <div className=" z-20 w-full">
-        <div className=" rounded bg-bg--primary-400 ">
+        <div className=" rounded">
           <div className=" relative flex w-fit  items-center">
-            <span
-              className=" material-symbols-outlined absolute
-             scale-75 pl-2"
-            >
-              search
-            </span>
+            <span className=" material-symbols-outlined absolute scale-75 pl-2">search</span>
             <input
+              className="w-full rounded border-b border-b-bg--primary-100 
+              bg-bg--primary-200 py-1 pl-9 pr-4 text-sm shadow outline-none"
               onChange={handleSearch}
-              className="w-full rounded border-b  border-b-bg--primary-100 bg-bg--primary-200
-             py-1 pl-9 pr-4 text-sm shadow outline-none"
               type="text"
               placeholder={'search'}
             />
           </div>
 
-          <ul
-            className=" mt-2  h-40 touch-auto divide-y 
-               divide-bg--primary-100 overflow-auto rounded-b text-base 
-               font-light"
-          >
+          <ul className="h-40 touch-auto divide-y divide-bg--primary-100 overflow-auto rounded-b text-base ">
             {searchResults?.map((data, index) => {
               return <SearchOption key={index} value={value} setValu={setValu} data={data} />;
             })}

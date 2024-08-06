@@ -1,10 +1,9 @@
 import { Form, useForm } from 'react-hook-form';
-
-import Button from '../ui/components/Button';
 import { Link, useNavigate } from 'react-router-dom';
 import useSignup from '../authentication/useSignup';
 import { InputField } from './InputField';
 import { useEffect, useState } from 'react';
+import { Button } from '../ui/components/ButtonNew';
 
 export default function SignupPage() {
   const navigate = useNavigate();
@@ -111,14 +110,11 @@ export default function SignupPage() {
           </div>
 
           <Button
-            className="!mt-8 !w-full !justify-center !rounded !py-3"
+            className="mt-8 h-12 w-full justify-center rounded"
             disabled={isPending}
             spinner={isPending}
-            type="primary"
-          >
-            signup
-          </Button>
-
+            label="SIGNUP"
+          />
           <div className=" mt-4 text-center">
             Already have an account?
             <Link className="pl-2 text-blue-600 " to="/login">
@@ -149,11 +145,9 @@ export default function SignupPage() {
           </p>
           <Button
             onClick={() => navigate('/login')}
-            type="primary"
-            className=" !flex !w-full !justify-center !py-3 !normal-case"
-          >
-            Back o login
-          </Button>
+            className="flex h-12 w-full justify-center"
+            label="Back to login"
+          />
         </div>
       </div>
     );
@@ -178,11 +172,9 @@ export default function SignupPage() {
           </p>
           <Button
             onClick={() => setWondow(1)}
-            type="primary"
-            className=" !flex !w-full !justify-center !py-3 !normal-case"
-          >
-            Try Again
-          </Button>
+            className="flex h-12 w-full justify-center"
+            label="Try Again"
+          />
         </div>
       </div>
     );

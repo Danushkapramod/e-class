@@ -1,9 +1,9 @@
 import { Form, useForm } from 'react-hook-form';
-import Button from '../ui/components/Button';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useResetPassword } from '../authentication/useResetPassword';
 import { InputField } from './InputField';
+import { Button } from '../ui/components/ButtonNew';
 
 export default function ResetPasswordPage() {
   let [searchParams] = useSearchParams();
@@ -83,13 +83,11 @@ export default function ResetPasswordPage() {
 
           <div className=" flex justify-end gap-2">
             <Button
-              className="!mt-8 !w-full  !justify-center !rounded !py-3 !normal-case"
+              className="mt-8 !w-full justify-center py-3"
               disabled={isPending}
               spinner={isPending}
-              type="primary"
-            >
-              Reset Password
-            </Button>
+              label=" Reset Password"
+            />
           </div>
         </Form>
       ) : (
@@ -115,11 +113,9 @@ function Step2() {
       <p className=" pb-6 text-center align-middle">Your password has been changed successfully.</p>
       <Button
         onClick={() => navigate('/login')}
-        type="primary"
-        className=" !flex !w-full !justify-center !py-3 !normal-case"
-      >
-        Back o login
-      </Button>
+        className="flex h-12 w-full justify-center"
+        label="Back to login"
+      />
     </div>
   );
 }

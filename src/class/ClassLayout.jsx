@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
-import Button from '../ui/components/Button';
 import { useSelector } from 'react-redux';
 import Exports from '../ui/components/Exports';
+import { Button } from '../ui/components/ButtonNew';
 
 function ClassLayout() {
   const { root } = useSelector((store) => store.global);
@@ -15,10 +15,8 @@ function ClassLayout() {
         </div>
 
         <div className=" flex items-end gap-2">
-          <Exports category="class" />
-          <Button to="new" type="primary" icon="add">
-            Add class
-          </Button>
+          <Exports category="class" buttonSize="base" />
+          <Button to="new" icon="add" label="ADD CLASS" />
         </div>
       </div>
       <Outlet />

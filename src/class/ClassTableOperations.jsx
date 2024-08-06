@@ -54,19 +54,14 @@ export function ClassFilter() {
         setValu={setSubject}
       />
 
-      {/* <FilterField
-        name="Teacher"
-        data={teachers?.map((teacher) => teacher.name)}
-        value={teacher}
-        setValu={setTeacher}
-      /> */}
-
-      <FilterField
-        name="Grade"
-        data={grades?.map((grade) => grade.gradeName)}
-        value={grade}
-        setValu={setGrade}
-      />
+      {grades?.length > 0 && (
+        <FilterField
+          name="Grade"
+          data={grades?.map((grade) => grade.gradeName)}
+          value={grade}
+          setValu={setGrade}
+        />
+      )}
 
       <FilterField
         name="Hall"

@@ -1,8 +1,8 @@
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import Button from '../ui/components/Button';
 import { useVerifyEmail } from '../authentication/useVerifyEmail';
 import { useEffect, useRef } from 'react';
 import Spinner from '../ui/components/Spinner';
+import { Button } from '../ui/components/ButtonNew';
 
 function VerifyAccount() {
   const { mutate, isPending, isSuccess, isError, error } = useVerifyEmail();
@@ -32,11 +32,9 @@ function VerifyAccount() {
           </p>
           <Button
             onClick={() => navigate('/login')}
-            type="primary"
-            className="!flex !w-full !justify-center !py-3 !normal-case"
-          >
-            Back to Login
-          </Button>
+            className="flex h-12 w-full justify-center"
+            label="Back to Login"
+          />
         </div>
       </div>
     );

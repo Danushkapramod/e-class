@@ -1,5 +1,4 @@
 import { useContext, useEffect, useRef, useState } from 'react';
-import Button from '../ui/components/Button';
 import useCreateStudent from './useCreateStudent';
 import { useStudentsInTeacher } from './useStudents';
 import { useForm } from 'react-hook-form';
@@ -15,6 +14,7 @@ import useOColor from '../utils/getOColor';
 import Exports from '../ui/components/Exports';
 import Pagination from '../ui/components/Pagination';
 import { getStudentsCount } from '../services/apiStudents';
+import { Button } from '../ui/components/ButtonNew';
 
 const statusOptions = [
   ['paid', 'paid'],
@@ -55,13 +55,15 @@ function StudentTable() {
               ]}
             />
             <StudentFilter />
-            <Button onClick={() => updateFormState(!state.addFormIsOpen)} type="smallPrimary">
-              ADD ATUDENT
-            </Button>
+            <Button
+              label="ADD ATUDENT"
+              onClick={() => updateFormState(!state.addFormIsOpen)}
+              size="sm"
+            />
           </div>
         </div>
         {state.addFormIsOpen && <StdForm />}
-        {state.selectedList.length > 0 && <Operation />}
+        {state.selectedList?.length > 0 && <Operation />}
       </div>
       <Table />
     </div>
@@ -69,9 +71,12 @@ function StudentTable() {
 }
 
 export function Operation() {
-  const { id } = useParams();
+  const { id: classId } = useParams();
   const { state, updateSelectedList } = useContext(StdTableContext);
-  const { students } = useStudentsInTeacher([state.searchQuery, state.filterQuery]);
+  const { students } = useStudentsInTeacher(
+    [state.searchQuery, state.filterQuery, state.paginationQuery],
+    classId
+  );
   const { isDeleting, mutate: deleteMany } = useDeleteManyStudents();
   const { isUpdating, mutate: updateMany } = useUpdateManyStudents();
 
@@ -85,6 +90,7 @@ export function Operation() {
     const allIdList = students?.map((std) => std._id);
     updateSelectedList('addAll', allIdList);
   }
+
   function onUnSelect() {
     updateSelectedList('clear');
   }
@@ -94,7 +100,7 @@ export function Operation() {
         <Checkbox id="stdAllSelect" trueCall={onSelect} falseCall={onUnSelect} />
       </div>
       <Exports
-        classId={id}
+        classId={classId}
         selected={state.selectedList}
         size="small"
         category="student"
@@ -106,8 +112,8 @@ export function Operation() {
         ]}
       />
       <SelectItem
-        buttonType="smallSecondery"
-        btnTitle="Status"
+        buttonSize="sm"
+        btnTitle="STATUS"
         disabled={isUpdating}
         onClick={onUpdateStatusHandler}
         icon="currency_exchange"
@@ -115,13 +121,13 @@ export function Operation() {
       />
       <Button
         className="!border-border-2"
-        type="smallSecondery"
+        size="sm"
+        variant="outline"
         disabled={isDeleting}
         icon="delete"
         onClick={onDeletsHandler}
-      >
-        Delete
-      </Button>
+        label="DELETE"
+      />
       <div className=" mb-1 ml-2 self-end text-sm text-text--secondery">
         {state.selectedList.length.toString().padStart(2, '0')}
         <span> selected</span>
@@ -151,6 +157,9 @@ function Table() {
     classId
   );
 
+  if (students?.length < 1) {
+    return '';
+  }
   return (
     <div className=" fle flex-col">
       <div className="z-0 max-h-[calc(100vh-18.75rem)] overflow-auto  ">
@@ -201,7 +210,7 @@ function TableRow({ student }) {
   const ref1 = useRef();
 
   useEffect(() => {
-    setIsSelected(state.selectedList.includes(_id));
+    setIsSelected(state.selectedList?.includes(_id));
   }, [state.selectedList, _id]);
 
   useEffect(() => {
@@ -295,7 +304,7 @@ function TableRow({ student }) {
         )}
       </td>
       <td className="gap-3 ">
-        <div className=" flex w-24 items-center gap-2">
+        <div className=" flex w-28 items-center gap-2">
           <div
             className={`${color} w-full justify-between rounded-full px-3 py-1  text-center text-xs capitalize tracking-wider text-slate-100`}
           >
@@ -318,9 +327,9 @@ function TableRow({ student }) {
         <div className=" flex w-24 items-center justify-between">
           {!isEditing ? (
             <SelectItem
+              btn="more_vert"
               isSuccess={_status || __status}
               disabled={isUpdating || isDeleting}
-              buttonType="xsSecondery"
               onClick={onSelectHandler}
               items={[
                 ['update', 'edit'],
@@ -328,9 +337,7 @@ function TableRow({ student }) {
               ]}
             />
           ) : (
-            <Button onClick={onSubmitHandler} type="smallPrimary">
-              Save
-            </Button>
+            <Button onClick={onSubmitHandler} type="sm" label="SAVE" />
           )}
           {!isEditing ? (
             <HoverInfo student={student} />
@@ -528,9 +535,7 @@ function StdForm() {
       </div>
 
       <div className=" flex items-center gap-3 ">
-        <Button spinner={isPending} type="primary">
-          Submit
-        </Button>
+        <Button spinner={isPending} type="primary" label="SUBMIT" />
         <button
           onClick={(e) => {
             e.preventDefault();

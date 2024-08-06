@@ -1,8 +1,8 @@
 import { Form, useForm } from 'react-hook-form';
-import Button from '../ui/components/Button';
 import { useRequestResetToken } from '../authentication/useRequestResetToken';
 import { InputField } from './InputField';
 import { useState } from 'react';
+import { Button } from '../ui/components/ButtonNew';
 
 export default function RecoveryPasswordPage() {
   const { mutate, isPending, isSuccess } = useRequestResetToken();
@@ -46,13 +46,11 @@ export default function RecoveryPasswordPage() {
           </div>
 
           <Button
-            className="!mt-8 !w-full !justify-center !rounded !py-3 !normal-case"
+            className="mt-8 h-12 w-full justify-center"
             disabled={isPending}
             spinner={isPending}
-            type="primary"
-          >
-            Send Reset Email
-          </Button>
+            label="Send Reset Email"
+          />
         </Form>
       ) : (
         <Step2 email={email} />
@@ -81,14 +79,13 @@ function Step2({ email }) {
       <Button
         spinner={isPending}
         disabled={isPending}
-        sp_color="#2563eb"
+        spinnerColor="#2563eb"
         onClick={() => mutate({ email })}
-        type="secondery"
-        className=" !flex !w-full !justify-center
-            !border-slate-200 !bg-blue-50 !py-3 !normal-case  hover:!bg-blue-100"
-      >
-        Resend Email
-      </Button>
+        variant="outline"
+        labbel="Resend Email"
+        className="flex w-full justify-center border-slate-200
+         bg-blue-50 py-3 normal-case hover:bg-blue-100"
+      ></Button>
     </div>
   );
 }

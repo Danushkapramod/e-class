@@ -83,7 +83,7 @@ function Button({
     if (to) {
       return (
         <Link to={to} type={onType} className={`${xsSecondery} ${className}`}>
-          {icon && <span className="material-symbols-outlined  scale-[0.70]  ">{icon}</span>}
+          {icon && <span className="material-symbols-outlined  scale-[0.60]  ">{icon}</span>}
           <span className="pt-px">{children}</span>
         </Link>
       );
@@ -97,7 +97,7 @@ function Button({
         ref={ref}
         className={`${xsSecondery} ${className}`}
       >
-        {icon && <span className="material-symbols-outlined scale-[0.70]  ">{icon}</span>}
+        {icon && <span className="material-symbols-outlined scale-[0.60]  ">{icon}</span>}
         <span className={`${spinner && 'opacity-0'} pt-px`}>{children}</span>
         {spinner && (
           <div className=" absolute flex w-fit  scale-[35%] items-center justify-center ">

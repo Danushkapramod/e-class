@@ -2,7 +2,7 @@ import SelectItem from './SelectItem';
 import useExportToCsv from '../../class/useExportCsv';
 import useExportToPdf from '../../class/useExportPdf';
 
-export function Exports({ selected: _selected, category, btnType, items, size, classId }) {
+export function Exports({ selected: _selected, category, buttonSize, items, size, classId }) {
   const { isLoading: isLoadingCsv, mutate: exportCsv } = useExportToCsv();
   const { isLoading: isLoadingPdf, mutate: exportPdf } = useExportToPdf();
 
@@ -22,7 +22,7 @@ export function Exports({ selected: _selected, category, btnType, items, size, c
       <SelectItem
         disabled={isLoadingCsv || isLoadingPdf}
         onClick={onSelectHandler}
-        buttonType={btnType || 'secondery'}
+        buttonSize={buttonSize || 'sm'}
         size={size || 'medium'}
         icon="download"
         items={items || [['Export to CSV'], ['Export to PDF']]}

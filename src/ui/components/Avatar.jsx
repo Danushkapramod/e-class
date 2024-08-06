@@ -1,18 +1,24 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { useLogout } from "../../authentication/useLogout";
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useLogout } from '../../authentication/useLogout';
+import { useAuther } from '../../authentication/useAuther';
 
 function Avatar() {
   const [isOpen, setIsOpen] = useState();
   const { mutate: logout, isLoading } = useLogout();
+  const { auther } = useAuther();
 
   return (
     <div className=" relative flex items-center justify-center">
       <button onClick={() => setIsOpen(!isOpen)}>
-        <div className="aspect-square h-10 items-center justify-center">
+        <div className="aspect-square h-10 items-center justify-center overflow-hidden rounded-full">
           <img
             className="h-full"
-            src="https://cdn-icons-png.flaticon.com/512/147/147144.png"
+            src={
+              auther.auther?.avatar
+                ? auther.auther?.avatar
+                : 'https://cdn-icons-png.flaticon.com/512/147/147144.png'
+            }
             alt="avatar"
           ></img>
         </div>
@@ -28,15 +34,11 @@ function Avatar() {
             to="/app/account/me"
             className=" flex h-10 items-center gap-2 px-4 hover:bg-white/5"
           >
-            <span className=" material-symbols-outlined scale-75 font-light">
-              manage_accounts
-            </span>
+            <span className=" material-symbols-outlined scale-75 font-light">manage_accounts</span>
             <span>Account</span>
           </Link>
           <Link className=" flex h-10 items-center gap-2 px-4  hover:bg-white/5">
-            <span className="  material-symbols-outlined  scale-75 font-light">
-              settings
-            </span>
+            <span className="  material-symbols-outlined  scale-75 font-light">settings</span>
             <span>Settings</span>
           </Link>
           <button
@@ -44,9 +46,7 @@ function Avatar() {
             onClick={logout}
             className=" flex h-10 items-center gap-2 px-4  hover:bg-white/5"
           >
-            <span className="  material-symbols-outlined  scale-75 font-light">
-              logout
-            </span>
+            <span className="  material-symbols-outlined  scale-75 font-light">logout</span>
             <span>Logout</span>
           </button>
         </ul>

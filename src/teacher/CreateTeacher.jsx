@@ -1,9 +1,9 @@
 import { Form, useForm } from 'react-hook-form';
-import Button from '../ui/components/Button';
 import useCreateTeacher from './useCreateTeacher';
 import useCreateOption from '../option/useCreateOption';
 import useOptions from '../option/useOptions';
 import { AppInputField } from '../ui/components/AppInputField';
+import { Button } from '../ui/components/ButtonNew';
 
 function CreateTeacher() {
   const { isCreating, mutate } = useCreateTeacher();
@@ -106,12 +106,9 @@ function CreateTeacher() {
           </div>
 
           <div className=" flex justify-end gap-4 pt-4">
-            <Button to="-1" onType="reset" type="secondery">
-              Close
-            </Button>
-            <Button disabled={isCreating} ontype="submit" spinner={isCreating} type="primary">
-              Submit
-            </Button>
+            <Button to={-1} variant="outline" label="CLOSE" />
+
+            <Button disabled={isCreating} spinner={isCreating} label="SUBMIT" />
           </div>
         </Form>
       </div>

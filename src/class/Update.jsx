@@ -1,4 +1,3 @@
-import Button from '../ui/components/Button';
 import { Form, useForm } from 'react-hook-form';
 import Select from '../ui/components/Select';
 import useClasses from './useClasses';
@@ -7,6 +6,7 @@ import { useMemo } from 'react';
 import useUpdateClass from './useUpdateClass';
 import useFormData from './useFormData';
 import { AppInputField } from '../ui/components/AppInputField';
+import { Button } from '../ui/components/ButtonNew';
 
 const days = [
   { day: 'Mondaya' },
@@ -264,13 +264,10 @@ function Update() {
                 e.preventDefault();
                 navigate(-1);
               }}
-              type="secondery"
-            >
-              Close
-            </Button>
-            <Button spinner={isUpdating} disabled={isUpdating} ontype="submit" type="primary">
-              Submit
-            </Button>
+              variant="outline"
+              label="CLOSE"
+            />
+            <Button spinner={isUpdating} disabled={isUpdating} label="SUBMIT" />
           </div>
         </Form>
       </div>

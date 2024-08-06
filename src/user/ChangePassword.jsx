@@ -1,7 +1,7 @@
 import { Form } from 'react-router-dom';
 import { useChangePassword } from '../authentication/useChangePassword';
-import Button from '../ui/components/Button';
 import { useForm } from 'react-hook-form';
+import { Button } from '../ui/components/ButtonNew';
 
 function ChangePassword() {
   const { mutate: changePassword, isPending: isChangingPassword } = useChangePassword();
@@ -108,9 +108,7 @@ function ChangePassword() {
         </div>
       </div>
       <div className="flex justify-end pt-6">
-        <Button disabled={isChangingPassword} spinner={isChangingPassword} type="primary">
-          Save
-        </Button>
+        <Button disabled={isChangingPassword} spinner={isChangingPassword} label="SAVE" />
       </div>
     </Form>
   );

@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { useUpdate } from '../authentication/useUpdate';
 import { Controller, useForm } from 'react-hook-form';
 import { Form } from 'react-router-dom';
-import Button from '../ui/components/Button';
 import { useAuther } from '../authentication/useAuther';
+import { Button } from '../ui/components/ButtonNew';
 
 function ChangeProfile() {
   const { auther, isLoading } = useAuther();
@@ -61,9 +61,7 @@ function ChangeProfile() {
       />
 
       <div className="flex justify-end pt-6">
-        <Button disabled={isUpdatingProfileData} spinner={isUpdatingProfileData} type="primary">
-          update
-        </Button>
+        <Button disabled={isUpdatingProfileData} spinner={isUpdatingProfileData} label="UPDATE" />
       </div>
     </Form>
   );

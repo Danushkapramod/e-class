@@ -21,15 +21,15 @@ function ViewTeacher() {
   if (isLoading) return <Spinner />;
   if (error) return <Error errorMsg={error.message} />;
 
-  const teacherData = teachers?.filter((teacherData) => {
+  const teacherData = teachers?.find((teacherData) => {
     return teacherData._id === teacherId;
   });
 
   const classesData = classes?.filter((classData) => {
-    return classData.teacher?._id === teacherData[0]?._id;
+    return classData.teacher?._id === teacherData?._id;
   });
 
-  const { name, subject, phone, avatar } = teacherData[0];
+  const { name, subject, phone, avatar } = teacherData;
 
   function onSelectHandler(selected) {
     if (selected === 'update') {
@@ -63,6 +63,7 @@ function ViewTeacher() {
 
         <div className=" absolute right-4 top-4">
           <SelectItem
+            btn="more_vert"
             disabled={isDeleting}
             onClick={onSelectHandler}
             items={[
@@ -171,8 +172,7 @@ function ClassItem({ classData }) {
         <div className=" absolute z-50">
           <SelectItem
             disabled={isDeleting}
-            buttonType="xsSecondery"
-            bg="bg-dark-primary"
+            btn="more_vert"
             onClick={onSelectHandler}
             items={[
               ['update', 'edit'],

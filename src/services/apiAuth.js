@@ -1,6 +1,5 @@
 import axios from "axios";
 import { BASE_URL } from "./apiData";
-import { deleteFile, updateAvatar } from "./apiUploads";
 import {axiousWrapper } from "../utils/wrappers";
 
 

@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
-import Button from './Button';
 import AutoCloseWindow from './AutoCloseWindow';
+import { Button } from './ButtonNew';
 //import SelectItem from "./SelectItem";
 
 function Sort({ settled, sortData, icon, btnText, setSort, isSorted, className }) {
   const [isOpen, setIsOpen] = useState(false);
   const [select, setSelect] = useState('none');
-  const btnRef = useRef();
+  const btnRef = useRef(null);
 
   useEffect(() => {
     setSort(select);
@@ -23,35 +23,32 @@ function Sort({ settled, sortData, icon, btnText, setSort, isSorted, className }
   function selectHandler() {}
 
   return (
-    <div className=" relative">
-      <div ref={btnRef}>
-        <Button
-          className={className ? className : `!border-bg--primary-100 !text-text--primary`}
-          onClick={optionClick}
-          type="smallSecondery"
-          icon={icon || 'sort'}
-        >
-          {btnText || 'Sort'}
-        </Button>
-      </div>
+    <div className=" relative flex justify-center">
+      <Button
+        ref={btnRef}
+        onClick={optionClick}
+        label={btnText || 'Sort'}
+        size="sm"
+        icon={icon || 'sort'}
+        variant="outline"
+        className={className}
+      />
       {isSorted ? (
         <div
-          className="
-             te absolute right-0 top-0 flex aspect-square h-3
-              -translate-y-[50%] translate-x-[20%] items-center justify-center 
-              rounded-full   bg-bg--secondery-2 text-sm "
+          className="absolute right-0 top-0 flex aspect-square h-3 -translate-y-[50%]
+         translate-x-[20%] items-center justify-center rounded-full   bg-bg--secondery-2 text-sm "
         ></div>
       ) : null}
       {isOpen && (
         <AutoCloseWindow
           set={setIsOpen}
           refItems={btnRef.current}
-          className={` absolute  right-0 z-50 mt-1 flex   
+          className="absolute right-0 top-8 z-50 mt-1 flex   
             flex-col divide-y
            divide-bg--primary-100 rounded border
-           border-bg--primary-100 bg-bg--primary-500 `}
+           border-bg--primary-100 bg-bg--primary-500"
         >
-          {sortData.map((item, index) => {
+          {sortData?.map((item, index) => {
             return (
               <Item
                 title={item.title}

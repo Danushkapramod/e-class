@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import Button from '../ui/components/Button';
 import { FadeLoader } from 'react-spinners';
 import Error from '../ui/components/Error';
 import useOColor from '../utils/getOColor';
+import { Button } from '../ui/components/ButtonNew';
+import AutoCloseWindow from '../ui/components/AutoCloseWindow';
 
 export default function OptionTable({
   fieldName,
@@ -26,40 +27,18 @@ export default function OptionTable({
   }
 
   useEffect(() => {
-    function eventCallback(e) {
-      if (e.target.closest('button')) return;
-      if (e.target !== inputRef.current && e.target !== inputRef.inputAddBtn) {
-        setIsFormOpen(false);
-      }
-    }
-
-    if (isFormOpen) {
-      inputRef.current.focus();
-      document.addEventListener('click', eventCallback);
-    }
-    return () => {
-      document.removeEventListener('click', eventCallback);
-    };
-  }, [isFormOpen]);
-
-  useEffect(() => {
     setSubject('');
     if (isSuccess) setIsFormOpen(false);
   }, [isSuccess]);
 
   return (
-    <div className="shadow-neumorphism grow basis-1  rounded">
+    <div className="grow basis-1 rounded  shadow-neumorphism">
       <div
         className=" flex items-center justify-between rounded-t border-b
                     border-b-bg--primary-100  bg-bg--primary-200  px-2 py-2 pl-4 text-lg"
       >
         {fieldName}
-
-        <button className="addButton">
-          <Button onClick={addSubjectHandler} type="smallPrimary" icon="add">
-            ADD
-          </Button>
-        </button>
+        <Button ref={inputAddBtn} onClick={addSubjectHandler} label="ADD" size="sm" icon="add" />
       </div>
 
       <ul
@@ -67,29 +46,27 @@ export default function OptionTable({
          rounded-b  ${!theme ? 'bg-white/80' : 'bg-white/[0.03]'}`}
       >
         {isFormOpen && (
-          <li
-            className="relative  flex items-center 
-                      overflow-hidden bg-white/5 "
-          >
-            <input
-              placeholder="add"
-              ref={inputRef}
-              onChange={(e) => setSubject(e.target.value)}
-              value={subject}
-              className=" flex  h-full w-full bg-bg--primary-100 px-4 py-3 outline"
-              type="text"
-            />
+          <AutoCloseWindow refItems={inputAddBtn.current} set={setIsFormOpen}>
+            <li className="relative flex items-center overflow-hidden bg-white/5 ">
+              <input
+                placeholder="add"
+                ref={inputRef}
+                onChange={(e) => setSubject(e.target.value)}
+                value={subject}
+                className=" flex  h-full w-full bg-bg--primary-100 px-4 py-3 outline"
+                type="text"
+              />
 
-            <div className=" absolute right-2 ">
-              <Button
-                ref={inputAddBtn}
-                disabled={isCreating}
-                onClick={() => mutateCreate(subject)}
-                type="xsPrimary"
-                icon="add"
-              ></Button>
-            </div>
-          </li>
+              <div className=" absolute right-2 ">
+                <Button
+                  disabled={isCreating}
+                  onClick={() => mutateCreate(subject)}
+                  size="xs"
+                  icon="add"
+                />
+              </div>
+            </li>
+          </AutoCloseWindow>
         )}
 
         {isLoading ? (
@@ -127,7 +104,8 @@ function Row({ isDeleting, item, number, mutateDelete }) {
       <Button
         disabled={isDeleting}
         onClick={() => mutateDelete(item[0])}
-        type="xsSecondery"
+        size="xs"
+        variant="outline"
         icon="delete"
       />
     </li>

@@ -1,4 +1,3 @@
-import moment from 'moment';
 import useClasses from '../class/useClasses';
 import ButtonList from '../ui/components/ButtonList';
 import { useEffect, useState } from 'react';
@@ -9,6 +8,7 @@ import { todayEnded, todayStarted, todayTotal, todayUpcoming } from '../class/cl
 import useDeleteClass from '../class/useDeleteClass';
 import SelectItem from '../ui/components/SelectItem';
 import { useNavigate } from 'react-router-dom';
+import { formatLocalTime } from '../utils/formateDates&Times';
 
 function TodayClasses() {
   const dispatch = useDispatch();
@@ -135,8 +135,6 @@ function Row({ classData, filterStatus }) {
   const { isDeleting, mutate } = useDeleteClass();
   const { subject, status, grade, avatar, hall, startTime, _id } = classData;
 
-  const formatedclassTime = moment.tz(`2000-01-01T${startTime}Z`, '').format('hh:mm A');
-
   useEffect(() => {
     if (status === 'upcoming') {
       setBajColor('bg-blue-600');
@@ -174,7 +172,7 @@ function Row({ classData, filterStatus }) {
         </td>
         <td className=" px-2 py-3">{grade}</td>
         <td className=" px-2 py-3">{hall}</td>
-        <td className=" px-2 py-3">{formatedclassTime}</td>
+        <td className=" px-2 py-3">{formatLocalTime(startTime)}</td>
         <td className="  px-2 py-3 text-center">
           <span className={`rounded-full ${bajColor} px-2 py-1 text-xs uppercase text-slate-200`}>
             {status}
@@ -184,9 +182,8 @@ function Row({ classData, filterStatus }) {
           <div className=" right-2 top-2">
             <SelectItem
               disabled={isDeleting}
-              buttonType="xsSecondery"
-              bg="bg-neutral-900"
               onClick={onSelectHandler}
+              btn="more_vert"
               items={[
                 ['update', 'edit'],
                 ['view', 'wysiwyg'],

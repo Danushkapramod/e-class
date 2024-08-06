@@ -1,8 +1,8 @@
 import { Form, useForm } from 'react-hook-form';
-import Button from '../ui/components/Button';
 import { useLogin } from '../authentication/useLogin';
 import { Link } from 'react-router-dom';
 import { InputField } from './InputField';
+import { Button } from '../ui/components/ButtonNew';
 
 export default function LoginPage() {
   const {
@@ -64,13 +64,11 @@ export default function LoginPage() {
 
         <div className=" flex justify-end gap-2 pt-4">
           <Button
-            className="!w-full !justify-center !rounded !py-3"
+            className="h-12 w-full justify-center"
             disabled={isPending}
             spinner={isPending}
-            type="primary"
-          >
-            Login
-          </Button>
+            label="LOGIN"
+          />
         </div>
 
         <div className=" mt-4 text-center">

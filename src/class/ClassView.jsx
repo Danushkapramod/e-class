@@ -5,10 +5,10 @@ import Error from '../ui/components/Error';
 import moment from 'moment';
 import useSetRoot from '../utils/setRoot';
 import useDeleteClass from './useDeleteClass';
-import Button from '../ui/components/Button';
 import useClasses from './useClasses';
 import StudentTable from '../students/StudentTable';
 import { useMemo } from 'react';
+import { Button } from '../ui/components/ButtonNew';
 
 function ClassView() {
   useSetRoot('view');
@@ -51,9 +51,12 @@ function ClassView() {
             <span className=" basis-20">Teacher</span>{' '}
             <span className=" flex items-center gap-1">
               :{' '}
-              <Button to={`/app/teachers/${teacher?._id}`} type="link">
-                {teacher?.name}
-              </Button>
+              <Button
+                to={`/app/teachers/${teacher?._id}`}
+                label={teacher?.name}
+                size="link"
+                variant="link"
+              />
             </span>
           </div>
           <div className="flex">
@@ -87,6 +90,7 @@ function ClassView() {
         <SelectItem
           disabled={isDeleting}
           onClick={onSelectHandler}
+          btn="more_vert"
           buttonType="xsSecondery"
           items={[
             ['update', 'edit'],

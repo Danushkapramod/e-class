@@ -1,7 +1,7 @@
-import Button from '../ui/components/Button';
 import { useChangeEmail } from '../authentication/useChangeEmail';
 import { useRequestResetPin } from '../authentication/useEmailChangePin';
 import { useEffect, useRef } from 'react';
+import { Button } from '../ui/components/ButtonNew';
 
 export default function ChangeEmail({ window, setWindow }) {
   return window === 'EmailChangeWindow' ? (
@@ -43,9 +43,7 @@ function EmailChangeWindow({ setWindow }) {
       </div>
 
       <div className="mt-auto flex justify-center pt-6">
-        <Button disabled={isPending} spinner={isPending} className="px-8" type="primary">
-          submit
-        </Button>
+        <Button disabled={isPending} spinner={isPending} className="px-8" label="SUBMIT" />
       </div>
     </form>
   );
@@ -89,9 +87,7 @@ function EnterPinWindow({ setWindow }) {
       </div>
 
       <div className="mt-auto flex justify-center pt-6">
-        <Button disabled={isPending} spinner={isPending} className="px-8" type="primary">
-          submit
-        </Button>
+        <Button disabled={isPending} spinner={isPending} className="px-8" label="SUBMIT" />
       </div>
       <button>
         <span

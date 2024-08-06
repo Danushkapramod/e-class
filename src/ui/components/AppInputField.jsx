@@ -20,8 +20,7 @@ export function AppInputField({
           render={({ field }) => (
             <input
               {...field}
-              className="w-full rounded
-              bg-bg--primary-200 px-4 py-[10px]  pr-14 outline
+              className="w-full rounded bg-bg--primary-200 px-4 py-[10px] pr-14 outline 
               outline-1 outline-border-2 focus:outline-2 focus:outline-blue-500"
               type={type || 'text'}
               name={name}
@@ -32,7 +31,7 @@ export function AppInputField({
           )}
         ></Controller>
       </div>
-      {errors && <p className="absolute -bottom-5  pl-1 text-sm text-red-500">{errors.message}</p>}
+      {errors && <p className="absolute -bottom-5 pl-1 text-sm text-red-500">{errors.message}</p>}
     </div>
   );
 }

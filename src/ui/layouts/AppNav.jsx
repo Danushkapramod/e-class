@@ -1,8 +1,8 @@
 import { useDispatch } from 'react-redux';
 import { ClassFilter, ClassSort } from '../../class/ClassTableOperations';
 import { TeacherFilter } from '../../teacher/TeacherTableOperations';
-import Button from '../components/Button';
 import SearchField from '../components/SearchField';
+import { Button } from '../components/ButtonNew';
 
 function AppNav({ type, tableView, setTableView, onChange }) {
   const dispatch = useDispatch();
@@ -19,19 +19,15 @@ function AppNav({ type, tableView, setTableView, onChange }) {
   }
   return (
     <div
-      className="border-border-1 shadow-neumorphism z-40 mt-2 flex items-center justify-between rounded
-                   border  bg-bg--primary-300 px-[6px] py-[6px]  text-text--primary"
+      className=" z-40 mt-2 flex items-center justify-between rounded border border-border-1 bg-bg--primary-200
+                    px-[6px] py-[6px] text-text--primary shadow-neumorphism"
     >
-      <SearchField className={'!shadow-sm'} onChange={onChange} />
-      <div className="flex gap-2 ">
+      <SearchField className="!shadow-sm" onChange={onChange} />
+      <div className="flex items-center gap-2">
         <Filter />
         {type === 'class' && <ClassSort />}
-        <Button
-          className={'!border-bg--primary-100 !text-text--primary !shadow-sm'}
-          onClick={handleView}
-          type="smallSecondery"
-          icon={view}
-        />
+
+        <Button onClick={handleView} variant="outline" size="sm" icon={view} />
       </div>
     </div>
   );

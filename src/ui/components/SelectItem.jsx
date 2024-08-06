@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import Button from './Button';
 import AutoCloseWindow from './AutoCloseWindow';
 import Tooltip from './Potral';
+import { Button } from './ButtonNew';
 
 // eslint-disable-next-line react/prop-types
 function SelectItem({
@@ -15,7 +15,7 @@ function SelectItem({
   btnTitle,
   isSuccess,
   onClick,
-  buttonType,
+  buttonSize,
 }) {
   const [tooltipData, setTooltipData] = useState();
   const btnRef = useRef();
@@ -44,21 +44,24 @@ function SelectItem({
   return (
     <>
       {btn ? (
-        <button ref={btnRef} className="m-0 p-0" disabled={disabled} onClick={optionClick}>
+        <button
+          onClick={optionClick}
+          disabled={disabled}
+          ref={btnRef}
+          className="material-symbols-outlined flex h-6 scale-[80%] items-center "
+        >
           {btn}
         </button>
       ) : (
-        <div ref={btnRef}>
-          <Button
-            className="!border-border-2  "
-            disabled={disabled}
-            onClick={optionClick}
-            type={buttonType || 'smallSecondery'}
-            icon={icon || 'more_vert'}
-          >
-            {btnTitle}
-          </Button>
-        </div>
+        <Button
+          ref={btnRef}
+          disabled={disabled}
+          onClick={optionClick}
+          variant="outline"
+          size={buttonSize || 'sm'}
+          icon={icon || 'more_vert'}
+          label={btnTitle}
+        />
       )}
       {tooltipData && (
         <Tooltip position={tooltipData.position}>

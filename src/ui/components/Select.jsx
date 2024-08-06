@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import Button from './Button';
 import SearchField from './SearchField';
 import { FadeLoader } from 'react-spinners';
 import useClientSearch from '../../hooks/useClientSearch';
 import { useSelector } from 'react-redux';
 import AutoCloseWindow from './AutoCloseWindow';
+import { Button } from './ButtonNew';
 
 function Select({
   initial,
@@ -56,11 +56,14 @@ function Select({
               )}
               <div className=" absolute right-1 top-1">
                 {add && (
-                  <button>
-                    <Button to={add.to} onClick={add.onClick} type="xsSecondery" icon="add">
-                      ADD
-                    </Button>
-                  </button>
+                  <Button
+                    to={add.to}
+                    onClick={add.onClick}
+                    label="ADD"
+                    size="xs"
+                    variant="outline"
+                    icon="add"
+                  />
                 )}
               </div>
             </div>
