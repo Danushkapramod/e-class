@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { FadeLoader } from 'react-spinners';
-import Error from '../ui/components/Error';
 import useOColor from '../utils/getOColor';
 import { Button } from '../ui/components/ButtonNew';
 import AutoCloseWindow from '../ui/components/AutoCloseWindow';
+import DataLoader from '../ui/components/DataLoader';
 
 export default function OptionTable({
   fieldName,
@@ -35,7 +34,7 @@ export default function OptionTable({
     <div className="grow basis-1 rounded  shadow-neumorphism">
       <div
         className=" flex items-center justify-between rounded-t border-b
-                    border-b-bg--primary-100  bg-bg--primary-200  px-2 py-2 pl-4 text-lg"
+        border-b-bg--primary-100  bg-bg--primary-200  px-2 py-2 pl-4 text-lg"
       >
         {fieldName}
         <Button ref={inputAddBtn} onClick={addSubjectHandler} label="ADD" size="sm" icon="add" />
@@ -68,26 +67,19 @@ export default function OptionTable({
             </li>
           </AutoCloseWindow>
         )}
-
-        {isLoading ? (
-          <div className=" flex scale-50 justify-center">
-            <FadeLoader color="#36d7b7" />
-          </div>
-        ) : error ? (
-          <Error errorMsg={error.message} />
-        ) : (
-          data.map((item, index) => {
-            return (
-              <Row
-                isDeleting={isDeleting}
-                mutateDelete={mutateDelete}
-                item={item}
-                number={index + 1}
-                key={index}
-              />
-            );
-          })
-        )}
+        <DataLoader
+          data={data?.map((item, index) => (
+            <Row
+              isDeleting={isDeleting}
+              mutateDelete={mutateDelete}
+              item={item}
+              number={index + 1}
+              key={index}
+            />
+          ))}
+          isLoading={isLoading}
+          error={error}
+        />
       </ul>
     </div>
   );

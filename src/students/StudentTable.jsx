@@ -1,20 +1,21 @@
 import { useContext, useEffect, useRef, useState } from 'react';
-import useCreateStudent from './useCreateStudent';
-import { useStudentsInTeacher } from './useStudents';
-import { useForm } from 'react-hook-form';
 import { Form, useParams } from 'react-router-dom';
-import SelectItem from '../ui/components/SelectItem';
-import Tooltip from '../ui/components/Potral';
-import useUpdateStudent, { useUpdateManyStudents } from './useUpdateStudent';
-import useDeleteStudent, { useDeleteManyStudents } from './useDeleteStudent';
-import { StudentFilter, StudentSearch } from './StudentTableOperations';
-import { useSelector } from 'react-redux';
-import { StdTableContext } from './TableContext';
-import useOColor from '../utils/getOColor';
+import { useForm } from 'react-hook-form';
+import { Button } from '../ui/components/ButtonNew';
+import DataLoader from '../ui/components/DataLoader';
 import Exports from '../ui/components/Exports';
 import Pagination from '../ui/components/Pagination';
+import SelectItem from '../ui/components/SelectItem';
+import Tooltip from '../ui/components/Potral';
+import { StdTableContext } from './TableContext';
+import { StudentFilter, StudentSearch } from './StudentTableOperations';
+import useCreateStudent from './useCreateStudent';
+import useDeleteStudent, { useDeleteManyStudents } from './useDeleteStudent';
+import useUpdateStudent, { useUpdateManyStudents } from './useUpdateStudent';
+import { useStudentsInTeacher } from './useStudents';
+import useOColor from '../utils/getOColor';
 import { getStudentsCount } from '../services/apiStudents';
-import { Button } from '../ui/components/ButtonNew';
+import Checkbox from '../ui/components/Checkbox';
 
 const statusOptions = [
   ['paid', 'paid'],
@@ -56,7 +57,7 @@ function StudentTable() {
             />
             <StudentFilter />
             <Button
-              label="ADD ATUDENT"
+              label="ADD STUDENT"
               onClick={() => updateFormState(!state.addFormIsOpen)}
               size="sm"
             />
@@ -97,7 +98,7 @@ export function Operation() {
   return (
     <div className="flex h-12 w-full items-center gap-1.5 px-4">
       <div className=" mr-2">
-        <Checkbox id="stdAllSelect" trueCall={onSelect} falseCall={onUnSelect} />
+        <Checkbox width="18px" id="stdAllSelect" trueCall={onSelect} falseCall={onUnSelect} />
       </div>
       <Exports
         classId={classId}
@@ -135,8 +136,8 @@ export function Operation() {
 
       <button
         onClick={onUnSelect}
-        className=" material-symbols-outlined ml-auto flex aspect-square h-8 items-center 
-        justify-center rounded-full bg-bg--primary-300  text-lg"
+        className=" material-symbols-outlined ml-auto flex aspect-square h-8 
+        items-center justify-center rounded-full bg-bg--primary-300  text-lg"
       >
         close
       </button>
@@ -145,14 +146,14 @@ export function Operation() {
 }
 
 function StudentsOnTable() {
-  const { totalStudentsOntable } = useSelector((store) => store.student);
-  return <div className=" flex items-end px-2 text-sm">{`${totalStudentsOntable} results`}</div>;
+  const { state } = useContext(StdTableContext);
+  return <div className=" flex items-end px-2 text-sm">{`${state.totalStdOntable} results`}</div>;
 }
 
 function Table() {
   const { id: classId } = useParams();
   const { state } = useContext(StdTableContext);
-  const { students, isLoading } = useStudentsInTeacher(
+  const { students, isLoading, error } = useStudentsInTeacher(
     [state.searchQuery, state.filterQuery, state.paginationQuery],
     classId
   );
@@ -162,10 +163,10 @@ function Table() {
   }
   return (
     <div className=" fle flex-col">
-      <div className="z-0 max-h-[calc(100vh-18.75rem)] overflow-auto  ">
+      <div className="z-0 max-h-[calc(100vh-18.75rem)] overflow-auto ">
         <table
-          className=" text-smbg-bg--primary-200 w-full  border-b border-l 
-         border-r border-bg--primary-100 bg-bg--primary-200"
+          className=" text-smbg-bg--primary-200 w-full border-b border-l 
+           border-r border-bg--primary-100 bg-bg--primary-200"
         >
           <thead>
             <tr
@@ -182,18 +183,18 @@ function Table() {
             </tr>
           </thead>
           <tbody className=" divide-y divide-bg--primary-100">
-            {!isLoading
-              ? students?.map((student, index) => {
-                  return <TableRow key={index} student={{ ...student, index }} />;
-                })
-              : ''}
+            <DataLoader
+              data={students?.map((student, index) => {
+                return <TableRow key={index} student={{ ...student, index }} />;
+              })}
+              isLoading={isLoading}
+              error={error}
+              options={{ colSpan: '7' }}
+            />
           </tbody>
         </table>
       </div>
-      <div
-        className=" h-4 w-full rounded-b border 
-      border-bg--primary-100 bg-bg--primary-200"
-      ></div>
+      <div className=" h-4 w-full rounded-b border border-bg--primary-100 bg-bg--primary-200"></div>
     </div>
   );
 }
@@ -278,8 +279,7 @@ function TableRow({ student }) {
             <input
               ref={ref1}
               onChange={(e) => setFormState({ ...formState, name: e.target.value })}
-              className=" w-max rounded border-border-1 bg-bg--primary-300
-                        px-2 py-1.5 outline-none"
+              className=" w-max rounded border-border-1 bg-bg--primary-300 px-2 py-1.5 outline-none"
               type="text"
               value={formState.name}
             />
@@ -346,8 +346,8 @@ function TableRow({ student }) {
               onClick={() => {
                 setIsEditing(false);
               }}
-              className=" material-symbols-outlined mr-3 flex aspect-square h-6 items-center justify-center
-             rounded-full bg-bg--primary-300  text-lg"
+              className=" material-symbols-outlined mr-3 flex aspect-square h-6
+               items-center justify-center rounded-full bg-bg--primary-300 text-lg"
             >
               close
             </button>
@@ -471,8 +471,7 @@ function StdForm() {
           {...register('name')}
           name="name"
           placeholder="Name"
-          className="  rounded border border-border-2 
-                bg-bg--primary-200 px-4 py-2 text-sm outline-none"
+          className="rounded border border-border-2 bg-bg--primary-200 px-4 py-2 text-sm outline-none"
           type="text"
         />
         <input
@@ -552,58 +551,3 @@ function StdForm() {
 }
 
 export default StudentTable;
-
-function Checkbox({
-  width,
-  checked,
-  trueCall,
-  falseCall,
-  border,
-  _checked,
-  unchecked,
-  borderColor,
-  id,
-}) {
-  function onCheckHandler(e) {
-    if (e.target.checked) {
-      trueCall();
-    } else {
-      falseCall();
-    }
-  }
-  return (
-    <div
-      className={`relative z-0 flex aspect-square items-center justify-center
-       ${width ? `w-[${width}] ` : 'w-4'}  ${
-         border ? `border-[${border}]` : ''
-       } ${unchecked ? `bg-[${unchecked}]` : ''}`}
-    >
-      <input
-        id={id}
-        onClick={onCheckHandler}
-        type="checkbox"
-        checked={_checked}
-        className={`peer h-full w-full appearance-none
-         rounded-sm border bg-transparent ${
-           borderColor ? `border-[${borderColor}]` : 'border-slate-400'
-         }`}
-      />
-      <label
-        className=" absolute inset-0 hidden bg-transparent
-       peer-checked:z-20 peer-checked:flex"
-        htmlFor={id}
-      >
-        <svg
-          className={`rounded-sm ${checked ? `bg-[${checked}]` : ` bg-blue-600`}`}
-          width="100%"
-          height="100%"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 -960 960 960"
-          fill="#e8eaed"
-        >
-          <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z" />
-        </svg>
-      </label>
-    </div>
-  );
-}

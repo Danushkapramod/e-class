@@ -9,6 +9,7 @@ import useDeleteClass from '../class/useDeleteClass';
 import SelectItem from '../ui/components/SelectItem';
 import { useNavigate } from 'react-router-dom';
 import { formatLocalTime } from '../utils/formateDates&Times';
+import DataLoader from '../ui/components/DataLoader';
 
 function TodayClasses() {
   const dispatch = useDispatch();
@@ -93,37 +94,29 @@ function TodayClasses() {
         className="mt-4 h-72  overflow-auto rounded-md border
        border-bg--secondery-2"
       >
-        {!isLoading ? (
-          !error ? (
-            <table className=" w-full  px-2 ">
-              <thead className="">
-                <tr className=" sticky top-0 z-40  bg-bg--secondery-2  ">
-                  <th className=" "></th>
-                  <th className="  px-2 py-3 text-left font-medium">Subject</th>
-                  <th className="  px-2 text-left font-medium">Grade</th>
-                  <th className="  px-2 text-left font-medium">Hall</th>
-                  <th className="  px-2 text-left font-medium">Time</th>
-                  <th className="  px-2font-medium ">Status</th>
-                  <th className="  px-2 text-left"></th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-bg--primary-100 ">
-                {newClassesArray?.map((classData, index) => {
-                  return <Row filterStatus={status} key={index} classData={classData} />;
-                })}
-              </tbody>
-            </table>
-          ) : (
-            <Error errorMsg={error.message} />
-          )
-        ) : (
-          <div
-            className="  my-2 flex  h-[30px] scale-[45%]   
-           justify-center"
-          >
-            <FadeLoader color="#FFFFFF" />
-          </div>
-        )}
+        <table className=" w-full  px-2 ">
+          <thead className="">
+            <tr className=" sticky top-0 z-40  bg-bg--secondery-2  ">
+              <th className=" "></th>
+              <th className="  px-2 py-3 text-left font-medium">Subject</th>
+              <th className="  px-2 text-left font-medium">Grade</th>
+              <th className="  px-2 text-left font-medium">Hall</th>
+              <th className="  px-2 text-left font-medium">Time</th>
+              <th className="  px-2font-medium ">Status</th>
+              <th className="  px-2 text-left"></th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-bg--primary-100 ">
+            <DataLoader
+              data={newClassesArray?.map((classData, index) => {
+                return <Row filterStatus={status} key={index} classData={classData} />;
+              })}
+              isLoading={isLoading}
+              error={error}
+              options={{ colSpan: '7' }}
+            />
+          </tbody>
+        </table>
       </div>
     </div>
   );

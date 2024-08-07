@@ -2,13 +2,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 import SelectItem from '../ui/components/SelectItem';
 import Spinner from '../ui/components/Spinner';
 import Error from '../ui/components/Error';
-import moment from 'moment';
 import useSetRoot from '../utils/setRoot';
 import useDeleteClass from './useDeleteClass';
 import useClasses from './useClasses';
 import StudentTable from '../students/StudentTable';
 import { useMemo } from 'react';
 import { Button } from '../ui/components/ButtonNew';
+import { formatLocalTime } from '../utils/formateDates&Times';
 
 function ClassView() {
   useSetRoot('view');
@@ -36,8 +36,6 @@ function ClassView() {
       navigate(-1);
     }
   }
-
-  const formatedclassTime = moment.tz(`2000-01-01T${startTime}Z`, 'Asia').format('hh:mm A');
 
   return (
     <div className="mt-2">
@@ -72,7 +70,7 @@ function ClassView() {
             <span className=" basis-14">Date</span> <span>: {day}</span>
           </div>
           <div className="flex">
-            <span className=" basis-14">Time</span> <span>: {formatedclassTime}</span>
+            <span className=" basis-14">Time</span> <span>: {formatLocalTime(startTime)}</span>
           </div>
         </div>
 

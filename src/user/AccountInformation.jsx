@@ -151,8 +151,8 @@ function LeftSection({ auther }) {
       <form className="mt-3  flex gap-2" onSubmit={onSubmitAvatar}>
         <label
           disabled={isUploadingImage}
-          className=" px-2py-0.5 flex items-center justify-center  
-          rounded bg-bg--secondery-2 text-xs uppercase text-slate-200"
+          className=" px-2py-0.5 flex items-center justify-center rounded
+           bg-bg--secondery-2 text-xs uppercase text-slate-200"
           htmlFor="avatar"
         >
           <div
@@ -207,7 +207,7 @@ function RightSection() {
     setIsShow(e.target.name);
   }
   return (
-    <div className="  w-full grow rounded-md border border-border-1 bg-bg--primary-300 p-6 shadow-md">
+    <div className=" w-full grow rounded-md border border-border-1 bg-bg--primary-300 p-6 shadow-md">
       <p className=" text-xl uppercase text-text--muted">Account Information</p>
       <div className=" mt-4">
         <div className=" flex w-full  rounded-t-md border-b-2 border-slate-400 bg-bg--primary-200">

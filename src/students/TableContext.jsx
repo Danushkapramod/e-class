@@ -4,6 +4,7 @@ const initialState = {
   searchQuery: '',
   filterQuery: '',
   paginationQuery: '',
+  totalStdOntable: 0,
   addFormIsOpen: false,
   selectedList: [],
 };
@@ -13,6 +14,7 @@ const SET_FILTER_QUERY = 'SET_FILTER_QUERY';
 const SET_PAGINATION_QUERY = 'SET_PAGINATION_QUERY';
 const SET_ADD_FORM_STATE = 'SET_ADD_FORM_STATE';
 const SET_SELECTD_LIST = 'SET_SELECTD_LIST';
+const SET_TOTAl_STD_ON_TABLE = 'SET_TOTAl_STD_ON_TABLE';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -27,6 +29,9 @@ const reducer = (state, action) => {
 
     case SET_PAGINATION_QUERY:
       return { ...state, paginationQuery: action.payload };
+
+    case SET_TOTAl_STD_ON_TABLE:
+      return { ...state, totalStdOntable: action.payload };
 
     case SET_SELECTD_LIST:
       if (action.payload.operation === 'add') {
@@ -66,6 +71,9 @@ function TableProvider({ children }) {
   const updateSelectedList = (operation, item) => {
     dispatch({ type: SET_SELECTD_LIST, payload: { operation, item } });
   };
+  const updateStdOntable = (item) => {
+    dispatch({ type: SET_TOTAl_STD_ON_TABLE, payload: item });
+  };
 
   return (
     <StdTableContext.Provider
@@ -76,6 +84,7 @@ function TableProvider({ children }) {
         updateFormState,
         updateFlterhQuery,
         updatePaginationQuery,
+        updateStdOntable,
       }}
     >
       {children}

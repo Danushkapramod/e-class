@@ -39,8 +39,8 @@ function CreateTeacher() {
     <>
       <div className="absolute inset-0 z-30  backdrop-blur-lg"></div>
       <div
-        className="absolute right-[50%] top-[50%] z-40 h-max  w-[700px]  shrink translate-x-[50%] 
-                    translate-y-[-50%] space-y-4  rounded-lg  bg-bg--primary-500  p-8 "
+        className="absolute right-[50%] top-[50%] z-40 h-max w-[700px] shrink translate-x-[50%]
+         translate-y-[-50%] space-y-4 rounded-lg bg-bg--primary-500 p-8"
       >
         <h1 className=" py-2 text-center text-2xl font-medium">ADD TEACHER</h1>
         <Form onSubmit={handleSubmit(onSubmit)} control={control} className="space-y-6">

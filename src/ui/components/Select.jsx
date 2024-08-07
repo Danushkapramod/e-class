@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import SearchField from './SearchField';
-import { FadeLoader } from 'react-spinners';
 import useClientSearch from '../../hooks/useClientSearch';
 import { useSelector } from 'react-redux';
 import AutoCloseWindow from './AutoCloseWindow';
 import { Button } from './ButtonNew';
+import DataLoader from './DataLoader';
 
 function Select({
   initial,
@@ -68,8 +68,8 @@ function Select({
               </div>
             </div>
             <ul className=" max-h-60 w-full overflow-auto rounded text-sm ">
-              {!isLoading ? (
-                searchResults.map((data, index) => {
+              <DataLoader
+                data={searchResults.map((data, index) => {
                   return (
                     <SelectOption
                       value={data[valueName]}
@@ -82,12 +82,10 @@ function Select({
                       setIsOpen={setIsOpen}
                     />
                   );
-                })
-              ) : (
-                <div className=" my-2 flex h-[30px]  scale-[45%]  items-center justify-center">
-                  <FadeLoader color="#FFFFFF" />
-                </div>
-              )}
+                })}
+                isLoading={isLoading}
+                options={{ size: 'sm' }}
+              />
             </ul>
           </div>
         </div>

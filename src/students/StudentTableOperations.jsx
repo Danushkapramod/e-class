@@ -25,10 +25,6 @@ const sortData = [
   },
 ];
 
-function StudentTableOperations() {
-  return <div></div>;
-}
-
 export function StudentFilter() {
   const { updateFlterhQuery } = useContext(StdTableContext);
   const dispatch = useDispatch();
@@ -106,5 +102,3 @@ export function StudentSearch() {
     </div>
   );
 }
-
-export default StudentTableOperations;

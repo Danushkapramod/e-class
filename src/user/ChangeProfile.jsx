@@ -88,8 +88,8 @@ function DataField({ options: { defaultV, id, placeholder, control } }) {
           render={({ field }) => (
             <input
               {...field}
-              className="w-full rounded border border-bg--primary-200 bg-bg--primary-200 
-              px-4 py-3 shadow focus:outline focus:outline-slate-400"
+              className="w-full rounded border border-bg--primary-200 bg-bg--primary-200
+               px-4 py-3 shadow focus:outline focus:outline-slate-400"
               type="text"
               id={id}
               placeholder={placeholder}
@@ -102,8 +102,8 @@ function DataField({ options: { defaultV, id, placeholder, control } }) {
           onClick={() => {
             setIsActive(!isActive);
           }}
-          className="material-symbols-outlined absolute right-2  cursor-pointer 
-                 select-none rounded-full p-1 font-light  hover:bg-white/10"
+          className="material-symbols-outlined absolute right-2 cursor-pointer
+           select-none rounded-full p-1 font-light  hover:bg-white/10"
         >
           edit
         </span>

@@ -1,6 +1,3 @@
-import Spinner from '../ui/components/Spinner';
-import moment from 'moment-timezone';
-import Error from '../ui/components/Error';
 import useSetRoot from '../utils/setRoot';
 import useClasses from './useClasses';
 import SelectItem from '../ui/components/SelectItem';
@@ -15,8 +12,9 @@ import { getClassesCount } from '../services/apiClasses';
 import { useEffect } from 'react';
 import { Button } from '../ui/components/ButtonNew';
 import { formatLocalTime } from '../utils/formateDates&Times';
+import DataLoader from '../ui/components/DataLoader';
 
-function ClassesTable() {
+export default function ClassesTable() {
   useSetRoot('');
   const navigate = useNavigate();
   const { classes: data, isLoading, error } = useClasses();
@@ -35,25 +33,6 @@ function ClassesTable() {
   function setSearchQuery(e) {
     setQuery(e.target.value.trim());
   }
-
-  function displayClasses() {
-    if (!isLoading) {
-      if (!error) {
-        return classes?.map((classData, index) => {
-          return <CardItem classData={classData} key={index} />;
-        });
-      } else {
-        return <Error errorMsg={error.message} />;
-      }
-    } else {
-      return (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <Spinner />
-        </div>
-      );
-    }
-  }
-
   return (
     <div>
       <AppNav
@@ -64,7 +43,14 @@ function ClassesTable() {
       />
       {tableView === 'card' ? (
         <div className=" mt-2 grid grow grid-cols-[repeat(auto-fill,minmax(13rem,1fr))] gap-2  rounded ">
-          {displayClasses()}
+          <DataLoader
+            data={classes?.map((classData, index) => {
+              return <CardItem classData={classData} key={index} />;
+            })}
+            isLoading={isLoading}
+            error={error}
+            options={{ grid: true }}
+          />
         </div>
       ) : (
         <div className={`mt-2 overflow-hidden rounded `}>
@@ -79,9 +65,14 @@ function ClassesTable() {
               <th className="  px-2 text-left">Time</th>
               <th className="  px-2 text-left"></th>
             </tr>
-            {classes?.map((classData, index) => {
-              return <TableRow classData={classData} key={index} />;
-            })}
+            <DataLoader
+              data={classes?.map((classData, index) => {
+                return <TableRow classData={classData} key={index} />;
+              })}
+              isLoading={isLoading}
+              error={error}
+              options={{ colSpan: '8' }}
+            />
           </table>
         </div>
       )}
@@ -94,7 +85,6 @@ function ClassesTable() {
     </div>
   );
 }
-export default ClassesTable;
 
 function CardItem({ classData }) {
   const navigate = useNavigate();
@@ -116,9 +106,9 @@ function CardItem({ classData }) {
 
   return (
     <div
-      className="relative flex flex-grow flex-col items-center justify-center rounded-lg 
-                 border  border-b-4 border-bg--primary-100 border-b-bg--secondery-2
-                 bg-bg--primary-200 px-2 py-6 text-text--secondery shadow-md"
+      className="relative flex flex-grow flex-col items-center justify-center
+     rounded-lg border  border-b-4 border-bg--primary-100 border-b-bg--secondery-2 
+     bg-bg--primary-200 px-2 py-6 text-text--secondery shadow-md"
     >
       <div className="absolute right-2 top-2">
         <SelectItem
@@ -172,14 +162,7 @@ function TableRow({ classData }) {
         </div>
       </td>
       <td className=" max-w-38 px-2 py-3 capitalize">{subject}</td>
-      <td className=" max-w-44  px-2  py-3 capitalize">
-        {' '}
-        {!teacher ? (
-          <span className=" w-full text-center lowercase">---------</span>
-        ) : (
-          teacher?.name
-        )}
-      </td>
+      <td className=" max-w-44  px-2  py-3 capitalize">{!teacher ? '---------' : teacher?.name}</td>
       <td className=" px-2 py-3">{grade}</td>
       <td className=" px-2 py-3">{hall}</td>
       <td className="  px-2 py-3 capitalize">{day}</td>

@@ -11,7 +11,6 @@ function Card() {
   const { totalTeachers: _teachers } = useSelector((store) => store.teacher);
   const { totalOptions: _options } = useSelector((store) => store.options);
 
-  console.log('----------');
   const cardsData = [
     {
       title: 'classes',

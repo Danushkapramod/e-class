@@ -2,8 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "react-router-dom";
 import { getStudents } from "../services/apiStudents";
 import useBackendSearch from "../hooks/useBackendSearch";
-import { useEffect } from "react";
-import { setTotalStudentsOntable } from "./studentSlice";
+import { useContext, useEffect } from "react";
+import { StdTableContext } from './TableContext';
 import { useDispatch } from "react-redux";
 
 export default function useStudents(query) {
@@ -24,6 +24,7 @@ export default function useStudents(query) {
 }
 
 export function useStudentsInTeacher(queries,classId) {
+  const{updateStdOntable} = useContext(StdTableContext)
   const dispatch = useDispatch() 
   const queryList = [...queries]
 
@@ -40,7 +41,7 @@ export function useStudentsInTeacher(queries,classId) {
     
   })
   useEffect(()=>{
-    dispatch(setTotalStudentsOntable(students?.length || 0))
+    updateStdOntable(students?.length || 0)
   },[dispatch, students])
 
   return { students, isSuccess, isLoading, error };

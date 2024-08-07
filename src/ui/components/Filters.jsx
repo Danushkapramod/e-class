@@ -37,7 +37,7 @@ function Filters({ children, filterCount, onFilterHandler, reset }) {
         <AutoCloseWindow refItems={btnRef.current} set={setIsOpen}>
           <div
             className="absolute right-0 top-10 z-50 flex flex-col 
-             rounded border border-bg--primary-100 bg-bg--primary-400 px-2 py-2"
+             rounded bg-bg--primary-500 px-2 py-2 shadow-md"
           >
             <div className="flex divide-x divide-border-2">{children}</div>
             <div className=" mt-4 flex justify-end gap-2 pr-2">

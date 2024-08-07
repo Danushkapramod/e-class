@@ -92,7 +92,8 @@ function EnterPinWindow({ setWindow }) {
       <button>
         <span
           onClick={() => setWindow('EmailChangeWindow')}
-          className=" material-symbols-outlined absolute right-2 top-2 rounded-full bg-white/[0.05] p-2 hover:bg-white/10"
+          className=" material-symbols-outlined absolute right-2 top-2
+           rounded-full bg-white/[0.05] p-2 hover:bg-white/10"
         >
           close
         </span>

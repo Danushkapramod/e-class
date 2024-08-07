@@ -1,5 +1,3 @@
-import Spinner from '../ui/components/Spinner';
-import Error from '../ui/components/Error';
 import useSetRoot from '../utils/setRoot';
 import useTeachers from './useTeachers';
 import { useNavigate } from 'react-router-dom';
@@ -12,15 +10,16 @@ import useClientSearch from '../hooks/useClientSearch';
 import { getTeachersCount } from '../services/apiTeachers';
 import Pagination from '../ui/components/Pagination';
 import { Button } from '../ui/components/ButtonNew';
+import DataLoader from '../ui/components/DataLoader';
 
 function TeachersTable() {
+  useSetRoot('');
   const { tableView } = useSelector((store) => store.teacher);
   const { teachers: data, isLoading, error } = useTeachers();
   const { searchResults: teachers, setQuery } = useClientSearch(data, {
     type: 'obj',
     valueName: 'name',
   });
-  useSetRoot('');
 
   function setSearchQuery(e) {
     setQuery(e.target.value.trim());
@@ -35,19 +34,14 @@ function TeachersTable() {
       />
       {tableView === 'card' ? (
         <div className=" mt-2 grid grid-cols-[repeat(auto-fill,minmax(13rem,1fr))] gap-2 rounded">
-          {!isLoading ? (
-            error ? (
-              <Error errorMsg={error.message} />
-            ) : (
-              teachers?.map((teacherData, index) => {
-                return <CardItem teacherData={teacherData} key={index} />;
-              })
-            )
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <Spinner />
-            </div>
-          )}
+          <DataLoader
+            data={teachers?.map((teacherData, index) => {
+              return <CardItem teacherData={teacherData} key={index} />;
+            })}
+            isLoading={isLoading}
+            error={error}
+            options={{ grid: true }}
+          />
         </div>
       ) : (
         <div className={`mt-4 overflow-hidden rounded`}>
@@ -59,9 +53,14 @@ function TeachersTable() {
               <th className="  px-2 text-left">Phone</th>
               <th className="  px-2 text-left"></th>
             </tr>
-            {teachers?.map((teacherData, index) => {
-              return <TableRow teacherData={teacherData} key={index} />;
-            })}
+            <DataLoader
+              data={teachers?.map((teacherData, index) => {
+                return <TableRow teacherData={teacherData} key={index} />;
+              })}
+              isLoading={isLoading}
+              error={error}
+              options={{ colSpan: '5' }}
+            />
           </table>
         </div>
       )}
@@ -94,9 +93,8 @@ function CardItem({ teacherData }) {
 
   return (
     <div
-      className="relative flex min-h-64 flex-grow flex-col
-                 items-center rounded-lg border border-b-4  border-bg--primary-100
-                 border-b-bg--secondery-2 bg-bg--primary-200 px-2 py-4 text-text--secondery shadow-md "
+      className="relative flex min-h-64 flex-grow flex-col items-center rounded-lg border border-b-4 
+      border-bg--primary-100 border-b-bg--secondery-2 bg-bg--primary-200 px-2 py-4 text-text--secondery shadow-md "
     >
       <div className="absolute right-2 top-2 z-30">
         <SelectItem
