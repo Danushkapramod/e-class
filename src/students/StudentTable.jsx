@@ -7,7 +7,7 @@ import Exports from '../ui/components/Exports';
 import Pagination from '../ui/components/Pagination';
 import SelectItem from '../ui/components/SelectItem';
 import Tooltip from '../ui/components/Potral';
-import { StdTableContext } from './TableContext';
+import { StdTableContext, TableProvider } from './TableContext';
 import { StudentFilter, StudentSearch } from './StudentTableOperations';
 import useCreateStudent from './useCreateStudent';
 import useDeleteStudent, { useDeleteManyStudents } from './useDeleteStudent';
@@ -24,14 +24,22 @@ const statusOptions = [
   ['free', 'published_with_changes'],
 ];
 
+export default function StudentTableWithContext() {
+  return (
+    <TableProvider>
+      <StudentTable />
+    </TableProvider>
+  );
+}
+
 function StudentTable() {
   const { id } = useParams();
   const { state, updateFormState, updatePaginationQuery } = useContext(StdTableContext);
   return (
-    <div className=" flex min-w-[40rem]  grow flex-col shadow">
+    <div className=" flex min-w-[40rem]  grow flex-col shadow-md">
       <div
-        className="flex w-full  flex-col justify-between gap-2 rounded-t border 
-        border-bg--primary-100 bg-bg--primary-200 pb-2 pt-3 text-text--primary"
+        className="flex w-full  flex-col justify-between gap-2 rounded-t 
+         bg-bg--primary-200 pb-2 pt-3 text-text--primary"
       >
         <div className=" flex items-end justify-between px-2">
           <StudentSearch />
@@ -162,16 +170,13 @@ function Table() {
     return '';
   }
   return (
-    <div className=" fle flex-col">
+    <div className=" fle flex-col border-t border-bg--primary-100">
       <div className="z-0 max-h-[calc(100vh-18.75rem)] overflow-auto ">
-        <table
-          className=" text-smbg-bg--primary-200 w-full border-b border-l 
-           border-r border-bg--primary-100 bg-bg--primary-200"
-        >
+        <table className=" text-smbg-bg--primary-200 w-full bg-bg--primary-200">
           <thead>
             <tr
               className="sticky -top-[1px] z-10  bg-bg--primary-200 py-2 text-base
-             font-medium shadow transition-all duration-100"
+              font-medium shadow transition-all duration-100"
             >
               <th className=" w-1 px-4 py-2 text-start text-text--muted "></th>
               <th className=" w-1  py-2 text-start text-text--muted ">#</th>
@@ -185,7 +190,7 @@ function Table() {
           <tbody className=" divide-y divide-bg--primary-100">
             <DataLoader
               data={students?.map((student, index) => {
-                return <TableRow key={index} student={{ ...student, index }} />;
+                return <TableRow key={student.studentId} student={{ ...student, index }} />;
               })}
               isLoading={isLoading}
               error={error}
@@ -194,7 +199,7 @@ function Table() {
           </tbody>
         </table>
       </div>
-      <div className=" h-4 w-full rounded-b border border-bg--primary-100 bg-bg--primary-200"></div>
+      <div className="h-4 w-full rounded-b bg-bg--primary-200"></div>
     </div>
   );
 }
@@ -549,5 +554,3 @@ function StdForm() {
     </Form>
   );
 }
-
-export default StudentTable;

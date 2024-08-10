@@ -17,7 +17,6 @@ import { Toaster } from 'react-hot-toast';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import { queryClient } from './queryClient';
 import VerifyAccount from './pages/VerifyAccount';
-import { TableProvider } from './students/TableContext';
 
 function App() {
   const router = createBrowserRouter([
@@ -75,13 +74,11 @@ function App() {
 
   return (
     <Provider store={store}>
-      <TableProvider>
-        <QueryClientProvider client={queryClient}>
-          <Toaster position="top-right" reverseOrder={false} />
-          <ReactQueryDevtools initialIsOpen={false} />
-          <RouterProvider router={router} />
-        </QueryClientProvider>
-      </TableProvider>
+      <QueryClientProvider client={queryClient}>
+        <Toaster position="top-right" reverseOrder={false} />
+        <ReactQueryDevtools initialIsOpen={false} />
+        <RouterProvider router={router} />
+      </QueryClientProvider>
     </Provider>
   );
 }

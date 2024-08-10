@@ -2,7 +2,7 @@ import useSetRoot from '../utils/setRoot';
 import useTeachers from './useTeachers';
 import { useNavigate } from 'react-router-dom';
 import SelectItem from '../ui/components/SelectItem';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import useDeleteTeacher from './useDeleteTeacher';
 import AppNav from '../ui/layouts/AppNav';
 import { setTableView } from './teacherSlice';
@@ -11,6 +11,8 @@ import { getTeachersCount } from '../services/apiTeachers';
 import Pagination from '../ui/components/Pagination';
 import { Button } from '../ui/components/ButtonNew';
 import DataLoader from '../ui/components/DataLoader';
+import DeleteConfirmation from '../ui/components/DeleteConfirmation';
+import { setDeleteConfirmation } from '../GlobalUiState';
 
 function TeachersTable() {
   useSetRoot('');
@@ -64,32 +66,36 @@ function TeachersTable() {
           </table>
         </div>
       )}
-      {
-        <div className=" mb-10 mt-2 flex w-full flex-col items-center justify-center">
-          <div className=" mb-4 h-[1px] w-full bg-bg--primary-100"></div>
-          <Pagination getTotal={getTeachersCount} />
-        </div>
-      }
+      <div className=" mb-10 mt-2 flex w-full flex-col items-center justify-center">
+        <div className=" mb-4 h-[1px] w-full bg-bg--primary-100"></div>
+        <Pagination getTotal={getTeachersCount} />
+      </div>
     </>
   );
 }
 
 function CardItem({ teacherData }) {
+  const dispatch = useDispatch();
+  const { deleteConfirmation } = useSelector((store) => store.global);
   const navigate = useNavigate();
   const { isDeleting, mutate } = useDeleteTeacher();
-  const { _id: teacherId, name, subject, avatar, phone } = teacherData;
+  const { _id, name, subject, avatar, phone } = teacherData;
 
   function onSelectHandler(selected) {
     if (selected === 'update') {
-      navigate(`/app/teachers/${teacherId}/update`);
+      navigate(`/app/teachers/${_id}/update`);
     }
     if (selected === 'view') {
-      navigate(`/app/teachers/${teacherId}`);
+      navigate(`/app/teachers/${_id}`);
     }
     if (selected === 'delete') {
-      mutate(teacherId);
+      dispatch(setDeleteConfirmation(true));
     }
   }
+  const handleDelete = () => {
+    mutate(_id);
+    dispatch(setDeleteConfirmation(false));
+  };
 
   return (
     <div
@@ -133,44 +139,62 @@ function CardItem({ teacherData }) {
           {phone}
         </p>
       </div>
+      <DeleteConfirmation
+        show={deleteConfirmation}
+        onClose={() => dispatch(setDeleteConfirmation(false))}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 }
 
 function TableRow({ teacherData }) {
+  const dispatch = useDispatch();
+  const { deleteConfirmation } = useSelector((store) => store.global);
   const { isDeleting, mutate } = useDeleteTeacher();
-  const { _id: teacherId, name, subject, avatar, phone } = teacherData;
+  const { _id, name, subject, avatar, phone } = teacherData;
 
+  const handleDelete = () => {
+    mutate(_id);
+    dispatch(setDeleteConfirmation(false));
+  };
   return (
-    <tr className="">
-      <td className="pl-4">
-        <div className="flex h-9 w-9 min-w-9 items-center justify-center overflow-hidden rounded-full ">
-          <img
-            className="h-full object-cover"
-            src={
-              avatar
-                ? avatar
-                : 'https://kjvgesvqoblnntmvqaid.supabase.co/storage/v1/object/public/teacher-avatars/Darshana%20kulathilaka_lmH0A2Ftjn.png'
-            }
-            alt=""
+    <>
+      <tr>
+        <td className="pl-4">
+          <div className="flex h-9 w-9 min-w-9 items-center justify-center overflow-hidden rounded-full ">
+            <img
+              className="h-full object-cover"
+              src={
+                avatar
+                  ? avatar
+                  : 'https://kjvgesvqoblnntmvqaid.supabase.co/storage/v1/object/public/teacher-avatars/Darshana%20kulathilaka_lmH0A2Ftjn.png'
+              }
+              alt=""
+            />
+          </div>
+        </td>
+        <td className=" max-w-44 px-2  py-3 capitalize">{name}</td>
+        <td className=" max-w-38 px-2 py-3 capitalize">{subject}</td>
+        <td className=" px-2 py-3">{phone}</td>
+        <td className="flex justify-end gap-2 px-2 py-3 pr-4">
+          <Button to={`${_id}/update`} variant="outline" size="xs" label="UPDATE" icon="edit" />
+          <Button to={`${_id}`} variant="outline" size="xs" icon="wysiwyg" label="VIEW" />
+          <Button
+            variant="outline"
+            disabled={isDeleting}
+            onClick={() => dispatch(setDeleteConfirmation(true))}
+            size="xs"
+            icon="delete"
           />
-        </div>
-      </td>
-      <td className=" max-w-44 px-2  py-3 capitalize">{name}</td>
-      <td className=" max-w-38 px-2 py-3 capitalize">{subject}</td>
-      <td className=" px-2 py-3">{phone}</td>
-      <td className="flex justify-end gap-2 px-2 py-3 pr-4">
-        <Button to={`${teacherId}/update`} variant="outline" size="xs" label="UPDATE" icon="edit" />
-        <Button to={`${teacherId}`} variant="outline" size="xs" icon="wysiwyg" label="VIEW" />
-        <Button
-          variant="outline"
-          disabled={isDeleting}
-          onClick={() => mutate({ teacherId, avatarDbUrl: avatar })}
-          size="xs"
-          icon="delete"
-        />
-      </td>
-    </tr>
+        </td>
+      </tr>
+      <DeleteConfirmation
+        show={deleteConfirmation}
+        onClose={() => dispatch(setDeleteConfirmation(false))}
+        onConfirm={handleDelete}
+      />
+    </>
   );
 }
 

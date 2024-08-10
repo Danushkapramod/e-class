@@ -8,8 +8,8 @@ import { setUiTheme } from '../../GlobalUiState';
 export default function Nav({ sidebarHandler }) {
   return (
     <div
-      className=" border-border-3 flex  min-h-14  items-center
-      justify-between border-b bg-bg--primary-300 pr-4"
+      className=" flex min-h-14  items-center  justify-between
+      border-b border-border-3 bg-bg--primary-300 pr-4"
     >
       <div>
         <NavButton onClick={sidebarHandler} name={'menu'} />

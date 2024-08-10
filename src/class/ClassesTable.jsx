@@ -2,7 +2,7 @@ import useSetRoot from '../utils/setRoot';
 import useClasses from './useClasses';
 import SelectItem from '../ui/components/SelectItem';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import useDeleteClass from './useDeleteClass';
 import { setTableView } from './classSlice';
 import AppNav from '../ui/layouts/AppNav';
@@ -13,12 +13,14 @@ import { useEffect } from 'react';
 import { Button } from '../ui/components/ButtonNew';
 import { formatLocalTime } from '../utils/formateDates&Times';
 import DataLoader from '../ui/components/DataLoader';
+import DeleteConfirmation from '../ui/components/DeleteConfirmation';
+import { setDeleteConfirmation } from '../GlobalUiState';
 
 export default function ClassesTable() {
   useSetRoot('');
   const navigate = useNavigate();
-  const { classes: data, isLoading, error } = useClasses();
   const { isCreateClassOpen, tableView } = useSelector((store) => store.class);
+  const { classes: data, isLoading, error } = useClasses();
 
   useEffect(() => {
     if (!isCreateClassOpen) return;
@@ -76,20 +78,19 @@ export default function ClassesTable() {
           </table>
         </div>
       )}
-      {
-        <div className=" mb-10 mt-2 flex w-full flex-col items-center justify-center">
-          <div className=" mb-4 h-[1px] w-full bg-bg--primary-100"></div>
-          <Pagination getTotal={getClassesCount} />
-        </div>
-      }
+      <div className=" mb-10 mt-2 flex w-full flex-col items-center justify-center">
+        <div className=" mb-4 h-[1px] w-full bg-bg--primary-100"></div>
+        <Pagination getTotal={getClassesCount} />
+      </div>
     </div>
   );
 }
 
 function CardItem({ classData }) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { deleteConfirmation } = useSelector((store) => store.global);
   const { isDeleting, mutate } = useDeleteClass();
-
   const { _id, teacher, subject, avatar, hall, startTime, grade, day } = classData;
 
   function onSelectHandler(selected) {
@@ -100,15 +101,18 @@ function CardItem({ classData }) {
       navigate(`/app/classes/${_id}`);
     }
     if (selected === 'delete') {
-      mutate(_id);
+      dispatch(setDeleteConfirmation(true));
     }
   }
-
+  const handleDelete = () => {
+    mutate(_id);
+    dispatch(setDeleteConfirmation(false));
+  };
   return (
     <div
       className="relative flex flex-grow flex-col items-center justify-center
-     rounded-lg border  border-b-4 border-bg--primary-100 border-b-bg--secondery-2 
-     bg-bg--primary-200 px-2 py-6 text-text--secondery shadow-md"
+       rounded-lg border  border-b-4 border-bg--primary-100 border-b-bg--secondery-2 
+       bg-bg--primary-200 px-2 py-6 text-text--secondery shadow-md"
     >
       <div className="absolute right-2 top-2">
         <SelectItem
@@ -146,60 +150,76 @@ function CardItem({ classData }) {
           <span className=" capitalize">{day}</span> {formatLocalTime(startTime)}
         </p>
       </div>
+      <DeleteConfirmation
+        show={deleteConfirmation}
+        onClose={() => dispatch(setDeleteConfirmation(false))}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 }
 
 function TableRow({ classData }) {
+  const dispatch = useDispatch();
+  const { deleteConfirmation } = useSelector((store) => store.global);
   const { mutate } = useDeleteClass();
   const { _id, teacher, subject, avatar, hall, startTime, grade, day } = classData;
 
+  const handleDelete = () => {
+    mutate(_id);
+    dispatch(setDeleteConfirmation(false));
+  };
+
   return (
-    <tr className="shadow-sm">
-      <td className="pl-4">
-        <div className="flex h-9 w-9 min-w-9 items-center justify-center overflow-hidden rounded-full ">
-          <img className="h-full object-cover" src={avatar} alt="" />
-        </div>
-      </td>
-      <td className=" max-w-38 px-2 py-3 capitalize">{subject}</td>
-      <td className=" max-w-44  px-2  py-3 capitalize">{!teacher ? '---------' : teacher?.name}</td>
-      <td className=" px-2 py-3">{grade}</td>
-      <td className=" px-2 py-3">{hall}</td>
-      <td className="  px-2 py-3 capitalize">{day}</td>
-      <td className=" px-2 py-3">{formatLocalTime(startTime)}</td>
-      <td className="flex px-2 py-3 pr-4">
-        <div className="flex  w-full  items-center justify-end gap-2">
-          <Button
-            to={`${_id}/update`}
-            className="rounded"
-            size="xs"
-            icon="edit"
-            variant="outline"
-            label="UPDATE"
-          />
-          <Button
-            to={`${_id}`}
-            className="rounded"
-            size="xs"
-            icon="wysiwyg"
-            variant="outline"
-            label="VIEW"
-          />
-          <Button
-            onClick={() =>
-              mutate({
-                classId: _id,
-                avatarDbUrl: avatar,
-              })
-            }
-            className="rounded"
-            size="xs"
-            icon="delete"
-            variant="outline"
-          />
-        </div>
-      </td>
-    </tr>
+    <>
+      <tr className="shadow-sm">
+        <td className="pl-4">
+          <div className="flex h-9 w-9 min-w-9 items-center justify-center overflow-hidden rounded-full ">
+            <img className="h-full object-cover" src={avatar} alt="" />
+          </div>
+        </td>
+        <td className=" max-w-38 px-2 py-3 capitalize">{subject}</td>
+        <td className=" max-w-44  px-2  py-3 capitalize">
+          {!teacher ? '---------' : teacher?.name}
+        </td>
+        <td className=" px-2 py-3">{grade}</td>
+        <td className=" px-2 py-3">{hall}</td>
+        <td className="  px-2 py-3 capitalize">{day}</td>
+        <td className=" px-2 py-3">{formatLocalTime(startTime)}</td>
+        <td className="flex px-2 py-3 pr-4">
+          <div className="flex  w-full  items-center justify-end gap-2">
+            <Button
+              to={`${_id}/update`}
+              className="rounded"
+              size="xs"
+              icon="edit"
+              variant="outline"
+              label="UPDATE"
+            />
+            <Button
+              to={`${_id}`}
+              className="rounded"
+              size="xs"
+              icon="wysiwyg"
+              variant="outline"
+              label="VIEW"
+            />
+            <Button
+              onClick={() => dispatch(setDeleteConfirmation(true))}
+              className="rounded"
+              size="xs"
+              icon="delete"
+              variant="outline"
+            />
+          </div>
+        </td>
+      </tr>
+      <DeleteConfirmation
+        show={deleteConfirmation}
+        onClose={() => dispatch(setDeleteConfirmation(false))}
+        onConfirm={handleDelete}
+      />
+    </>
   );
 }
 

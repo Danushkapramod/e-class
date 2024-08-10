@@ -80,7 +80,10 @@ function SelectItem({
                   icon={item[1]}
                   key={index}
                   size={size}
-                  onClick={onClick}
+                  onClick={(e) => {
+                    onClick(e);
+                    setTooltipData(null);
+                  }}
                 />
               );
             })}

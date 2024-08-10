@@ -4,6 +4,7 @@ const initialState = {
   alerts: [],
   root: "",
   theme:'dark',
+  deleteConfirmation:false
 };
 
 const globalReducer = createSlice({
@@ -22,8 +23,11 @@ const globalReducer = createSlice({
     setUiTheme(state, action) {
       state.theme = action.payload;
     },
+    setDeleteConfirmation(state, action) {
+      state.deleteConfirmation = action.payload;
+    },
   },
 });
 const globalUiReducer = globalReducer.reducer;
 export default globalUiReducer;
-export const { addAlert, removeAlert,setUiTheme, setRootName } = globalReducer.actions;
+export const { addAlert, removeAlert,setUiTheme, setRootName,setDeleteConfirmation } = globalReducer.actions;

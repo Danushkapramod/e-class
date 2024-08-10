@@ -5,7 +5,7 @@ import Error from '../ui/components/Error';
 import useSetRoot from '../utils/setRoot';
 import useDeleteClass from './useDeleteClass';
 import useClasses from './useClasses';
-import StudentTable from '../students/StudentTable';
+import StudentTableWithContext from '../students/StudentTable';
 import { useMemo } from 'react';
 import { Button } from '../ui/components/ButtonNew';
 import { formatLocalTime } from '../utils/formateDates&Times';
@@ -97,7 +97,7 @@ function ClassView() {
         />
       </div>
 
-      <StudentTable />
+      <StudentTableWithContext />
     </div>
   );
 }
