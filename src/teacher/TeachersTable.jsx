@@ -16,7 +16,7 @@ import { setDeleteConfirmation } from '../GlobalUiState';
 
 function TeachersTable() {
   useSetRoot('');
-  const { tableView } = useSelector((store) => store.teacher);
+  const { tableView, totalTeachers } = useSelector((store) => store.teacher);
   const { teachers: data, isLoading, error } = useTeachers();
   const { searchResults: teachers, setQuery } = useClientSearch(data, {
     type: 'obj',
@@ -37,8 +37,8 @@ function TeachersTable() {
       {tableView === 'card' ? (
         <div className=" mt-2 grid grid-cols-[repeat(auto-fill,minmax(13rem,1fr))] gap-2 rounded">
           <DataLoader
-            data={teachers?.map((teacherData, index) => {
-              return <CardItem teacherData={teacherData} key={index} />;
+            data={teachers?.map((teacherData) => {
+              return <CardItem teacherData={teacherData} key={teacherData._id} />;
             })}
             isLoading={isLoading}
             error={error}
@@ -46,29 +46,32 @@ function TeachersTable() {
           />
         </div>
       ) : (
-        <div className={`mt-4 overflow-hidden rounded`}>
-          <table className="w-full divide-y-4 divide-bg--primary-200 px-2">
-            <tr className="bg-bg--primary-200 text-text--secondery">
-              <th className=" "></th>
-              <th className="  px-2 py-3 text-left">Teacher</th>
-              <th className="  px-2 text-left">Sybject</th>
-              <th className="  px-2 text-left">Phone</th>
-              <th className="  px-2 text-left"></th>
-            </tr>
-            <DataLoader
-              data={teachers?.map((teacherData, index) => {
-                return <TableRow teacherData={teacherData} key={index} />;
-              })}
-              isLoading={isLoading}
-              error={error}
-              options={{ colSpan: '5' }}
-            />
+        <div className="mt-2 overflow-hidden rounded border border-bg--primary-200 shadow">
+          <table className="w-full px-2">
+            <thead>
+              <tr className=" text-text--secondery">
+                <th className=" "></th>
+                <th className="  px-2 py-3 text-left">Teacher</th>
+                <th className="  px-2 text-left">Sybject</th>
+                <th className="  px-2 text-left">Phone</th>
+                <th className="  px-2 text-left"></th>
+              </tr>
+            </thead>
+            <tbody className=" divide-border-4 divide-y bg-bg--primary-200">
+              <DataLoader
+                data={teachers?.map((teacherData) => {
+                  return <TableRow teacherData={teacherData} key={teacherData._id} />;
+                })}
+                isLoading={isLoading}
+                error={error}
+                options={{ colSpan: '5' }}
+              />
+            </tbody>
           </table>
         </div>
       )}
-      <div className=" mb-10 mt-2 flex w-full flex-col items-center justify-center">
-        <div className=" mb-4 h-[1px] w-full bg-bg--primary-100"></div>
-        <Pagination getTotal={getTeachersCount} />
+      <div className="mb-10 mt-2 flex w-full flex-col items-center justify-center">
+        <Pagination getTotal={getTeachersCount} total={totalTeachers} />
       </div>
     </>
   );

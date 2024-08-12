@@ -38,8 +38,8 @@ function StudentTable() {
   return (
     <div className=" flex min-w-[40rem]  grow flex-col shadow-md">
       <div
-        className="flex w-full  flex-col justify-between gap-2 rounded-t 
-         bg-bg--primary-200 pb-2 pt-3 text-text--primary"
+        className="flex w-full  flex-col justify-between gap-2 
+        rounded-t bg-bg--primary-200 pb-2 pt-3 text-text--primary"
       >
         <div className=" flex items-end justify-between px-2">
           <StudentSearch />
@@ -175,8 +175,8 @@ function Table() {
         <table className=" text-smbg-bg--primary-200 w-full bg-bg--primary-200">
           <thead>
             <tr
-              className="sticky -top-[1px] z-10  bg-bg--primary-200 py-2 text-base
-              font-medium shadow transition-all duration-100"
+              className="sticky -top-[1px] z-10 border-b border-b-bg--primary-100 
+              bg-bg--primary-200 py-2 text-base font-medium transition-all duration-100"
             >
               <th className=" w-1 px-4 py-2 text-start text-text--muted "></th>
               <th className=" w-1  py-2 text-start text-text--muted ">#</th>
@@ -266,14 +266,16 @@ function TableRow({ student }) {
   const bgColor = isSelected ? (theam ? 'bg-black/10' : 'bg-blue-50') : '';
   return (
     <tr className={`text-sm ${bgColor}`}>
-      <td className="px-4">
-        <div className="">
-          <Checkbox
-            id={_id}
-            trueCall={onAddhandler}
-            falseCall={onRemoveHandler}
-            _checked={isSelected}
-          />
+      <td className="relative px-4">
+        <div className=" flex items-center justify-center px-2">
+          <label htmlFor={_id} className="hover:bg-hover-1 ho absolute rounded-full p-3">
+            <Checkbox
+              id={_id}
+              trueCall={onAddhandler}
+              falseCall={onRemoveHandler}
+              _checked={isSelected}
+            />
+          </label>
         </div>
       </td>
       <td className=" py-3 pr-6 text-text--muted ">{(index + 1).toString().padStart(2, '0')}</td>
@@ -311,7 +313,8 @@ function TableRow({ student }) {
       <td className="gap-3 ">
         <div className=" flex w-28 items-center gap-2">
           <div
-            className={`${color} w-full justify-between rounded-full px-3 py-1  text-center text-xs capitalize tracking-wider text-slate-100`}
+            className={`${color} w-full justify-between rounded-full px-3 py-1
+             text-center text-xs capitalize tracking-wider text-slate-100`}
           >
             {status}
           </div>

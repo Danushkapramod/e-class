@@ -1,7 +1,6 @@
-import useSetRoot from '../utils/setRoot';
 import useClasses from './useClasses';
 import SelectItem from '../ui/components/SelectItem';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import useDeleteClass from './useDeleteClass';
 import { setTableView } from './classSlice';
@@ -15,12 +14,14 @@ import { formatLocalTime } from '../utils/formateDates&Times';
 import DataLoader from '../ui/components/DataLoader';
 import DeleteConfirmation from '../ui/components/DeleteConfirmation';
 import { setDeleteConfirmation } from '../GlobalUiState';
+import Exports from '../ui/components/Exports';
 
 export default function ClassesTable() {
-  useSetRoot('');
+  const { id } = useParams();
   const navigate = useNavigate();
-  const { isCreateClassOpen, tableView } = useSelector((store) => store.class);
-  const { classes: data, isLoading, error } = useClasses();
+  const { isCreateClassOpen, tableView, totalClasses } = useSelector((store) => store.class);
+
+  const { classes: data, isLoading, error } = useClasses({ teacher: true });
 
   useEffect(() => {
     if (!isCreateClassOpen) return;
@@ -36,7 +37,18 @@ export default function ClassesTable() {
     setQuery(e.target.value.trim());
   }
   return (
-    <div>
+    <>
+      <div className="flex items-center justify-between">
+        <div className="flex items-end">
+          <div className=" text-2xl text-text--secondery">Classes</div>
+          <span className=" text-base font-normal uppercase opacity-70">{id}</span>
+        </div>
+
+        <div className=" flex items-end gap-2">
+          <Exports category="class" buttonSize="base" />
+          <Button to="new" icon="add" label="ADD CLASS" />
+        </div>
+      </div>
       <AppNav
         type="class"
         setTableView={setTableView}
@@ -46,8 +58,8 @@ export default function ClassesTable() {
       {tableView === 'card' ? (
         <div className=" mt-2 grid grow grid-cols-[repeat(auto-fill,minmax(13rem,1fr))] gap-2  rounded ">
           <DataLoader
-            data={classes?.map((classData, index) => {
-              return <CardItem classData={classData} key={index} />;
+            data={classes?.map((classData) => {
+              return <CardItem classData={classData} key={classData._id} />;
             })}
             isLoading={isLoading}
             error={error}
@@ -55,34 +67,37 @@ export default function ClassesTable() {
           />
         </div>
       ) : (
-        <div className={`mt-2 overflow-hidden rounded `}>
-          <table className="w-full divide-y-4 divide-bg--primary-200  px-2">
-            <tr className="bg-bg--primary-200 text-text--secondery">
-              <th className=" "></th>
-              <th className="  px-2 py-3 text-left">Subject</th>
-              <th className="  px-2 text-left">Teacher</th>
-              <th className="  px-2 text-left">Grade</th>
-              <th className="  px-2 text-left">Hall</th>
-              <th className="  px-2 text-left">Day</th>
-              <th className="  px-2 text-left">Time</th>
-              <th className="  px-2 text-left"></th>
-            </tr>
-            <DataLoader
-              data={classes?.map((classData, index) => {
-                return <TableRow classData={classData} key={index} />;
-              })}
-              isLoading={isLoading}
-              error={error}
-              options={{ colSpan: '8' }}
-            />
+        <div className="mt-2 overflow-hidden rounded border border-bg--primary-200 shadow">
+          <table className="w-full px-2">
+            <thead>
+              <tr className="  text-text--secondery">
+                <th className=" rounded "></th>
+                <th className="  px-2 py-3 text-left">Subject</th>
+                <th className="  px-2 text-left">Teacher</th>
+                <th className="  px-2 text-left">Grade</th>
+                <th className="  px-2 text-left">Hall</th>
+                <th className="  px-2 text-left">Day</th>
+                <th className="  px-2 text-left">Time</th>
+                <th className="  px-2 text-left"></th>
+              </tr>
+            </thead>
+            <tbody className=" divide-border-4 divide-y bg-bg--primary-200">
+              <DataLoader
+                data={classes?.map((classData) => {
+                  return <TableRow classData={classData} key={classData._id} />;
+                })}
+                isLoading={isLoading}
+                error={error}
+                options={{ colSpan: '8' }}
+              />
+            </tbody>
           </table>
         </div>
       )}
       <div className=" mb-10 mt-2 flex w-full flex-col items-center justify-center">
-        <div className=" mb-4 h-[1px] w-full bg-bg--primary-100"></div>
-        <Pagination getTotal={getClassesCount} />
+        <Pagination getTotal={getClassesCount} total={totalClasses} />
       </div>
-    </div>
+    </>
   );
 }
 
@@ -172,7 +187,7 @@ function TableRow({ classData }) {
 
   return (
     <>
-      <tr className="shadow-sm">
+      <tr>
         <td className="pl-4">
           <div className="flex h-9 w-9 min-w-9 items-center justify-center overflow-hidden rounded-full ">
             <img className="h-full object-cover" src={avatar} alt="" />

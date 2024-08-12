@@ -72,13 +72,13 @@ function SelectItem({
               text-text--primary shadow-xl transition-all duration-200 
             ${bg ? bg : 'bg-bg--primary-500'} ${width ? width + `w-[${width}px]` : 'w-max'}`}
           >
-            {items.map((item, index) => {
+            {items.map((item) => {
               return (
                 <Item
                   disabled={disabled}
                   item={item[0]}
                   icon={item[1]}
-                  key={index}
+                  key={item[0]}
                   size={size}
                   onClick={(e) => {
                     onClick(e);

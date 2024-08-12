@@ -52,13 +52,9 @@ function MetaInfo({ auther }) {
   }
 
   return (
-    <Form
-      control={control}
-      onSubmit={handleSubmit(onSubmit)}
-      className="w-full rounded border border-border-1 p-6 shadow-md"
-    >
+    <Form control={control} onSubmit={handleSubmit(onSubmit)} className="w-full rounded p-6 ">
       <div className=" flex justify-between text-text--secondery">
-        <p className=" text-xl uppercase text-text--muted">Institute Information</p>
+        <p className=" text-xl text-text--muted">Institute Information</p>
         <button
           type="button"
           onClick={() => setIsLock(!isLock)}
@@ -134,7 +130,7 @@ function LeftSection({ auther }) {
   }
   return (
     <div className=" flex w-full min-w-96 grow flex-col items-center rounded-md p-6">
-      <div className="mt-4 rounded-full border-2 border-border-1 p-1.5 shadow-md">
+      <div className="mt-4 rounded-full p-1.5 shadow">
         <div className="flex h-40 w-40 items-center justify-center overflow-hidden rounded-full ">
           <img
             className="h-full object-cover"
@@ -207,28 +203,28 @@ function RightSection() {
     setIsShow(e.target.name);
   }
   return (
-    <div className=" w-full grow rounded-md border border-border-1 bg-bg--primary-300 p-6 shadow-md">
-      <p className=" text-xl uppercase text-text--muted">Account Information</p>
+    <div className=" w-full grow rounded-md bg-bg--primary-300 p-6">
+      <p className=" text-xl text-text--muted">Account Information</p>
       <div className=" mt-4">
         <div className=" flex w-full  rounded-t-md border-b-2 border-slate-400 bg-bg--primary-200">
           <button
             name="editProfile"
             onClick={isOpenHandler}
-            className={` basis-1/3 rounded-ss px-4 py-2 ${isShow === 'editProfile' && 'bg-bg--primary-100'}`}
+            className={` basis-1/3 rounded-ss px-4 py-2 ${isShow === 'editProfile' && ' bg-hover-1'}`}
           >
             Edit Profile
           </button>
           <button
             name="changeEmail"
             onClick={isOpenHandler}
-            className={` basis-1/3 px-4 py-2 ${isShow === 'changeEmail' && 'bg-bg--primary-100'}`}
+            className={` basis-1/3 px-4 py-2 ${isShow === 'changeEmail' && ' bg-hover-1'}`}
           >
             Change Email
           </button>
           <button
             name="changePassword"
             onClick={isOpenHandler}
-            className={` basis-1/3 rounded-se px-4 py-2 ${isShow === 'changePassword' && 'bg-bg--primary-100'}`}
+            className={` basis-1/3 rounded-se px-4 py-2 ${isShow === 'changePassword' && ' bg-hover-1'}`}
           >
             Change Password
           </button>

@@ -9,7 +9,7 @@ import { AppInputField } from '../ui/components/AppInputField';
 import { Button } from '../ui/components/ButtonNew';
 
 const days = [
-  { day: 'Mondaya' },
+  { day: 'Monday' },
   { day: 'Tuesday' },
   { day: 'Wednesday' },
   { day: 'Thursday' },

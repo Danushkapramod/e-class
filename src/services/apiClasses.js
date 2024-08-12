@@ -11,6 +11,14 @@ export const getClasses = axiousWrapper((queryParams)=>{
     });
 })
 
+export const getClassesWithoutTeacher = axiousWrapper((queryParams)=>{
+  let query;
+   queryParams ? query = queryParams: query = "";
+   return axios.get(`${BASE_URL}/classes${query}`,{
+     withCredentials:true,
+     timeout:6000
+   });
+})
 
 export const getClassesCount = axiousWrapper(()=>{
    return axios.get(`${BASE_URL}/classes/total`,{

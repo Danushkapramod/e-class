@@ -1,8 +1,6 @@
 import useClasses from '../class/useClasses';
 import ButtonList from '../ui/components/ButtonList';
 import { useEffect, useState } from 'react';
-import Error from '../ui/components/Error';
-import { FadeLoader } from 'react-spinners';
 import { useDispatch } from 'react-redux';
 import { todayEnded, todayStarted, todayTotal, todayUpcoming } from '../class/classSlice';
 import useDeleteClass from '../class/useDeleteClass';
@@ -11,11 +9,16 @@ import { useNavigate } from 'react-router-dom';
 import { formatLocalTime } from '../utils/formateDates&Times';
 import DataLoader from '../ui/components/DataLoader';
 
+const daysOfWeek = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+
 function TodayClasses() {
   const dispatch = useDispatch();
 
   const [newClassesArray, setNwClassesArray] = useState([]);
-  const { classes, isLoading, error } = useClasses();
+  const { classes, isLoading, error } = useClasses({
+    query: `?day=${daysOfWeek[new Date().getDay()]}`,
+    teacher: false,
+  });
   dispatch(todayTotal(classes?.length));
 
   const [status, setStatus] = useState('all');

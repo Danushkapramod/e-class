@@ -15,7 +15,7 @@ function Pagination({ limit = 20, getTotal, url = true, set, type }) {
 
   useEffect(() => {
     (async () => {
-      const total = await getTotal();
+      const total = total ? total : await getTotal();
       const pageCount = Math.ceil(total / pageLimit);
       setPageCount(pageCount);
       setTotal(total);

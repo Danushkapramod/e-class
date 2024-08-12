@@ -38,7 +38,17 @@ function ClassView() {
   }
 
   return (
-    <div className="mt-2">
+    <div className="">
+      <div className=" mb-1 flex items-end text-text--muted">
+        <div className=" flex items-center text-lg">
+          Class <span className="material-symbols-outlined ">chevron_right</span>
+          <span className=" flex items-end">
+            <span className=" text-base"> Admin</span>{' '}
+            <span className="material-symbols-outlined scale-90">chevron_right</span>
+          </span>
+        </div>
+        <span className=" font-normal uppercase ">{id}</span>
+      </div>
       <div className=" mb-4 flex h-[5.625rem] w-full gap-4 rounded bg-bg--primary-200 p-2 shadow-md">
         <img className=" aspect-square h-full overflow-hidden" src={avatar} alt="avatar" />
         <div className="flex grow flex-col justify-between text-sm capitalize">

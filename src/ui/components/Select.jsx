@@ -69,11 +69,11 @@ function Select({
             </div>
             <ul className=" max-h-60 w-full overflow-auto rounded text-sm ">
               <DataLoader
-                data={searchResults.map((data, index) => {
+                data={searchResults.map((data) => {
                   return (
                     <SelectOption
                       value={data[valueName]}
-                      key={index}
+                      key={data[idName]}
                       valueId={data[idName]}
                       showValue={showValue}
                       setValue_={setValue_}

@@ -30,4 +30,4 @@ const globalReducer = createSlice({
 });
 const globalUiReducer = globalReducer.reducer;
 export default globalUiReducer;
-export const { addAlert, removeAlert,setUiTheme, setRootName,setDeleteConfirmation } = globalReducer.actions;
+export const {  removeAlert,setUiTheme, setRootName,setDeleteConfirmation } = globalReducer.actions;

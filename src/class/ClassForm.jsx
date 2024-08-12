@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '../ui/components/ButtonNew';
 
 const days = [
-  { day: 'Mondaya' },
+  { day: 'Monday' },
   { day: 'Tuesday' },
   { day: 'Wednesday' },
   { day: 'Thursday' },

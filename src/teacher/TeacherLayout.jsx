@@ -10,8 +10,17 @@ function TeacherLayout() {
     <div className=" ">
       <div className="flex items-center justify-between px-2">
         <div className="flex items-end">
-          <div className=" text-2xl text-text--secondery">Teachers/</div>
-          <span className=" text-base font-normal uppercase opacity-70">{root}</span>
+          <div className=" text-2xl text-text--secondery">Teachers</div>
+          <span className=" text-base font-normal text-text--muted">
+            {root ? (
+              <span className=" flex ">
+                <span className="material-symbols-outlined pb-0.5">chevron_right</span>
+                {root}
+              </span>
+            ) : (
+              ''
+            )}
+          </span>
         </div>
         <div className=" flex gap-2">
           <Exports category="teacher" buttonSize="base" />

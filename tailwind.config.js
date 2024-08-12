@@ -28,9 +28,13 @@ export default {
         'text--primary': 'var(--color-text-primary)',
         'text--secondery': 'var(--color-text-secondary)',
         'text--muted': 'var(--color-text-muted)',
+
         'border-1': 'var(--color-border-1)',
         'border-2': 'var(--color-border-2)',
         'border-3': 'var(--color-border-3)',
+        'border-4': 'var(--color-border-4)',
+        'hover-1' : 'var(--color-hover-1)',
+
         'optinal-1': 'var(--color-optinal-1)',
         'text--option-1': 'var(--color-text-option-1)',
         'opacity-overflow': 'var(--color-overflow)',

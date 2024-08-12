@@ -11,20 +11,24 @@ const optionsSlice = createSlice({
   name: "options",
   initialState,
   reducers: {
-    totalOptions(state, action) {
-      state.totalOptions = action.payload;
-    },
     totalHalls(state, action) {
       state.totalHalls = action.payload;
+      calculateTotalOptions(state);
     },
     totalGrades(state, action) {
       state.totalGrades = action.payload;
+      calculateTotalOptions(state);
     },
     totalSubjects(state, action) {
       state.totalSubjects = action.payload;
+      calculateTotalOptions(state);
     },
   },
 });
+
+function calculateTotalOptions(state) {
+  state.totalOptions = state.totalGrades + state.totalHalls + state.totalSubjects;
+}
 
 const optionsReducer = optionsSlice.reducer;
 export default optionsReducer;

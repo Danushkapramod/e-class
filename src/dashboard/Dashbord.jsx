@@ -14,9 +14,6 @@ function Dashbord() {
           <Example />
         </div>
       </div>
-      {/* <div>
-        <button onClick={()=>test}>Click</button>
-      </div> */}
     </div>
   );
 }
