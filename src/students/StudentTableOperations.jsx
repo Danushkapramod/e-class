@@ -80,7 +80,7 @@ export function StudentSearch() {
         onChange={(e) => setSearch(e.target.value)}
         value={search}
         placeholder="Find"
-        className=" w-48 bg-bg--primary-200 px-8 py-[0.375rem] text-sm outline-none "
+        className=" w-48 rounded bg-bg--primary-200 px-8 py-[0.375rem] text-sm outline-none "
         type="text"
       />
       <span className="material-symbols-outlined absolute rounded-sm pl-2 text-lg ">search</span>

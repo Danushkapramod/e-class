@@ -13,13 +13,22 @@ export const getStudents = axiousWrapper(({query:{query,classId},signal})=>{
     let queryParams;
     query ? (queryParams = `?${query}`) : (queryParams = "");
 
-    return axios.get(`${BASE_URL}/students/${classId}${queryParams}`,{
+      return axios.get(`${BASE_URL}/students/${classId}${queryParams}`,{
       withCredentials:true,
       signal,
       timeout:6000
     })
  }) 
+ export const getAllStudents = axiousWrapper(({query,signal})=>{
+  let queryParams;
+  query ? (queryParams = `?${query}`) : (queryParams = "");
 
+    return axios.get(`${BASE_URL}/students${queryParams}`,{
+    withCredentials:true,
+    signal,
+    timeout:6000
+  })
+}) 
 export const updateStudent = axiousWrapper(({studentId, newData })=>{
   return axios.patch(`${BASE_URL}/students/${studentId}`, newData,{
     withCredentials:true,

@@ -8,7 +8,8 @@ import useClasses from '../class/useClasses';
 import useTeachers from './useTeachers';
 import moment from 'moment/moment';
 import useDeleteClass from '../class/useDeleteClass';
-import { FadeLoader } from 'react-spinners';
+import DataLoader from '../ui/components/DataLoader';
+import { useMemo } from 'react';
 
 function ViewTeacher() {
   useSetRoot('view');
@@ -16,21 +17,30 @@ function ViewTeacher() {
   const navigate = useNavigate();
   const { isDeleting, mutate } = useDeleteTeacher();
   const { teachers, isLoading, error } = useTeachers();
-  const { classes, isLoading: classesisLoading, error: classesError } = useClasses();
+  const {
+    classes,
+    isLoading: classesisLoading,
+    error: classesError,
+  } = useClasses({ teacher: true });
+
+  const teacherData = useMemo(() => {
+    if (!teachers) return;
+    return teachers.find((teacherData) => {
+      return teacherData._id === teacherId;
+    });
+  }, [teacherId, teachers]);
+
+  const classesData = useMemo(() => {
+    if (!classes) return;
+    return classes.filter((classData) => {
+      return classData.teacher?._id === teacherData?._id;
+    });
+  }, [classes, teacherData?._id]);
 
   if (isLoading) return <Spinner />;
   if (error) return <Error errorMsg={error.message} />;
 
-  const teacherData = teachers?.find((teacherData) => {
-    return teacherData._id === teacherId;
-  });
-
-  const classesData = classes?.filter((classData) => {
-    return classData.teacher?._id === teacherData?._id;
-  });
-
-  const { name, subject, phone, avatar } = teacherData;
-
+  const { name, subject, phone, avatar } = teacherData || {};
   function onSelectHandler(selected) {
     if (selected === 'update') {
       navigate(`/app/teachers/${teacherId}/update`);
@@ -48,7 +58,7 @@ function ViewTeacher() {
           border-bg--primary-100 p-8 shadow"
       >
         <div
-          className=" items-centerw-32 flex aspect-square h-48 justify-center
+          className=" items-centerw-32 flex aspect-square h-40 justify-center
          overflow-hidden rounded-full border-2 border-slate-300"
         >
           <img
@@ -103,21 +113,19 @@ function ViewTeacher() {
       <div className=" max-w-[30rem] grow rounded-md border border-bg--primary-100 p-4 shadow-md ">
         <div className=" uppercase opacity-60">Classes</div>
         <ul className="mt-2 divide-y divide-border-2 overflow-hidden rounded bg-bg--primary-200 ">
-          {!classesisLoading ? (
-            classesError ? (
-              classesError.message
-            ) : !classesData?.length ? (
-              <div className="px-2 py-2">No classes yet</div>
-            ) : (
-              classesData?.map((classData, index) => {
-                return <ClassItem classData={classData} key={index} />;
-              })
-            )
-          ) : (
-            <div className=" my-2 flex h-[30px]  scale-[45%]  items-center justify-center">
-              <FadeLoader color="#FFFFFF" />
-            </div>
-          )}
+          <DataLoader
+            data={
+              classesData.length > 0 ? (
+                classesData.map((classData, index) => {
+                  return <ClassItem classData={classData} key={index} />;
+                })
+              ) : (
+                <div className="px-2 py-2">No classes yet</div>
+              )
+            }
+            isLoading={classesisLoading}
+            error={classesError}
+          />
         </ul>
       </div>
     </div>

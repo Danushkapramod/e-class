@@ -1,25 +1,33 @@
-import { useQuery } from "@tanstack/react-query";
-import { useLocation } from "react-router-dom";
-import { getStudents } from "../services/apiStudents";
+
+import { getAllStudents, getStudents } from "../services/apiStudents";
 import useBackendSearch from "../hooks/useBackendSearch";
 import { useContext, useEffect } from "react";
 import { StdTableContext } from './TableContext';
 import { useDispatch } from "react-redux";
 
-export default function useStudents(query) {
-  const location = useLocation({});
-  const queryParams = query || location.search;
+export function useAllStudents(queries) {
+  const{updateStdOntable} = useContext(StdTableContext)
+  const dispatch = useDispatch() 
+  const queryList = [...queries]
 
-  const {
-    data: students,
-    isLoading,
-    isSuccess,
-    error,
-  } = useQuery({
-    queryKey: ["students", queryParams],
-    queryFn: () => getStudents({ queryParams}),
-  })
+  let query = '';
+  for(let i = 0; i < queryList.length; i++){
+    if(queryList[i]){
+      query =  queryList[i] + '&' + query
+    } 
+  }
+ // const location = useLocation({});
+  //const queryParams = query || location.search;
 
+  const {data:students,isLoading,isSuccess, error,}= useBackendSearch({
+    queryFn:getAllStudents,
+    queryKey:['students',query],
+    query:query
+    
+  }) 
+   useEffect(()=>{
+    updateStdOntable(students?.length || 0)
+  },[dispatch, students])
   return { students, isSuccess, isLoading, error };
 }
 
@@ -36,7 +44,7 @@ export function useStudentsInTeacher(queries,classId) {
   }
   const {data:students,isLoading,isSuccess, error,}= useBackendSearch({
     queryFn:getStudents,
-    queryKey:'students',
+    queryKey:['students',classId,query],
     query:{query,classId}
     
   })

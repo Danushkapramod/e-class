@@ -17,6 +17,7 @@ import { Toaster } from 'react-hot-toast';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import { queryClient } from './queryClient';
 import VerifyAccount from './pages/VerifyAccount';
+import { StudentRoutes } from './routes/StudentRoutes';
 
 function App() {
   const router = createBrowserRouter([
@@ -56,6 +57,11 @@ function App() {
         ClassRoutes,
         TeachersRoutes,
         OptionRoutes,
+        StudentRoutes,
+        {
+          path: 'account/me',
+          element: <AccountInformation />,
+        },
         {
           path: 'account/me',
           element: <AccountInformation />,

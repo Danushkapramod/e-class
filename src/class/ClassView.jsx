@@ -5,10 +5,10 @@ import Error from '../ui/components/Error';
 import useSetRoot from '../utils/setRoot';
 import useDeleteClass from './useDeleteClass';
 import useClasses from './useClasses';
-import StudentTableWithContext from '../students/StudentTable';
 import { useMemo } from 'react';
 import { Button } from '../ui/components/ButtonNew';
 import { formatLocalTime } from '../utils/formateDates&Times';
+import StudentTable from '../students/StudentTable';
 
 function ClassView() {
   useSetRoot('view');
@@ -107,7 +107,7 @@ function ClassView() {
         />
       </div>
 
-      <StudentTableWithContext />
+      <StudentTable />
     </div>
   );
 }

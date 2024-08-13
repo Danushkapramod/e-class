@@ -1,8 +1,6 @@
 import { createContext, useReducer } from 'react';
 
 const initialState = {
-  statusOptions: {},
-  tempStatusList: [],
   searchQuery: '',
   filterQuery: '',
   paginationQuery: '',
@@ -10,8 +8,7 @@ const initialState = {
   addFormIsOpen: false,
   selectedList: [],
 };
-const SET_TEMP_STATUS_LIST = 'SET_TEMP_STATUS_LIST';
-const SET_STATUS_OPTIONS = 'SET_STATUS_OPTIONS';
+
 const SET_SEARCH_QUERY = 'SET_SEARCH_QUERY';
 const SET_FILTER_QUERY = 'SET_FILTER_QUERY';
 const SET_PAGINATION_QUERY = 'SET_PAGINATION_QUERY';
@@ -27,9 +24,6 @@ const reducer = (state, action) => {
     case SET_FILTER_QUERY:
       return { ...state, filterQuery: action.payload };
 
-    case SET_TEMP_STATUS_LIST:
-      return { ...state, tempStatusList: action.payload };
-
     case SET_ADD_FORM_STATE:
       return { ...state, addFormIsOpen: action.payload };
 
@@ -38,9 +32,6 @@ const reducer = (state, action) => {
 
     case SET_TOTAl_STD_ON_TABLE:
       return { ...state, totalStdOntable: action.payload };
-
-    case SET_STATUS_OPTIONS:
-      return { ...state, statusOptions: action.payload };
 
     case SET_SELECTD_LIST:
       if (action.payload.operation === 'add') {
@@ -60,17 +51,11 @@ const reducer = (state, action) => {
       return state;
   }
 };
-const StdTableContext = createContext();
+const AllStdTableContext = createContext();
 
 function TableProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const updateStatusOptions = (options) => {
-    dispatch({ type: SET_STATUS_OPTIONS, payload: options });
-  };
-  const updateTempStatusList = (list) => {
-    dispatch({ type: SET_TEMP_STATUS_LIST, payload: list });
-  };
   const updateSearchQuery = (query) => {
     dispatch({ type: SET_SEARCH_QUERY, payload: query });
   };
@@ -91,7 +76,7 @@ function TableProvider({ children }) {
   };
 
   return (
-    <StdTableContext.Provider
+    <AllStdTableContext.Provider
       value={{
         state,
         updateSearchQuery,
@@ -100,13 +85,11 @@ function TableProvider({ children }) {
         updateFlterhQuery,
         updatePaginationQuery,
         updateStdOntable,
-        updateStatusOptions,
-        updateTempStatusList,
       }}
     >
       {children}
-    </StdTableContext.Provider>
+    </AllStdTableContext.Provider>
   );
 }
 
-export { TableProvider, StdTableContext };
+export { TableProvider, AllStdTableContext };

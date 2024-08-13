@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Form, useParams } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { Button } from '../ui/components/ButtonNew';
 import DataLoader from '../ui/components/DataLoader';
 import Exports from '../ui/components/Exports';
@@ -9,13 +9,16 @@ import SelectItem from '../ui/components/SelectItem';
 import Tooltip from '../ui/components/Potral';
 import { StdTableContext, TableProvider } from './TableContext';
 import { StudentFilter, StudentSearch } from './StudentTableOperations';
-import useCreateStudent from './useCreateStudent';
 import useDeleteStudent, { useDeleteManyStudents } from './useDeleteStudent';
 import useUpdateStudent, { useUpdateManyStudents } from './useUpdateStudent';
-import { useStudentsInTeacher } from './useStudents';
+import { useAllStudents } from './useStudents';
 import useOColor from '../utils/getOColor';
 import { getStudentsCount } from '../services/apiStudents';
 import Checkbox from '../ui/components/Checkbox';
+import useAppSetings from '../user/useAppSetings';
+import useUpdateAppSetings from '../user/useUpdateAppSetings';
+import { statusOptionsDefault } from '../services/apiAuth';
+import { useMutation } from '@tanstack/react-query';
 
 const statusOptions = [
   ['paid', 'paid'],
@@ -24,16 +27,16 @@ const statusOptions = [
   ['free', 'published_with_changes'],
 ];
 
-export default function StudentTable() {
+export default function StudentTableAll() {
   return (
     <TableProvider>
       <div className=" flex min-w-[40rem]  grow flex-col shadow-md">
         <div
           className="flex w-full  flex-col justify-between gap-2 
-        rounded-t bg-bg--primary-200 pb-2 pt-3 text-text--primary"
+           rounded-t bg-bg--primary-200 pb-2 pt-3 text-text--primary"
         >
           <TableNav />
-          <StdForm />
+          <StatusForm />
           <Operation />
         </div>
         <Table />
@@ -70,7 +73,8 @@ function TableNav() {
         />
         <StudentFilter />
         <Button
-          label="ADD STUDENT"
+          icon="settings"
+          variant="outline"
           onClick={() => updateFormState(!state.addFormIsOpen)}
           size="sm"
         />
@@ -82,7 +86,7 @@ function TableNav() {
 export function Operation() {
   const { id: classId } = useParams();
   const { state, updateSelectedList } = useContext(StdTableContext);
-  const { students } = useStudentsInTeacher(
+  const { students } = useAllStudents(
     [state.searchQuery, state.filterQuery, state.paginationQuery],
     classId
   );
@@ -146,7 +150,7 @@ export function Operation() {
       <button
         onClick={onUnSelect}
         className=" material-symbols-outlined ml-auto flex aspect-square h-8 
-        items-center justify-center rounded-full bg-bg--primary-300  text-lg"
+        items-center justify-center rounded-full bg-bg--primary-300 text-lg"
       >
         close
       </button>
@@ -160,20 +164,25 @@ function StudentsOnTable() {
 }
 
 function Table() {
-  const { id: classId } = useParams();
-  const { state } = useContext(StdTableContext);
-  const { students, isLoading, error } = useStudentsInTeacher(
-    [state.searchQuery, state.filterQuery, state.paginationQuery],
-    classId
-  );
+  const { data, isSuccess: appSetingsIsSuccess } = useAppSetings();
+  const { state, updateStatusOptions } = useContext(StdTableContext);
+  const { students, isLoading, error } = useAllStudents([
+    state.searchQuery,
+    state.filterQuery,
+    state.paginationQuery,
+  ]);
+
+  useEffect(() => {
+    if (appSetingsIsSuccess) updateStatusOptions(data?.students.statusOptions || {});
+  }, [appSetingsIsSuccess, data?.students.statusOptions]);
 
   if (students?.length < 1) {
     return '';
   }
   return (
-    <div className=" fle flex-col border-t border-bg--primary-100">
+    <div className="fle flex-col border-t border-bg--primary-100">
       <div className="z-0 max-h-[calc(100vh-18.75rem)] overflow-auto ">
-        <table className=" text-smbg-bg--primary-200 w-full bg-bg--primary-200">
+        <table className="text-smbg-bg--primary-200 w-full bg-bg--primary-200">
           <thead>
             <tr
               className="sticky -top-[1px] z-10 border-b border-b-bg--primary-100 
@@ -184,7 +193,10 @@ function Table() {
               <th className="max-w-[130px] py-2 text-start ">ID</th>
               <th className=" py-2 text-start ">Student name</th>
               <th className="py-2 text-start ">Phone</th>
-              <th className=" py-2 text-start ">Status</th>
+              <th className=" flex gap-1 py-2 text-start ">
+                <div>Status</div>
+                <Button icon="settings" size="xs" variant="outline" label="EDIT" />
+              </th>
               <th className="py-2 text-start"></th>
             </tr>
           </thead>
@@ -259,11 +271,7 @@ function TableRow({ student }) {
     }
   }
 
-  let color;
-  if (status === 'paid') color = 'bg-green-600';
-  if (status === 'unpaid') color = 'bg-orange-600';
-  if (status === 'free') color = 'bg-slate-600';
-  if (status === 'half') color = 'bg-sky-600';
+  const stdStatus = state.statusOptions?.find(({ option }) => option === status);
   const bgColor = isSelected ? (theam ? 'bg-black/10' : 'bg-blue-50') : '';
   return (
     <tr className={`text-sm ${bgColor}`}>
@@ -314,8 +322,17 @@ function TableRow({ student }) {
       <td className="gap-3 ">
         <div className=" flex w-28 items-center gap-2">
           <div
-            className={`${color} w-full justify-between rounded-full px-3 py-1
-             text-center text-xs capitalize tracking-wider text-slate-100`}
+            style={
+              stdStatus?.color
+                ? { backgroundColor: stdStatus.color }
+                : {
+                    border: '1px solid',
+                    borderColor: 'var(--color-border-2)',
+                    color: 'var(--color-text-primary)',
+                  }
+            }
+            className="w-full justify-between rounded-full px-3 py-1 
+            text-center text-xs capitalize tracking-wider text-slate-100"
           >
             {status}
           </div>
@@ -328,7 +345,9 @@ function TableRow({ student }) {
               </span>
             }
             onClick={onStatusHandler}
-            items={statusOptions.filter((option) => option[0] !== status)}
+            items={state.statusOptions
+              ?.filter((option) => option.option !== status)
+              .map((option) => [option.option])}
           />
         </div>
       </td>
@@ -445,29 +464,26 @@ function HoverInfo({ student }) {
   );
 }
 
-function StdForm() {
-  const { id } = useParams();
-  const { updateFormState, state } = useContext(StdTableContext);
-  const { isPending, mutate } = useCreateStudent();
-  const { setValue, setFocus, watch, handleSubmit, register, control } = useForm();
+function StatusForm() {
+  const { mutate: setDefaultStatus } = useMutation({ mutationFn: statusOptionsDefault });
+  const { updateFormState, state, updateTempStatusList } = useContext(StdTableContext);
+  const { mutate, isPending } = useUpdateAppSetings();
+  const { setFocus, getValues, handleSubmit, control } = useForm();
+
+  useEffect(() => {
+    updateTempStatusList(state.statusOptions);
+  }, [state.statusOptions]);
 
   useEffect(() => {
     setFocus('name');
   }, [setFocus]);
 
-  function onSubmit(data) {
-    if (!id) return;
-    mutate(
-      { ...data, classId: id },
-      {
-        onSettled: () => {
-          setValue('name', '');
-          setValue('phone', '');
-          setValue('gmail', '');
-          setFocus('name');
-        },
-      }
-    );
+  function onSubmit() {
+    mutate({ students: { statusOptions: state.tempStatusList } });
+  }
+  async function onDefault(e) {
+    await e.preventDefault();
+    setDefaultStatus();
   }
   if (!state.addFormIsOpen) return null;
   return (
@@ -476,71 +492,17 @@ function StdForm() {
       control={control}
       className=" flex items-center justify-between border-b border-t border-bg--primary-100 px-2 py-2"
     >
-      <div className=" flex items-end gap-2">
-        <input
-          {...register('name')}
-          name="name"
-          placeholder="Name"
-          className="rounded border border-border-2 bg-bg--primary-200 px-4 py-2 text-sm outline-none"
-          type="text"
-        />
-        <input
-          {...register('phone')}
-          name="phone"
-          placeholder="Phone"
-          className="  rounded border border-border-2 bg-bg--primary-200 px-4 py-2 text-sm outline-none"
-          type="text"
-        />
-        {watch('sendQr_gmail') && (
-          <input
-            {...register('gmail')}
-            name="gmail"
-            placeholder="Gmail"
-            className="  rounded border border-border-2 bg-bg--primary-200 px-4 py-2 text-sm outline-none"
-            type="email"
+      <div className=" flex flex-wrap items-start gap-2">
+        <AddStatus />
+        <Button onClick={onDefault} variant="outline" size="sm" label="Default" />
+        {state.tempStatusList.map((option) => (
+          <StatusOption
+            control={control}
+            getValues={getValues}
+            key={option.option}
+            option={option}
           />
-        )}
-
-        <div className=" flex flex-col justify-center  text-sm">
-          <div className="text-gray-400">SEND-QR</div>
-          <div className=" flex gap-2">
-            <div className=" flex items-center">
-              <input
-                {...register('sendQr_whatsapp')}
-                id="checkbox"
-                name="sendQr_whatsapp"
-                type="checkbox"
-                defaultChecked
-                className="h-4 w-4 rounded  text-blue-600 
-                accent-blue-600 focus:ring-2 focus:ring-blue-500"
-              />
-              <label htmlFor="checkbox" className="ms-2 text-sm font-medium text-gray-400 ">
-                Whatsapp
-              </label>
-            </div>
-
-            <div className=" flex items-center">
-              <input
-                {...register('sendQr_gmail')}
-                id="checkbox"
-                name="sendQr_gmail"
-                type="checkbox"
-                className="h-4 w-4 rounded  text-blue-600
-                 accent-blue-600 focus:ring-2 focus:ring-blue-500"
-              />
-              <label htmlFor="checkbox" className="ms-2 text-sm font-medium text-gray-400 ">
-                Gmail
-              </label>
-            </div>
-          </div>
-        </div>
-        <input
-          {...register('status')}
-          value="unpaid"
-          name="status"
-          type="text"
-          className="hidden"
-        />
+        ))}
       </div>
 
       <div className=" flex items-center gap-3 ">
@@ -550,12 +512,103 @@ function StdForm() {
             e.preventDefault();
             updateFormState(false);
           }}
-          className=" material-symbols-outlined flex aspect-square h-8 items-center justify-center
-               rounded-full bg-bg--primary-300  text-lg"
+          className=" material-symbols-outlined flex aspect-square h-8 
+          items-center justify-center rounded-full bg-bg--primary-300 text-lg"
         >
           close
         </button>
       </div>
     </Form>
+  );
+}
+
+function AddStatus() {
+  const { updateTempStatusList, state } = useContext(StdTableContext);
+  const [value, setValue] = useState();
+
+  function onSubmit(e) {
+    e.preventDefault();
+    updateTempStatusList([...state.tempStatusList, { option: value, color: '' }]);
+  }
+
+  return (
+    <div className=" flex gap-2">
+      <input
+        name="status"
+        onChange={(e) => setValue(e.target.value)}
+        value={value}
+        placeholder="Status"
+        className="rounded border border-border-2 bg-bg--primary-200 px-4 py-2 text-sm outline-none"
+        type="text"
+      />
+      <Button onClick={onSubmit} size="sm" label="ADD" icon="add" variant="outline" />
+    </div>
+  );
+}
+
+function StatusOption({ option: { option, color }, control }) {
+  const { updateTempStatusList, state } = useContext(StdTableContext);
+  const [_color, setColor] = useState(color);
+
+  useEffect(() => {
+    updateTempStatusList(
+      state.tempStatusList.map((item) => {
+        if (item.option === option) {
+          return { option, color: _color };
+        } else {
+          return item;
+        }
+      })
+    );
+  }, [_color, option]);
+
+  function deleteHandler(e) {
+    e.preventDefault();
+    updateTempStatusList(state.tempStatusList.filter((item) => item.option !== option));
+  }
+  return (
+    <div
+      style={{
+        backgroundColor: _color,
+        border: '1px solid',
+        borderColor: _color || 'var(--color-border-2)',
+      }}
+      className=" flex items-center gap-1 rounded px-2  pl-3 text-sm capitalize"
+    >
+      {option}
+      <div className="flex items-center">
+        <label
+          htmlFor={option}
+          className="material-symbols-outlined flex scale-[70%] 
+          items-center justify-center rounded-full p-0.5 hover:scale-75"
+        >
+          format_color_fill
+        </label>
+        <Controller
+          id={option}
+          name={option}
+          control={control}
+          render={({ field }) => (
+            <input
+              {...field}
+              className="h-0 w-0 opacity-0"
+              onChange={(e) => {
+                setColor(e.target.value);
+              }}
+              type="color"
+              name={option}
+              id={option}
+            />
+          )}
+        />
+        <button
+          onClick={deleteHandler}
+          className="material-symbols-outlined flex scale-[70%]
+          items-center justify-center rounded-full p-0.5  hover:scale-75"
+        >
+          delete
+        </button>
+      </div>
+    </div>
   );
 }

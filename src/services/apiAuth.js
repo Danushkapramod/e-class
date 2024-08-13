@@ -57,7 +57,22 @@ export const updateAuther = axiousWrapper(async (newData)=>{
       },
     );
 })
+export const updateAppSetings = axiousWrapper(async (newData)=>{
+  return axios.patch(`${BASE_URL}/users/app-settings`,newData,
+    { withCredentials: true},
+  );
+})
 
+export const statusOptionsDefault = axiousWrapper(async ()=>{
+  return axios.post(`${BASE_URL}/users/default-statusOptions`,
+    { withCredentials: true},
+  );
+})
+export const deleteAppSetings = axiousWrapper(async (newData)=>{
+  return axios.patch(`${BASE_URL}/users/app-settings`,newData,
+    { withCredentials: true},
+  );
+})
 export const updateTeacher = axiousWrapper(({newData ,teacherId})=>{
   const formData = new FormData();
     Object.entries(newData).forEach(([key, value]) => {
@@ -95,6 +110,14 @@ export const requestPasswordResetToken = axiousWrapper((data)=>{
 
 export const requestEmailResetToken = axiousWrapper((email)=>{
   return axios.post(`${BASE_URL}/users/change-email-token`,email,
+      { withCredentials: true,
+        timeout: 6000,
+      },
+    );
+})
+
+export const getAppSetings = axiousWrapper(()=>{
+  return axios.get(`${BASE_URL}/users/app-settings`,
       { withCredentials: true,
         timeout: 6000,
       },

@@ -8,11 +8,11 @@ function Sidebar({ sidebarOpen }) {
   return (
     <div
       style={sidebarOpen ? { width: '15rem' } : { width: '0' }}
-      className="border-r-border-3 dark flex h-dvh shrink-0 flex-col items-center overflow-hidden
-       border-r bg-bg--primary-300 py-6 transition-all duration-300 ease-in-out"
+      className="dark flex h-dvh shrink-0 flex-col items-center overflow-hidden border-r
+       border-r-border-3 bg-bg--primary-300 py-6 transition-all duration-300 ease-in-out"
     >
       <Logo />
-      <div className="divide-border-3  mt-8 flex w-full  flex-col divide-y px-3 ">
+      <div className="mt-8  flex w-full flex-col  divide-y divide-border-3 px-3 ">
         <NavLink
           to="dashbord"
           className="flex gap-4 rounded-sm  py-2 pl-4 transition-all duration-150 
@@ -30,7 +30,6 @@ function Sidebar({ sidebarOpen }) {
           <span className="material-symbols-outlined font-light">school</span>
           <span className=" ">Class</span>
         </NavLink>
-
         <NavLink
           to="teachers"
           className="flex gap-4 rounded-sm  py-2 pl-4 transition-all duration-150 
@@ -38,6 +37,14 @@ function Sidebar({ sidebarOpen }) {
         >
           <span className="material-symbols-outlined font-light">group</span>
           <span className="">Teacher</span>
+        </NavLink>
+        <NavLink
+          to="students"
+          className="flex gap-4 rounded-sm  py-2 pl-4 transition-all duration-150 
+          first-line:items-center hover:bg-white/10  hover:text-bg--secondery-2"
+        >
+          <span className="material-symbols-outlined font-light">groups</span>
+          <span className="">Students</span>
         </NavLink>
         <NavLink
           to="options"
