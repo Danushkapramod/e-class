@@ -1,9 +1,8 @@
 import { useContext, useEffect, useRef, useState } from 'react';
-import { Form, useParams } from 'react-router-dom';
+import { Form } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
 import { Button } from '../ui/components/ButtonNew';
 import DataLoader from '../ui/components/DataLoader';
-import Exports from '../ui/components/Exports';
 import Pagination from '../ui/components/Pagination';
 import SelectItem from '../ui/components/SelectItem';
 import Tooltip from '../ui/components/Potral';
@@ -13,19 +12,19 @@ import useDeleteStudent, { useDeleteManyStudents } from './useDeleteStudent';
 import useUpdateStudent, { useUpdateManyStudents } from './useUpdateStudent';
 import { useAllStudents } from './useStudents';
 import useOColor from '../utils/getOColor';
-import { getStudentsCount } from '../services/apiStudents';
 import Checkbox from '../ui/components/Checkbox';
 import useAppSetings from '../user/useAppSetings';
 import useUpdateAppSetings from '../user/useUpdateAppSetings';
 import { statusOptionsDefault } from '../services/apiAuth';
 import { useMutation } from '@tanstack/react-query';
+import useHide from '../user/useHide';
 
-const statusOptions = [
-  ['paid', 'paid'],
-  ['unpaid', 'pending'],
-  ['half', 'side_navigation'],
-  ['free', 'published_with_changes'],
-];
+// const statusOptions = [
+//   ['paid', 'paid'],
+//   ['unpaid', 'pending'],
+//   ['half', 'side_navigation'],
+//   ['free', 'published_with_changes'],
+// ];
 
 export default function StudentTableAll() {
   return (
@@ -46,50 +45,26 @@ export default function StudentTableAll() {
 }
 
 function TableNav() {
-  const { id } = useParams();
-  const { state, updateFormState, updatePaginationQuery } = useContext(StdTableContext);
+  const { updatePaginationQuery } = useContext(StdTableContext);
   return (
     <div className=" flex items-end justify-between px-2">
       <StudentSearch />
       <div className=" flex gap-2">
         <StudentsOnTable />
-        <Pagination
-          type="simple"
-          url={false}
-          limit={10}
-          set={updatePaginationQuery}
-          getTotal={() => getStudentsCount(id)}
-        />
-        <Exports
-          classId={id}
-          size="small"
-          category="student"
-          btnType="smallSecondery"
-          items={[
-            ['Payments Sheet', 'edit'],
-            ['Export to PDF', 'wysiwyg'],
-            ['Export to CSV', 'delete'],
-          ]}
-        />
+        <Pagination type="simple" url={false} limit={10} set={updatePaginationQuery} />
         <StudentFilter />
-        <Button
-          icon="settings"
-          variant="outline"
-          onClick={() => updateFormState(!state.addFormIsOpen)}
-          size="sm"
-        />
       </div>
     </div>
   );
 }
 
 export function Operation() {
-  const { id: classId } = useParams();
   const { state, updateSelectedList } = useContext(StdTableContext);
-  const { students } = useAllStudents(
-    [state.searchQuery, state.filterQuery, state.paginationQuery],
-    classId
-  );
+  const { students } = useAllStudents([
+    state.searchQuery,
+    state.filterQuery,
+    state.paginationQuery,
+  ]);
   const { isDeleting, mutate: deleteMany } = useDeleteManyStudents();
   const { isUpdating, mutate: updateMany } = useUpdateManyStudents();
 
@@ -113,25 +88,13 @@ export function Operation() {
       <div className=" mr-2">
         <Checkbox width="18px" id="stdAllSelect" trueCall={onSelect} falseCall={onUnSelect} />
       </div>
-      <Exports
-        classId={classId}
-        selected={state.selectedList}
-        size="small"
-        category="student"
-        btnType="smallSecondery"
-        items={[
-          ['Payments Sheet', 'edit'],
-          ['Export to PDF', 'wysiwyg'],
-          ['Export to CSV', 'delete'],
-        ]}
-      />
       <SelectItem
         buttonSize="sm"
         btnTitle="STATUS"
         disabled={isUpdating}
         onClick={onUpdateStatusHandler}
         icon="currency_exchange"
-        items={statusOptions}
+        items={state.statusOptions}
       />
       <Button
         className="!border-border-2"
@@ -165,7 +128,7 @@ function StudentsOnTable() {
 
 function Table() {
   const { data, isSuccess: appSetingsIsSuccess } = useAppSetings();
-  const { state, updateStatusOptions } = useContext(StdTableContext);
+  const { state, updateStatusOptions, updateFormState } = useContext(StdTableContext);
   const { students, isLoading, error } = useAllStudents([
     state.searchQuery,
     state.filterQuery,
@@ -195,7 +158,13 @@ function Table() {
               <th className="py-2 text-start ">Phone</th>
               <th className=" flex gap-1 py-2 text-start ">
                 <div>Status</div>
-                <Button icon="settings" size="xs" variant="outline" label="EDIT" />
+                <button
+                  onClick={() => updateFormState(!state.addFormIsOpen)}
+                  className="material-symbols-outlined scale-75 transition-all 
+                  duration-100 hover:scale-[80%] active:rotate-90"
+                >
+                  settings
+                </button>
               </th>
               <th className="py-2 text-start"></th>
             </tr>
@@ -224,6 +193,7 @@ function TableRow({ student }) {
   const { isUpdating, isSuccess, mutate, status: _status } = useUpdateStudent();
   const { isDeleting, mutate: deleteStudent, status: __status } = useDeleteStudent();
   const [isEditing, setIsEditing] = useState();
+  const { mutate: hide } = useHide('students');
   const [formState, setFormState] = useState({ name, phone });
   const [isSelected, setIsSelected] = useState();
   const ref1 = useRef();
@@ -267,7 +237,8 @@ function TableRow({ student }) {
     }
 
     if (selected === 'delete') {
-      deleteStudent(_id);
+      //  deleteStudent(_id);
+      hide({ endPoit: 'students/hide', idList: [_id] });
     }
   }
 

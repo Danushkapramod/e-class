@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import AutoCloseWindow from './AutoCloseWindow';
 import { Button } from './ButtonNew';
 import DataLoader from './DataLoader';
+import { twMerge } from 'tailwind-merge';
 
 function Select({
   initial,
@@ -36,7 +37,10 @@ function Select({
     <AutoCloseWindow className="relative h-full" set={setIsOpen}>
       <button
         onClick={optionClick}
-        className={`${className} mr-0.5 flex justify-center rounded-sm bg-optinal-1 px-2 py-[8px] text-sm`}
+        className={twMerge(
+          'mr-0.5 flex justify-center rounded-sm bg-optinal-1 px-2 py-[8px] text-sm',
+          className
+        )}
       >
         {value}
         <div className="material-symbols-outlined scale-75">unfold_more</div>

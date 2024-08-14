@@ -15,6 +15,7 @@ import DataLoader from '../ui/components/DataLoader';
 import DeleteConfirmation from '../ui/components/DeleteConfirmation';
 import { setDeleteConfirmation } from '../GlobalUiState';
 import Exports from '../ui/components/Exports';
+import useHide from '../user/useHide';
 
 export default function ClassesTable() {
   const { id } = useParams();
@@ -105,6 +106,7 @@ function CardItem({ classData }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { deleteConfirmation } = useSelector((store) => store.global);
+  const { mutate: hide } = useHide('classes');
   const { isDeleting, mutate } = useDeleteClass();
   const { _id, teacher, subject, avatar, hall, startTime, grade, day } = classData;
 
@@ -120,7 +122,8 @@ function CardItem({ classData }) {
     }
   }
   const handleDelete = () => {
-    mutate(_id);
+    //  mutate(_id);
+    hide({ endPoit: 'classes/hide', idList: [_id] });
     dispatch(setDeleteConfirmation(false));
   };
   return (
@@ -178,10 +181,12 @@ function TableRow({ classData }) {
   const dispatch = useDispatch();
   const { deleteConfirmation } = useSelector((store) => store.global);
   const { mutate } = useDeleteClass();
+  const { mutate: hide } = useHide('classes');
   const { _id, teacher, subject, avatar, hall, startTime, grade, day } = classData;
 
   const handleDelete = () => {
-    mutate(_id);
+    // mutate(_id);
+    hide({ endPoit: 'classes/hide', idList: [_id] });
     dispatch(setDeleteConfirmation(false));
   };
 

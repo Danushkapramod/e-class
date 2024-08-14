@@ -16,13 +16,14 @@ import { useStudentsInTeacher } from './useStudents';
 import useOColor from '../utils/getOColor';
 import { getStudentsCount } from '../services/apiStudents';
 import Checkbox from '../ui/components/Checkbox';
+import useAppSetings from '../user/useAppSetings';
 
-const statusOptions = [
-  ['paid', 'paid'],
-  ['unpaid', 'pending'],
-  ['half', 'side_navigation'],
-  ['free', 'published_with_changes'],
-];
+// const statusOptions = [
+//   ['paid', 'paid'],
+//   ['unpaid', 'pending'],
+//   ['half', 'side_navigation'],
+//   ['free', 'published_with_changes'],
+// ];
 
 export default function StudentTable() {
   return (
@@ -30,7 +31,7 @@ export default function StudentTable() {
       <div className=" flex min-w-[40rem]  grow flex-col shadow-md">
         <div
           className="flex w-full  flex-col justify-between gap-2 
-        rounded-t bg-bg--primary-200 pb-2 pt-3 text-text--primary"
+           rounded-t bg-bg--primary-200 pb-2 pt-3 text-text--primary"
         >
           <TableNav />
           <StdForm />
@@ -127,7 +128,7 @@ export function Operation() {
         disabled={isUpdating}
         onClick={onUpdateStatusHandler}
         icon="currency_exchange"
-        items={statusOptions}
+        items={state.statusOptions?.map((option) => [option.option])}
       />
       <Button
         className="!border-border-2"
@@ -161,11 +162,17 @@ function StudentsOnTable() {
 
 function Table() {
   const { id: classId } = useParams();
-  const { state } = useContext(StdTableContext);
+  const { state, updateStatusOptions } = useContext(StdTableContext);
+  const { data, isSuccess: appSetingsIsSuccess } = useAppSetings();
   const { students, isLoading, error } = useStudentsInTeacher(
     [state.searchQuery, state.filterQuery, state.paginationQuery],
     classId
   );
+
+  useEffect(() => {
+    if (appSetingsIsSuccess) updateStatusOptions(data?.students.statusOptions || {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [appSetingsIsSuccess, data?.students.statusOptions]);
 
   if (students?.length < 1) {
     return '';
@@ -259,11 +266,7 @@ function TableRow({ student }) {
     }
   }
 
-  let color;
-  if (status === 'paid') color = 'bg-green-600';
-  if (status === 'unpaid') color = 'bg-orange-600';
-  if (status === 'free') color = 'bg-slate-600';
-  if (status === 'half') color = 'bg-sky-600';
+  const stdStatus = state.statusOptions?.find(({ option }) => option === status);
   const bgColor = isSelected ? (theam ? 'bg-black/10' : 'bg-blue-50') : '';
   return (
     <tr className={`text-sm ${bgColor}`}>
@@ -314,8 +317,17 @@ function TableRow({ student }) {
       <td className="gap-3 ">
         <div className=" flex w-28 items-center gap-2">
           <div
-            className={`${color} w-full justify-between rounded-full px-3 py-1
-             text-center text-xs capitalize tracking-wider text-slate-100`}
+            style={
+              stdStatus?.color
+                ? { backgroundColor: stdStatus.color }
+                : {
+                    border: '1px solid',
+                    borderColor: 'var(--color-border-2)',
+                    color: 'var(--color-text-primary)',
+                  }
+            }
+            className="w-full justify-between rounded-full px-3 py-1
+             text-center text-xs capitalize tracking-wider text-slate-100"
           >
             {status}
           </div>
@@ -328,7 +340,9 @@ function TableRow({ student }) {
               </span>
             }
             onClick={onStatusHandler}
-            items={statusOptions.filter((option) => option[0] !== status)}
+            items={state.statusOptions
+              ?.filter((option) => option.option !== status)
+              .map((option) => [option.option])}
           />
         </div>
       </td>

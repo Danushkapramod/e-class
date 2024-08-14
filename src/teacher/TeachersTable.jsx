@@ -13,6 +13,7 @@ import { Button } from '../ui/components/ButtonNew';
 import DataLoader from '../ui/components/DataLoader';
 import DeleteConfirmation from '../ui/components/DeleteConfirmation';
 import { setDeleteConfirmation } from '../GlobalUiState';
+import useHide from '../user/useHide';
 
 function TeachersTable() {
   useSetRoot('');
@@ -79,10 +80,11 @@ function TeachersTable() {
 
 function CardItem({ teacherData }) {
   const dispatch = useDispatch();
-  const { deleteConfirmation } = useSelector((store) => store.global);
   const navigate = useNavigate();
+  const { deleteConfirmation } = useSelector((store) => store.global);
   const { isDeleting, mutate } = useDeleteTeacher();
   const { _id, name, subject, avatar, phone } = teacherData;
+  const { mutate: hide } = useHide('teachers');
 
   function onSelectHandler(selected) {
     if (selected === 'update') {
@@ -96,7 +98,8 @@ function CardItem({ teacherData }) {
     }
   }
   const handleDelete = () => {
-    mutate(_id);
+    //  mutate(_id);
+    hide({ endPoit: 'teachers/hide', idList: [_id] });
     dispatch(setDeleteConfirmation(false));
   };
 
@@ -155,10 +158,12 @@ function TableRow({ teacherData }) {
   const dispatch = useDispatch();
   const { deleteConfirmation } = useSelector((store) => store.global);
   const { isDeleting, mutate } = useDeleteTeacher();
+  const { mutate: hide } = useHide('teachers');
   const { _id, name, subject, avatar, phone } = teacherData;
 
   const handleDelete = () => {
-    mutate(_id);
+    hide({ endPoit: 'teachers/hide', idList: [_id] });
+    // mutate(_id);
     dispatch(setDeleteConfirmation(false));
   };
   return (

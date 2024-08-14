@@ -64,7 +64,7 @@ export const updateAppSetings = axiousWrapper(async (newData)=>{
 })
 
 export const statusOptionsDefault = axiousWrapper(async ()=>{
-  return axios.post(`${BASE_URL}/users/default-statusOptions`,
+  return axios.post(`${BASE_URL}/users/default-statusOptions`,{},
     { withCredentials: true},
   );
 })
@@ -132,9 +132,28 @@ export const changeEmail = axiousWrapper((data)=>{
     );
 })
 
+export const hideItem = axiousWrapper(({endPoit,idList})=>{
+  return axios.patch(`${BASE_URL}/${endPoit}`,{data:{isVisible:false},idList},
+      {withCredentials: true,
+        timeout: 6000,
+       },
+    );
+})
+export const restoreItem = axiousWrapper(({endPoit,idList})=>{
+  return axios.patch(`${BASE_URL}/${endPoit}`,{data:{isVisible:true},idList},
+      {withCredentials: true,
+        timeout: 6000,
+       },
+    );
+})
 
-
-
+export const getDeletedItems = axiousWrapper((endPoit)=>{
+  return axios.get(`${BASE_URL}/${endPoit}`,
+      {withCredentials: true,
+        timeout: 6000,
+       },
+    );
+})
 
 
 

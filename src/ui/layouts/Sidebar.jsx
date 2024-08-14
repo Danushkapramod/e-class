@@ -55,6 +55,16 @@ function Sidebar({ sidebarOpen }) {
           <span className="">Options</span>
         </NavLink>
       </div>
+      <div className="mt-8  flex w-full flex-col  divide-y divide-border-3 px-3 ">
+        <NavLink
+          to="deleted"
+          className="flex gap-4 rounded-sm py-2 pl-4 transition-all duration-150 
+          first-line:items-center hover:bg-white/10  hover:text-bg--secondery-2"
+        >
+          <span className="material-symbols-outlined font-light">recycling</span>
+          <span className="">Deleted</span>
+        </NavLink>
+      </div>
       <div className="mt-auto w-full px-4 text-bg--secondery-2">
         <button
           disabled={isLoading}

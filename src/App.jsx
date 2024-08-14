@@ -18,6 +18,7 @@ import ResetPasswordPage from './pages/ResetPasswordPage';
 import { queryClient } from './queryClient';
 import VerifyAccount from './pages/VerifyAccount';
 import { StudentRoutes } from './routes/StudentRoutes';
+import DeletedTable from './deleted/DeletedTable';
 
 function App() {
   const router = createBrowserRouter([
@@ -58,6 +59,10 @@ function App() {
         TeachersRoutes,
         OptionRoutes,
         StudentRoutes,
+        {
+          path: 'deleted',
+          element: <DeletedTable />,
+        },
         {
           path: 'account/me',
           element: <AccountInformation />,
