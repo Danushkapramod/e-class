@@ -3,6 +3,9 @@ import DataLoader from '../ui/components/DataLoader';
 import useRestore from '../user/useRestore';
 import Select from '../ui/components/Select';
 import useDeletedLists from './useDeletedLists';
+import useDeleteClass from '../class/useDeleteClass';
+import useDeleteStudent from '../students/useDeleteStudent';
+import useDeleteTeacher from '../teacher/useDeleteTeacher';
 
 export function DeletedTable() {
   const {
@@ -11,9 +14,14 @@ export function DeletedTable() {
     teachers,
     alldeleted,
     setCategoryBy,
+    categoryBy,
     restoreTeachers,
     restoreClasses,
     restoreStudents,
+    deleteClasses,
+    deleteStudents,
+    deleteTeachers,
+    isDeleting,
     isRestoring,
     isloading,
   } = useDeletedLists();
@@ -33,6 +41,24 @@ export function DeletedTable() {
       restoreTeachers({ endPoit: 'teachers/hide', idList: teacherIdList });
     }
   }
+
+  function deleteAll() {
+    const classIdList = classes.map((item) => item._id);
+    const studentIdList = students.map((item) => item._id);
+    const teacherIdList = teachers.map((item) => item._id);
+
+    if (classIdList.length) {
+      deleteClasses({ endPoit: 'classes/deleteMany', idList: classIdList });
+    }
+    if (studentIdList.length) {
+      deleteStudents({ endPoit: 'students/deleteMany', idList: studentIdList });
+    }
+    if (teacherIdList.length) {
+      deleteTeachers({ endPoit: 'teachers/deleteMany', idList: teacherIdList });
+    }
+  }
+
+  if (!alldeleted.length && categoryBy === 'none') return null;
   return (
     <div className="pt-2">
       <div className=" flex justify-end gap-2 pb-3">
@@ -44,8 +70,8 @@ export function DeletedTable() {
           label="RESTORE ALL"
         />
         <Button
-          //  onClick={onRestore}
-          //spinner={isPending}
+          onClick={deleteAll}
+          spinner={isDeleting}
           icon="delete"
           variant="outline"
           label="DELETE ALL"
@@ -89,6 +115,9 @@ export function DeletedTable() {
 
 function TableRow({ index, item }) {
   const { category, hiddenAt, _id } = item;
+  const { mutate: deleteTeachers, isPending: del1 } = useDeleteTeacher();
+  const { mutate: deleteStudents, isPending: del2 } = useDeleteStudent();
+  const { mutate: deleteClasses, isPending: del3 } = useDeleteClass();
   const keyMap = {
     class: {
       queryKey: 'classes',
@@ -105,15 +134,30 @@ function TableRow({ index, item }) {
   function onRestore() {
     restore({ endPoit: `${keyMap[category].queryKey}/hide`, idList: [_id] });
   }
+  function onDelete() {
+    if (category === 'class') {
+      deleteClasses(_id);
+    }
+    if (category === 'student') {
+      deleteStudents(_id);
+    }
+    if (category === 'teacher') {
+      deleteTeachers(_id);
+    }
+  }
   return (
     <div className="py-2 text-sm">
       <div className="flex items-center ">
         <div className="basis-2/3 flex-col">
-          <div className=" flex py-2">
+          <div className=" flex py-3">
             <div className=" basis-14 pl-4 text-text--muted">
               {(index + 1).toString().padStart(2, '0')}
             </div>
-            <div className=" basis-1/2 font-medium capitalize">{category}</div>
+            <div className=" basis-1/2 font-medium capitalize">
+              <div className="w-max rounded border border-border-2 bg-bg--primary-200 px-2">
+                {category}
+              </div>
+            </div>
             <div className=" basis-1/2">
               {hiddenAt ? new Date(hiddenAt).toLocaleString() : '----------'}
             </div>
@@ -141,7 +185,13 @@ function TableRow({ index, item }) {
               icon="cycle"
               label="RESTORE"
             />
-            <Button size="sm" icon="delete" variant="outline" />
+            <Button
+              spinner={del1 || del2 || del3}
+              onClick={onDelete}
+              size="sm"
+              icon="delete"
+              variant="outline"
+            />
           </div>
         </div>
       </div>

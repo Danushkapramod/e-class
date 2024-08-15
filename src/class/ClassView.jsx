@@ -16,7 +16,7 @@ function ClassView() {
   const navigate = useNavigate();
 
   const { isDeleting, mutate } = useDeleteClass();
-  const { classes, error, isLoading } = useClasses();
+  const { classes, error, isLoading } = useClasses({ teacher: true });
 
   const classData = useMemo(() => {
     return classes?.find((classData) => classData._id === id);

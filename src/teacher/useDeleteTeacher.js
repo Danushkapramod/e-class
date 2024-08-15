@@ -4,11 +4,11 @@ import { deleteTeacher } from "../services/apiTeachers";
 
 export default function useDeleteTeacher() {
   const queryClient = useQueryClient();
-  const { isLoading: isDeleting, mutate } = useMutation({
+  const query= useMutation({
     mutationFn: deleteTeacher,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["teachers"],
+        queryKey: ["deletedTeachers"],
       });
       toast.success("Teacher deleted successfully.");
     },
@@ -18,5 +18,5 @@ export default function useDeleteTeacher() {
     },
   });
 
-  return { isDeleting, mutate };
+  return query
 }

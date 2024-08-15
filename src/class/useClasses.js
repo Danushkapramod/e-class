@@ -1,10 +1,23 @@
 import { useQuery } from '@tanstack/react-query';
 import { getClasses, getClassesWithoutTeacher } from '../services/apiClasses';
 import { useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { setQueryParams } from './classSlice';
+
 
 export default function useClasses(options) {
+  const dispatch = useDispatch() 
   const location = useLocation();
-  let queryParams = options?.query || location.search
+  const {queryParams} = useSelector((store)=>store.class)
+  
+  useEffect(()=>{
+    if(options?.query || location.search){
+      let query = options?.query || location.search
+     dispatch(setQueryParams(query)) 
+    }
+  },[dispatch, location.search, options?.query])
+ 
 
   const {
     data: classes,
@@ -13,8 +26,8 @@ export default function useClasses(options) {
     error,
   } = useQuery({
     queryKey: ['classes', queryParams],
-    queryFn: () => options.teacher?getClasses(queryParams) :
-     getClassesWithoutTeacher(queryParams),
+    queryFn: ({signal}) => options.teacher?getClasses({signal,queryParams}) :
+     getClassesWithoutTeacher({signal,queryParams}),
   });
 
   return { classes, isLoading, error, isSuccess };

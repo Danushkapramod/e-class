@@ -3,6 +3,7 @@ import Filters from '../ui/components/Filters';
 import { useSearchParams } from 'react-router-dom';
 import FilterField from '../ui/components/FilterField';
 import useOptions from '../option/useOptions';
+import { Search } from '../ui/components/Search';
 
 //const subjects = ['Physics', 'Chemistry', 'Maths', 'Biology', 'ICT'];
 
@@ -36,4 +37,13 @@ export function TeacherFilter() {
       />
     </Filters>
   );
+}
+
+export function TeacherSearch() {
+  const searchFields = [
+    { searchBy: 'Name', fieldName: 'name' },
+    { searchBy: 'Subject', fieldName: 'subject' },
+    { searchBy: 'Phone', fieldName: 'phone' },
+  ];
+  return <Search url initialSearchBy="name" searchFields={searchFields} />;
 }

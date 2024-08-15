@@ -2,21 +2,23 @@ import axios from "axios";
 import { BASE_URL } from "./apiData";
 import { axiousWrapper } from "../utils/wrappers";
 
-export const getClasses = axiousWrapper((queryParams)=>{
+export const getClasses = axiousWrapper(({signal,queryParams})=>{
    let query;
     queryParams ? (query = `&${queryParams.split("?")[1]}`) : (query = "");
     return axios.get(`${BASE_URL}/classes?teacher=true${query}`,{
       withCredentials:true,
-      timeout:6000
+      timeout:6000,
+      signal
     });
 })
 
-export const getClassesWithoutTeacher = axiousWrapper((queryParams)=>{
+export const getClassesWithoutTeacher = axiousWrapper(({signal,queryParams})=>{
   let query;
-   queryParams ? query = queryParams: query = "";
+   queryParams ? query = queryParams: (query = '');
    return axios.get(`${BASE_URL}/classes${query}`,{
      withCredentials:true,
-     timeout:6000
+     timeout:6000,
+     signal
    });
 })
 

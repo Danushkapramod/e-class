@@ -10,13 +10,14 @@ import Tooltip from '../ui/components/Potral';
 import { StdTableContext, TableProvider } from './TableContext';
 import { StudentFilter, StudentSearch } from './StudentTableOperations';
 import useCreateStudent from './useCreateStudent';
-import useDeleteStudent, { useDeleteManyStudents } from './useDeleteStudent';
+import useDeleteStudent from './useDeleteStudent';
 import useUpdateStudent, { useUpdateManyStudents } from './useUpdateStudent';
 import { useStudentsInTeacher } from './useStudents';
 import useOColor from '../utils/getOColor';
 import { getStudentsCount } from '../services/apiStudents';
 import Checkbox from '../ui/components/Checkbox';
 import useAppSetings from '../user/useAppSetings';
+import useHide from '../user/useHide';
 
 // const statusOptions = [
 //   ['paid', 'paid'],
@@ -87,11 +88,11 @@ export function Operation() {
     [state.searchQuery, state.filterQuery, state.paginationQuery],
     classId
   );
-  const { isDeleting, mutate: deleteMany } = useDeleteManyStudents();
+  const { isPending: isDeleting, mutate: hideMany } = useHide('students');
   const { isUpdating, mutate: updateMany } = useUpdateManyStudents();
 
   function onDeletsHandler() {
-    deleteMany({ studentIds: state.selectedList });
+    hideMany({ endPoit: 'students/hide', idList: state.selectedList });
   }
   function onUpdateStatusHandler(selected) {
     updateMany({ studentIds: state.selectedList, newData: { status: selected } });
@@ -178,7 +179,7 @@ function Table() {
     return '';
   }
   return (
-    <div className=" fle flex-col border-t border-bg--primary-100">
+    <div className=" fle flex-col border-t border-border-2">
       <div className="z-0 max-h-[calc(100vh-18.75rem)] overflow-auto ">
         <table className=" text-smbg-bg--primary-200 w-full bg-bg--primary-200">
           <thead>
@@ -467,7 +468,7 @@ function StdForm() {
 
   useEffect(() => {
     setFocus('name');
-  }, [setFocus]);
+  }, [setFocus, state.addFormIsOpen]);
 
   function onSubmit(data) {
     if (!id) return;

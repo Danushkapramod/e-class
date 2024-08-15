@@ -8,7 +8,6 @@ import SelectItem from '../ui/components/SelectItem';
 import Tooltip from '../ui/components/Potral';
 import { StdTableContext, TableProvider } from './TableContext';
 import { StudentFilter, StudentSearch } from './StudentTableOperations';
-import useDeleteStudent, { useDeleteManyStudents } from './useDeleteStudent';
 import useUpdateStudent, { useUpdateManyStudents } from './useUpdateStudent';
 import { useAllStudents } from './useStudents';
 import useOColor from '../utils/getOColor';
@@ -65,11 +64,11 @@ export function Operation() {
     state.filterQuery,
     state.paginationQuery,
   ]);
-  const { isDeleting, mutate: deleteMany } = useDeleteManyStudents();
+  const { isPending: isDeleting, mutate: hideMany } = useHide('students');
   const { isUpdating, mutate: updateMany } = useUpdateManyStudents();
 
   function onDeletsHandler() {
-    deleteMany({ studentIds: state.selectedList });
+    hideMany({ endPoit: 'students/hide', idList: state.selectedList });
   }
   function onUpdateStatusHandler(selected) {
     updateMany({ studentIds: state.selectedList, newData: { status: selected } });
@@ -143,7 +142,7 @@ function Table() {
     return '';
   }
   return (
-    <div className="fle flex-col border-t border-bg--primary-100">
+    <div className="fle flex-col border-t border-border-2">
       <div className="z-0 max-h-[calc(100vh-18.75rem)] overflow-auto ">
         <table className="text-smbg-bg--primary-200 w-full bg-bg--primary-200">
           <thead>
@@ -190,10 +189,9 @@ function TableRow({ student }) {
   const theam = useOColor();
   const { name, phone, status, studentId, index, _id } = student;
   const { updateSelectedList, state } = useContext(StdTableContext);
-  const { isUpdating, isSuccess, mutate, status: _status } = useUpdateStudent();
-  const { isDeleting, mutate: deleteStudent, status: __status } = useDeleteStudent();
+  const { isUpdating, isSuccess, mutate } = useUpdateStudent();
   const [isEditing, setIsEditing] = useState();
-  const { mutate: hide } = useHide('students');
+  const { mutate: hide, isPending: isDeleting } = useHide('students');
   const [formState, setFormState] = useState({ name, phone });
   const [isSelected, setIsSelected] = useState();
   const ref1 = useRef();
@@ -237,7 +235,6 @@ function TableRow({ student }) {
     }
 
     if (selected === 'delete') {
-      //  deleteStudent(_id);
       hide({ endPoit: 'students/hide', idList: [_id] });
     }
   }
@@ -245,7 +242,7 @@ function TableRow({ student }) {
   const stdStatus = state.statusOptions?.find(({ option }) => option === status);
   const bgColor = isSelected ? (theam ? 'bg-black/10' : 'bg-blue-50') : '';
   return (
-    <tr className={`text-sm ${bgColor}`}>
+    <tr className={`text-sm ${bgColor} `}>
       <td className="relative px-4">
         <div className=" flex items-center justify-center px-2">
           <label htmlFor={_id} className="hover:bg-hover-1 ho absolute rounded-full p-3">
@@ -308,7 +305,6 @@ function TableRow({ student }) {
             {status}
           </div>
           <SelectItem
-            isSuccess={_status || __status}
             disabled={isUpdating || isDeleting}
             btn={
               <span className="material-symbols-outlined px-1 text-lg text-text--muted">
@@ -327,7 +323,6 @@ function TableRow({ student }) {
           {!isEditing ? (
             <SelectItem
               btn="more_vert"
-              isSuccess={_status || __status}
               disabled={isUpdating || isDeleting}
               onClick={onSelectHandler}
               items={[

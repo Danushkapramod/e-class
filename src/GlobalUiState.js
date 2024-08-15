@@ -4,7 +4,7 @@ const initialState = {
   alerts: [],
   root: "",
   theme:'dark',
-  deleteConfirmation:false
+  deleteConfirmation:null
 };
 
 const globalReducer = createSlice({
@@ -26,6 +26,7 @@ const globalReducer = createSlice({
     setDeleteConfirmation(state, action) {
       state.deleteConfirmation = action.payload;
     },
+
   },
 });
 const globalUiReducer = globalReducer.reducer;

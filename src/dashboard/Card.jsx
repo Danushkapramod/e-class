@@ -25,16 +25,16 @@ function Card() {
       icon: 'groups',
     },
     {
+      title: 'Students',
+      count: _students,
+      to: '/app/students',
+      icon: 'settings_accessibility',
+    },
+    {
       title: 'Options',
       count: _options,
       to: '/app/options',
       icon: 'style',
-    },
-    {
-      title: 'Students',
-      count: _students,
-      to: '/app/options',
-      icon: 'settings_accessibility',
     },
   ];
 

@@ -2,12 +2,13 @@ import axios from "axios";
 import { BASE_URL } from "./apiData";
 import { axiousWrapper } from "../utils/wrappers";
 
-export const getTeachers = axiousWrapper((queryParams)=>{
+export const getTeachers = axiousWrapper(({signal,queryParams})=>{
   let query;
   queryParams ? query = queryParams : query = "";
    return axios.get(`${BASE_URL}/teachers${query}`,{
     withCredentials:true,
-    timeout:6000
+    timeout:6000,
+    signal
   });
 })
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import useRestore from "../user/useRestore";
 import useDeletedItems from "./useDeleted";
+import { useDeleteMany } from "../hooks/useDeleteMany";
 
 
 function useDeletedLists(){
@@ -9,9 +10,13 @@ function useDeletedLists(){
   const [students, setStudents] = useState([]);
   const [teachers, setTeachers] = useState([]);
   const [categoryBy, setCategoryBy] = useState('none');
+
   const { mutate: restoreTeachers, isPending: rs1 } = useRestore('teachers');
   const { mutate: restoreStudents, isPending: rs2 } = useRestore('students');
   const { mutate: restoreClasses, isPending: rs3 } = useRestore('classes');
+  const { mutate: deleteTeachers, isPending: del1 } = useDeleteMany('deletedTeachers');
+  const { mutate: deleteStudents, isPending: del2 } = useDeleteMany('deletedStudents');
+  const { mutate: deleteClasses, isPending: del3 } = useDeleteMany('deletedClasses');
   
   const { data: _teachers, isLoading: teacherLoading } = useDeletedItems({
     queryKey: 'deletedTeachers',
@@ -66,6 +71,7 @@ function useDeletedLists(){
     }
   }, [categoryBy, classes, students, teachers]);
 return {classes,students,teachers,alldeleted,setCategoryBy,restoreTeachers,restoreClasses,restoreStudents,
+       deleteClasses,deleteStudents,deleteTeachers,isDeleting:del1 ||del2 || del3,categoryBy,
       isRestoring:rs1|| rs2|| rs3 ,isloading:teacherLoading || studentLoading || classLoading}
 
 }

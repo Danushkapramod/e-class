@@ -2,13 +2,12 @@ import useClasses from './useClasses';
 import SelectItem from '../ui/components/SelectItem';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import useDeleteClass from './useDeleteClass';
 import { setTableView } from './classSlice';
 import AppNav from '../ui/layouts/AppNav';
 import useClientSearch from '../hooks/useClientSearch';
 import Pagination from '../ui/components/Pagination';
 import { getClassesCount } from '../services/apiClasses';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Button } from '../ui/components/ButtonNew';
 import { formatLocalTime } from '../utils/formateDates&Times';
 import DataLoader from '../ui/components/DataLoader';
@@ -106,9 +105,9 @@ function CardItem({ classData }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { deleteConfirmation } = useSelector((store) => store.global);
-  const { mutate: hide } = useHide('classes');
-  const { isDeleting, mutate } = useDeleteClass();
+  const { mutate: hide, isPending: isDeleting } = useHide('classes');
   const { _id, teacher, subject, avatar, hall, startTime, grade, day } = classData;
+  const hiddenId = useRef(_id);
 
   function onSelectHandler(selected) {
     if (selected === 'update') {
@@ -118,13 +117,13 @@ function CardItem({ classData }) {
       navigate(`/app/classes/${_id}`);
     }
     if (selected === 'delete') {
-      dispatch(setDeleteConfirmation(true));
+      hiddenId.current = _id;
+      dispatch(setDeleteConfirmation(_id));
     }
   }
   const handleDelete = () => {
-    //  mutate(_id);
-    hide({ endPoit: 'classes/hide', idList: [_id] });
-    dispatch(setDeleteConfirmation(false));
+    hide({ endPoit: 'classes/hide', idList: [deleteConfirmation] });
+    dispatch(setDeleteConfirmation(null));
   };
   return (
     <div
@@ -170,7 +169,7 @@ function CardItem({ classData }) {
       </div>
       <DeleteConfirmation
         show={deleteConfirmation}
-        onClose={() => dispatch(setDeleteConfirmation(false))}
+        onClose={() => dispatch(setDeleteConfirmation(null))}
         onConfirm={handleDelete}
       />
     </div>
@@ -180,14 +179,13 @@ function CardItem({ classData }) {
 function TableRow({ classData }) {
   const dispatch = useDispatch();
   const { deleteConfirmation } = useSelector((store) => store.global);
-  const { mutate } = useDeleteClass();
   const { mutate: hide } = useHide('classes');
   const { _id, teacher, subject, avatar, hall, startTime, grade, day } = classData;
 
   const handleDelete = () => {
     // mutate(_id);
-    hide({ endPoit: 'classes/hide', idList: [_id] });
-    dispatch(setDeleteConfirmation(false));
+    hide({ endPoit: 'classes/hide', idList: [deleteConfirmation] });
+    dispatch(setDeleteConfirmation(null));
   };
 
   return (
@@ -225,7 +223,7 @@ function TableRow({ classData }) {
               label="VIEW"
             />
             <Button
-              onClick={() => dispatch(setDeleteConfirmation(true))}
+              onClick={() => dispatch(setDeleteConfirmation(_id))}
               className="rounded"
               size="xs"
               icon="delete"
@@ -236,7 +234,7 @@ function TableRow({ classData }) {
       </tr>
       <DeleteConfirmation
         show={deleteConfirmation}
-        onClose={() => dispatch(setDeleteConfirmation(false))}
+        onClose={() => dispatch(setDeleteConfirmation(null))}
         onConfirm={handleDelete}
       />
     </>

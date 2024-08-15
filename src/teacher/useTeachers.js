@@ -13,7 +13,7 @@ export default function useTeachers(query) {
     error,
   } = useQuery({
     queryKey: ["teachers", queryParams],
-    queryFn: () => getTeachers(queryParams),
+    queryFn: ({signal}) => getTeachers({signal,queryParams}),
   });
   return { teachers, isSuccess, isLoading, error };
 }

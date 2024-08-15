@@ -6,11 +6,11 @@ import { deleteClass } from "../services/apiClasses";
 export default function useDeleteClass() {
   const queryClient = useQueryClient();
 
-  const { isLoading: isDeleting, mutate } = useMutation({
+  const query= useMutation({
     mutationFn: deleteClass,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["classes"],
+        queryKey: ["deletedClasses"],
       });
       toast.success('Class deleted successfully!"');
     },
@@ -20,5 +20,5 @@ export default function useDeleteClass() {
     },
   });
 
-  return { isDeleting, mutate };
+  return query
 }

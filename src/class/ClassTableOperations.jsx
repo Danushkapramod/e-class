@@ -4,6 +4,7 @@ import Filters from '../ui/components/Filters';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import Sort from '../ui/components/Sort';
 import useOptions from '../option/useOptions';
+import { Search } from '../ui/components/Search';
 // const teachers = [
 //   "Amila disanayake",
 //   "Anurada perera",
@@ -73,6 +74,17 @@ export function ClassFilter() {
       <FilterField name="Day" data={days} value={day} setValu={setDay} />
     </Filters>
   );
+}
+
+export function ClassSearch() {
+  const searchFields = [
+    { searchBy: 'Subject', fieldName: 'subject' },
+    { searchBy: 'Grade', fieldName: 'grade' },
+    { searchBy: 'Hall', fieldName: 'hall' },
+    { searchBy: 'Day', fieldName: 'day' },
+    { searchBy: 'Duration', fieldName: 'duration' },
+  ];
+  return <Search url initialSearchBy="subject" searchFields={searchFields} />;
 }
 
 export function ClassSort() {

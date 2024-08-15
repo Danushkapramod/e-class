@@ -9,6 +9,7 @@ const initialState = {
   todayUpcoming: 0,
   todayStarted: 0,
   todayEnded: 0,
+  queryParams:''
 };
 
 const classSlice = createSlice({
@@ -17,6 +18,9 @@ const classSlice = createSlice({
   reducers: {
     totalClasses(state, action) {
       state.totalClasses = action.payload;
+    },
+    setQueryParams(state, action) {
+      state.queryParams = action.payload;
     },
     setTableView(state, action) {
       state.tableView = action.payload;
@@ -54,4 +58,5 @@ export let {
   todayStarted,
   todayUpcoming,
   totalClasses,
+  setQueryParams
 } = classSlice.actions;

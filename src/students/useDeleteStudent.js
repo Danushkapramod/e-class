@@ -4,11 +4,11 @@ import { deleteManyStudents, deleteStudent } from "../services/apiStudents";
 
 export default function useDeleteStudent() {
   const queryClient = useQueryClient();
-  const { isLoading: isDeleting, mutate,isSuccess,status } = useMutation({
+  const query = useMutation({
     mutationFn: deleteStudent,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["students"],
+        queryKey: ["deletedStudents"],
       });
       toast.success("Student deleted successfully.");
     },
@@ -18,7 +18,7 @@ export default function useDeleteStudent() {
     },
   });
 
-  return { isDeleting, mutate,isSuccess,status  };
+  return query
 }
 
 

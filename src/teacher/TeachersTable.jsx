@@ -3,7 +3,6 @@ import useTeachers from './useTeachers';
 import { useNavigate } from 'react-router-dom';
 import SelectItem from '../ui/components/SelectItem';
 import { useDispatch, useSelector } from 'react-redux';
-import useDeleteTeacher from './useDeleteTeacher';
 import AppNav from '../ui/layouts/AppNav';
 import { setTableView } from './teacherSlice';
 import useClientSearch from '../hooks/useClientSearch';
@@ -82,9 +81,8 @@ function CardItem({ teacherData }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { deleteConfirmation } = useSelector((store) => store.global);
-  const { isDeleting, mutate } = useDeleteTeacher();
   const { _id, name, subject, avatar, phone } = teacherData;
-  const { mutate: hide } = useHide('teachers');
+  const { mutate: hide, isPending: isDeleting } = useHide('teachers');
 
   function onSelectHandler(selected) {
     if (selected === 'update') {
@@ -94,13 +92,12 @@ function CardItem({ teacherData }) {
       navigate(`/app/teachers/${_id}`);
     }
     if (selected === 'delete') {
-      dispatch(setDeleteConfirmation(true));
+      dispatch(setDeleteConfirmation(_id));
     }
   }
   const handleDelete = () => {
-    //  mutate(_id);
-    hide({ endPoit: 'teachers/hide', idList: [_id] });
-    dispatch(setDeleteConfirmation(false));
+    hide({ endPoit: 'teachers/hide', idList: [deleteConfirmation] });
+    dispatch(setDeleteConfirmation(null));
   };
 
   return (
@@ -147,7 +144,7 @@ function CardItem({ teacherData }) {
       </div>
       <DeleteConfirmation
         show={deleteConfirmation}
-        onClose={() => dispatch(setDeleteConfirmation(false))}
+        onClose={() => dispatch(setDeleteConfirmation(null))}
         onConfirm={handleDelete}
       />
     </div>
@@ -157,14 +154,12 @@ function CardItem({ teacherData }) {
 function TableRow({ teacherData }) {
   const dispatch = useDispatch();
   const { deleteConfirmation } = useSelector((store) => store.global);
-  const { isDeleting, mutate } = useDeleteTeacher();
-  const { mutate: hide } = useHide('teachers');
+  const { mutate: hide, isPending: isDeleting } = useHide('teachers');
   const { _id, name, subject, avatar, phone } = teacherData;
 
   const handleDelete = () => {
-    hide({ endPoit: 'teachers/hide', idList: [_id] });
-    // mutate(_id);
-    dispatch(setDeleteConfirmation(false));
+    hide({ endPoit: 'teachers/hide', idList: [deleteConfirmation] });
+    dispatch(setDeleteConfirmation(null));
   };
   return (
     <>
@@ -191,7 +186,7 @@ function TableRow({ teacherData }) {
           <Button
             variant="outline"
             disabled={isDeleting}
-            onClick={() => dispatch(setDeleteConfirmation(true))}
+            onClick={() => dispatch(setDeleteConfirmation(_id))}
             size="xs"
             icon="delete"
           />
@@ -199,7 +194,7 @@ function TableRow({ teacherData }) {
       </tr>
       <DeleteConfirmation
         show={deleteConfirmation}
-        onClose={() => dispatch(setDeleteConfirmation(false))}
+        onClose={() => dispatch(setDeleteConfirmation(null))}
         onConfirm={handleDelete}
       />
     </>

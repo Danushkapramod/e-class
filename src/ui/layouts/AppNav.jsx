@@ -1,7 +1,6 @@
 import { useDispatch } from 'react-redux';
-import { ClassFilter, ClassSort } from '../../class/ClassTableOperations';
-import { TeacherFilter } from '../../teacher/TeacherTableOperations';
-import SearchField from '../components/SearchField';
+import { ClassFilter, ClassSearch, ClassSort } from '../../class/ClassTableOperations';
+import { TeacherFilter, TeacherSearch } from '../../teacher/TeacherTableOperations';
 import { Button } from '../components/ButtonNew';
 
 function AppNav({ type, tableView, setTableView, onChange }) {
@@ -20,9 +19,9 @@ function AppNav({ type, tableView, setTableView, onChange }) {
   return (
     <div
       className=" z-40 mt-2 flex items-center justify-between rounded border border-border-1 
-      bg-bg--primary-200 px-[6px] py-[6px] text-text--primary shadow-neumorphism"
+      bg-bg--primary-200 px-[6px] py-[5px] text-text--primary shadow-neumorphism"
     >
-      <SearchField className="!shadow-sm" onChange={onChange} />
+      {type === 'class' ? <ClassSearch /> : <TeacherSearch />}
       <div className="flex items-center gap-2">
         <Filter />
         {type === 'class' && <ClassSort />}

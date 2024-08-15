@@ -155,7 +155,13 @@ export const getDeletedItems = axiousWrapper((endPoit)=>{
     );
 })
 
-
+export const deletedMany = axiousWrapper(({endPoit,idList})=>{
+  return axios.post(`${BASE_URL}/${endPoit}`,{idList},
+      {withCredentials: true,
+        timeout: 6000,
+       },
+    );
+})
 
 // function formDataToObject(formData) {
 //   const obj = {};
