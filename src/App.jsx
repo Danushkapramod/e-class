@@ -19,6 +19,7 @@ import { queryClient } from './queryClient';
 import VerifyAccount from './pages/VerifyAccount';
 import { StudentRoutes } from './routes/StudentRoutes';
 import DeletedTable from './deleted/DeletedTable';
+import Backups from './backups$prints/Backups';
 
 function App() {
   const router = createBrowserRouter([
@@ -59,6 +60,10 @@ function App() {
         TeachersRoutes,
         OptionRoutes,
         StudentRoutes,
+        {
+          path: 'backups',
+          element: <Backups />,
+        },
         {
           path: 'deleted',
           element: <DeletedTable />,

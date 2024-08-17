@@ -57,7 +57,7 @@ function TableNav() {
           url={false}
           limit={10}
           set={updatePaginationQuery}
-          getTotal={() => getStudentsCount(id)}
+          getTotal={async () => await getStudentsCount(id)}
         />
         <Exports
           classId={id}
@@ -475,12 +475,12 @@ function StdForm() {
     mutate(
       { ...data, classId: id },
       {
-        onSettled: () => {
-          setValue('name', '');
-          setValue('phone', '');
-          setValue('gmail', '');
-          setFocus('name');
-        },
+        // onSettled: () => {
+        //   setValue('name', '');
+        //   setValue('phone', '');
+        //   setValue('gmail', '');
+        //   setFocus('name');
+        // },
       }
     );
   }
@@ -559,7 +559,7 @@ function StdForm() {
       </div>
 
       <div className=" flex items-center gap-3 ">
-        <Button spinner={isPending} type="primary" label="SUBMIT" />
+        <Button type="primary" label="SUBMIT" />
         <button
           onClick={(e) => {
             e.preventDefault();

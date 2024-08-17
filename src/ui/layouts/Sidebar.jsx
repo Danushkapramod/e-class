@@ -57,6 +57,14 @@ function Sidebar({ sidebarOpen }) {
       </div>
       <div className="mt-8  flex w-full flex-col  divide-y divide-border-3 px-3 ">
         <NavLink
+          to="backups"
+          className="flex gap-4 rounded-sm py-2 pl-4 transition-all duration-150 
+          first-line:items-center hover:bg-white/10  hover:text-bg--secondery-2"
+        >
+          <span className="material-symbols-outlined font-light">backup</span>
+          <span className="">Backups</span>
+        </NavLink>
+        <NavLink
           to="deleted"
           className="flex gap-4 rounded-sm py-2 pl-4 transition-all duration-150 
           first-line:items-center hover:bg-white/10  hover:text-bg--secondery-2"
