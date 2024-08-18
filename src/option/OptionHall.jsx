@@ -1,23 +1,22 @@
 import OptionTable from './OptioTable';
-import useCreateOption from './useCreateOption';
-import useDeleteOption from './useDeleteOption';
-import useOptions from './useOptions';
+import useCreateSubItem from './useCreateSubItem';
+import useDeleteSubItem from './useDelete';
+import useSubItems from './useSubIttems';
 
 export default function OptionHall() {
-  const { options, isLoading, error } = useOptions('hall');
-  const { isCreating, mutate: mutateCreate, isSuccess } = useCreateOption('hall');
-  const { isDeleting, mutate: mutateDelete } = useDeleteOption('hall');
+  const { data: halls, isLoading, error } = useSubItems({ key: 'halls', category: 'hall' });
+  const { isPending: isCreating, mutate: create, isSuccess } = useCreateSubItem('halls');
+  const { isPending: isDeleting, mutate: _delete } = useDeleteSubItem('halls');
 
-  const data = options?.map((hall) => [hall._id, hall.hallName]);
+  const data = halls?.map((hall) => [hall._id, hall.itemName]);
 
   function createHandler(hall) {
-    mutateCreate({ option: 'hall', optionData: { hallName: hall } });
+    create({ itemName: hall, category: 'hall' });
   }
 
-  function deleteHandler(hallId) {
-    mutateDelete({ option: 'hall', optionId: hallId });
+  function deleteHandler(id) {
+    _delete(id);
   }
-
   return (
     <OptionTable
       fieldName="Halls"

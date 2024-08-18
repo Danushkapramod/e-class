@@ -14,10 +14,11 @@ import useDeleteStudent from './useDeleteStudent';
 import useUpdateStudent, { useUpdateManyStudents } from './useUpdateStudent';
 import { useStudentsInTeacher } from './useStudents';
 import useOColor from '../utils/getOColor';
-import { getStudentsCount } from '../services/apiStudents';
 import Checkbox from '../ui/components/Checkbox';
 import useAppSetings from '../user/useAppSetings';
 import useHide from '../user/useHide';
+import { useQuery } from '@tanstack/react-query';
+import { getOptionsCount } from '../services/apiOptions';
 
 // const statusOptions = [
 //   ['paid', 'paid'],
@@ -46,6 +47,10 @@ export default function StudentTable() {
 
 function TableNav() {
   const { id } = useParams();
+  const { data: students } = useQuery({
+    queryKey: ['studentsCount'],
+    queryFn: () => getOptionsCount('student'),
+  });
   const { state, updateFormState, updatePaginationQuery } = useContext(StdTableContext);
   return (
     <div className=" flex items-end justify-between px-2">
@@ -57,7 +62,7 @@ function TableNav() {
           url={false}
           limit={10}
           set={updatePaginationQuery}
-          getTotal={async () => await getStudentsCount(id)}
+          total={students}
         />
         <Exports
           classId={id}
@@ -162,13 +167,9 @@ function StudentsOnTable() {
 }
 
 function Table() {
-  const { id: classId } = useParams();
-  const { state, updateStatusOptions } = useContext(StdTableContext);
+  const { updateStatusOptions } = useContext(StdTableContext);
   const { data, isSuccess: appSetingsIsSuccess } = useAppSetings();
-  const { students, isLoading, error } = useStudentsInTeacher(
-    [state.searchQuery, state.filterQuery, state.paginationQuery],
-    classId
-  );
+  const { students, isLoading, error } = useStudentsInTeacher();
 
   useEffect(() => {
     if (appSetingsIsSuccess) updateStatusOptions(data?.students.statusOptions || {});
@@ -273,7 +274,7 @@ function TableRow({ student }) {
     <tr className={`text-sm ${bgColor}`}>
       <td className="relative px-4">
         <div className=" flex items-center justify-center px-2">
-          <label htmlFor={_id} className="hover:bg-hover-1 ho absolute rounded-full p-3">
+          <label htmlFor={_id} className="ho absolute rounded-full p-3 hover:bg-hover-1">
             <Checkbox
               id={_id}
               trueCall={onAddhandler}

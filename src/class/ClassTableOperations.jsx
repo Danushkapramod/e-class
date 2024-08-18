@@ -3,8 +3,8 @@ import FilterField from '../ui/components/FilterField';
 import Filters from '../ui/components/Filters';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import Sort from '../ui/components/Sort';
-import useOptions from '../option/useOptions';
 import { Search } from '../ui/components/Search';
+import useSubItems from '../option/useSubIttems';
 // const teachers = [
 //   "Amila disanayake",
 //   "Anurada perera",
@@ -19,9 +19,9 @@ const days = ['Mondaya', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday
 export function ClassFilter() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const { options: subjects } = useOptions('subject');
-  const { options: grades } = useOptions('grade');
-  const { options: halls } = useOptions('hall');
+  const { data: subjects } = useSubItems({ key: 'subjects', category: 'subject' });
+  const { data: grades } = useSubItems({ key: 'grades', category: 'grade' });
+  const { data: halls } = useSubItems({ key: 'halls', category: 'hall' });
 
   const [filterCount, setFilterCount] = useState(null);
   const [subject, setSubject] = useState(searchParams.getAll('subject'));
@@ -50,7 +50,7 @@ export function ClassFilter() {
     <Filters filterCount={filterCount} onFilterHandler={filterHandler} reset={reset}>
       <FilterField
         name="Subject"
-        data={subjects?.map((subject) => subject.subjectName)}
+        data={subjects?.map((subject) => subject.itemName)}
         value={subject}
         setValu={setSubject}
       />
@@ -58,7 +58,7 @@ export function ClassFilter() {
       {grades?.length > 0 && (
         <FilterField
           name="Grade"
-          data={grades?.map((grade) => grade.gradeName)}
+          data={grades?.map((grade) => grade.itemName)}
           value={grade}
           setValu={setGrade}
         />
@@ -66,7 +66,7 @@ export function ClassFilter() {
 
       <FilterField
         name="Hall"
-        data={halls?.map((hall) => hall.hallName)}
+        data={halls?.map((hall) => hall.itemName)}
         value={hall}
         setValu={setHall}
       />

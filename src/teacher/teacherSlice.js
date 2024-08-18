@@ -3,12 +3,16 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   tableView: "card",
   totalTeachers: 0,
+  queryParams:''
 };
 
 const tableSlice = createSlice({
   name: "teacher",
   initialState,
   reducers: {
+    setQueryParams(state, action) {
+      state.queryParams = action.payload;
+    },
     totalTeachers(state, action) {
       state.totalTeachers = action.payload;
     },
@@ -21,4 +25,4 @@ const tableSlice = createSlice({
 const teacherReducer = tableSlice.reducer;
 export default teacherReducer;
 
-export let { setTableView, totalTeachers } = tableSlice.actions;
+export let { setTableView, totalTeachers, setQueryParams } = tableSlice.actions;

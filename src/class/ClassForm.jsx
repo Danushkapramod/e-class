@@ -113,7 +113,7 @@ export default function ClassForm() {
                     data={subjects}
                     isLoading={subjectsIsloading}
                     showValue={false}
-                    valueName="subjectName"
+                    valueName="itemName"
                   />
                 </div>
               </div>
@@ -136,7 +136,7 @@ export default function ClassForm() {
                     data={grades}
                     isLoading={gradesIsloading}
                     showValue={false}
-                    valueName="gradeName"
+                    valueName="itemName"
                   />
                 </div>
               </div>
@@ -159,7 +159,7 @@ export default function ClassForm() {
                     data={halls}
                     isLoading={hallsIsloading}
                     showValue={false}
-                    valueName="hallName"
+                    valueName="itemName"
                   />
                 </div>
               </div>

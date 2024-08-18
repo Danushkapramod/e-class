@@ -1,5 +1,6 @@
 import axios from "axios";
 import { BASE_URL } from "./apiData";
+import { axiousWrapper } from "../utils/wrappers";
 
 
 function blob(response,fileName){
@@ -74,3 +75,14 @@ export async function exportToCsv({category,_selected,classId}) {
       
     }
   }
+  export const backup = axiousWrapper(({endPoit})=>{
+    return axios.get(`${BASE_URL}/services/${endPoit}`,{
+       withCredentials:true
+   });
+ })
+  
+ export const getBackupAcccount = axiousWrapper(()=>{
+  return axios.get(`${BASE_URL}/services/drive-account`,{
+     withCredentials:true
+ });
+})

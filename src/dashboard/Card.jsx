@@ -1,38 +1,31 @@
 import { Link } from 'react-router-dom';
 
 import useTotals from './useTotals';
-import { useSelector } from 'react-redux';
-
 function Card() {
-  useTotals();
-
-  const { totalClasses: _classes } = useSelector((store) => store.class);
-  const { totalStudents: _students } = useSelector((store) => store.student);
-  const { totalTeachers: _teachers } = useSelector((store) => store.teacher);
-  const { totalOptions: _options } = useSelector((store) => store.options);
+  const { classes, teachers, subItems, students } = useTotals();
 
   const cardsData = [
     {
       title: 'classes',
-      count: _classes,
+      count: classes,
       to: '/app/classes',
       icon: 'school',
     },
     {
       title: 'Teachers',
-      count: _teachers,
+      count: teachers,
       to: '/app/teachers',
       icon: 'groups',
     },
     {
       title: 'Students',
-      count: _students,
+      count: students,
       to: '/app/students',
       icon: 'settings_accessibility',
     },
     {
       title: 'Options',
-      count: _options,
+      count: subItems?.subjects + subItems?.halls + subItems?.grades,
       to: '/app/options',
       icon: 'style',
     },

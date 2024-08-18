@@ -1,14 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit"
 
 const initialState ={
-    searchQuery:'',
     totalStudents: 0,
+    paginationQuery:'',
+
 }
 
 const studentSlice = createSlice({
     name:'student',
     initialState,
     reducers:{
+        setPaginationQuery(state, action) {
+            state.paginationQuery = action.payload;
+          },
         setSearchQuery(state,action){
             state.searchQuery = action.payload
         },
@@ -21,4 +25,4 @@ const studentSlice = createSlice({
 const studentReducer = studentSlice.reducer
 export default studentReducer
 
-export const {setSearchQuery,setTotalStudents} = studentSlice.actions
+export const {setPaginationQuery,setTotalStudents} = studentSlice.actions

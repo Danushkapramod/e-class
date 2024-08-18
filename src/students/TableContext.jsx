@@ -1,11 +1,11 @@
 import { createContext, useReducer } from 'react';
-
 const initialState = {
   statusOptions: [],
   tempStatusList: [],
   searchQuery: '',
   filterQuery: '',
   paginationQuery: '',
+  query: '',
   totalStdOntable: 0,
   addFormIsOpen: false,
   selectedList: [],
@@ -22,19 +22,36 @@ const SET_TOTAl_STD_ON_TABLE = 'SET_TOTAl_STD_ON_TABLE';
 const reducer = (state, action) => {
   switch (action.type) {
     case SET_SEARCH_QUERY:
-      return { ...state, searchQuery: action.payload };
+      return {
+        ...state,
+        searchQuery: action.payload,
+        query: [action.payload, state.filterQuery, state.paginationQuery]
+          .filter((query) => query && query.split('=')[1] !== 'undefined')
+          .join('&'),
+      };
 
     case SET_FILTER_QUERY:
-      return { ...state, filterQuery: action.payload };
+      return {
+        ...state,
+        filterQuery: action.payload,
+        query: [state.searchQuery, action.payload, state.paginationQuery]
+          .filter((query) => query && query.split('=')[1] !== 'undefined')
+          .join('&'),
+      };
 
+    case SET_PAGINATION_QUERY:
+      return {
+        ...state,
+        paginationQuery: action.payload,
+        query: [state.searchQuery, state.filterQuery, action.payload]
+          .filter((query) => query && query.split('=')[1] !== 'undefined')
+          .join('&'),
+      };
     case SET_TEMP_STATUS_LIST:
       return { ...state, tempStatusList: action.payload };
 
     case SET_ADD_FORM_STATE:
       return { ...state, addFormIsOpen: action.payload };
-
-    case SET_PAGINATION_QUERY:
-      return { ...state, paginationQuery: action.payload };
 
     case SET_TOTAl_STD_ON_TABLE:
       return { ...state, totalStdOntable: action.payload };

@@ -13,10 +13,15 @@ import DataLoader from '../ui/components/DataLoader';
 import DeleteConfirmation from '../ui/components/DeleteConfirmation';
 import { setDeleteConfirmation } from '../GlobalUiState';
 import useHide from '../user/useHide';
+import { useQuery } from '@tanstack/react-query';
 
 function TeachersTable() {
   useSetRoot('');
-  const { tableView, totalTeachers } = useSelector((store) => store.teacher);
+  const { data: teachersTotal } = useQuery({
+    queryKey: ['teachersCount'],
+    queryFn: () => getTeachersCount(),
+  });
+  const { tableView } = useSelector((store) => store.teacher);
   const { teachers: data, isLoading, error } = useTeachers();
   const { searchResults: teachers, setQuery } = useClientSearch(data, {
     type: 'obj',
@@ -57,7 +62,7 @@ function TeachersTable() {
                 <th className="  px-2 text-left"></th>
               </tr>
             </thead>
-            <tbody className=" divide-border-4 divide-y bg-bg--primary-200">
+            <tbody className=" divide-y divide-border-4 bg-bg--primary-200">
               <DataLoader
                 data={teachers?.map((teacherData) => {
                   return <TableRow teacherData={teacherData} key={teacherData._id} />;
@@ -71,7 +76,7 @@ function TeachersTable() {
         </div>
       )}
       <div className="mb-10 mt-2 flex w-full flex-col items-center justify-center">
-        <Pagination getTotal={getTeachersCount} total={totalTeachers} />
+        <Pagination total={teachersTotal} />
       </div>
     </>
   );

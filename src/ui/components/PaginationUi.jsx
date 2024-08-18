@@ -1,72 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { useLocation, useSearchParams } from 'react-router-dom';
-
-function Pagination({ limit = 20, getTotal, url = true, set, type, total }) {
-  const pageLimit = limit;
-  const location = useLocation();
-  const newParams = useMemo(() => new URLSearchParams(location.search), [location]);
-
-  const [, setSearchParams] = useSearchParams();
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageCount, setPageCount] = useState(1);
-  const [btnList, setBtnList] = useState();
-  const [_total, setTotal] = useState();
-  const oldP_L = useRef({ page: parseInt(currentPage), limit: parseInt(pageLimit) });
-
-  useEffect(() => {
-    (async () => {
-      const _total = total ? total : await getTotal();
-      const pageCount = Math.ceil(_total / pageLimit);
-      setPageCount(pageCount);
-      setTotal(_total);
-    })();
-  }, [pageLimit]);
-
-  useEffect(() => {
-    if (oldP_L.current.page !== currentPage || oldP_L.current.limit !== pageLimit) {
-      if (url) {
-        newParams.set('page', currentPage);
-        newParams.set('limit', pageLimit);
-        oldP_L.current = { page: parseInt(currentPage), limit: parseInt(pageLimit) };
-        setSearchParams(newParams);
-      } else if (set) {
-        set(`page=${currentPage}&limit=${pageLimit}`);
-      }
-    }
-
-    if (!newParams.has('page') || !newParams.has('limit')) {
-      if (url) {
-        if (!newParams.has('page')) newParams.set('page', currentPage);
-        if (!newParams.has('limit')) newParams.set('limit', pageLimit);
-      } else if (set) {
-        set(`page=${currentPage}&limit=${pageLimit}`);
-      }
-
-      oldP_L.current = { page: parseInt(currentPage), limit: parseInt(pageLimit) };
-      setSearchParams(newParams);
-    }
-  }, [currentPage, pageLimit]);
-
-  function clickHandler(pageNo) {
-    setCurrentPage(() => (pageNo < 1 ? 1 : pageNo > pageCount ? pageCount : pageNo));
-  }
-
-  useEffect(() => {
-    let buttons = [];
-    if (currentPage > 3) {
-      for (let i = 1; i < 6 && i <= pageCount; i++) {
-        buttons.push(currentPage - 3 + i);
-        setBtnList(buttons);
-      }
-    }
-
-    if (currentPage < 3) {
-      for (let i = 1; i <= 5 && i <= pageCount; i++) {
-        buttons.push(i);
-        setBtnList(buttons);
-      }
-    }
-  }, [currentPage, pageCount]);
+function PaginationUi({ paginationData }) {
+  const { pageCount, currentPage, type, limit, _total, btnList, setCurrentPage } = paginationData;
 
   if (type === 'simple') {
     return (
@@ -91,7 +24,9 @@ function Pagination({ limit = 20, getTotal, url = true, set, type, total }) {
       )
     );
   }
-
+  function clickHandler(pageNo) {
+    setCurrentPage(() => (pageNo < 1 ? 1 : pageNo > pageCount ? pageCount : pageNo));
+  }
   return (
     pageCount > 1 && (
       <div>
@@ -141,7 +76,7 @@ function Block({ children, onClick, type, curPage }) {
       <button
         onClick={onClick}
         className="flex items-center justify-center rounded-sm
-          px-1 shadow  hover:bg-bg--primary-100 "
+            px-1 shadow  hover:bg-bg--primary-100 "
       >
         {children}
       </button>
@@ -159,4 +94,4 @@ function Block({ children, onClick, type, curPage }) {
   }
 }
 
-export default Pagination;
+export default PaginationUi;

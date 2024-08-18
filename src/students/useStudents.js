@@ -1,56 +1,52 @@
 
 import { getAllStudents, getStudents } from "../services/apiStudents";
 import useBackendSearch from "../hooks/useBackendSearch";
-import { useContext, useEffect } from "react";
+import { useCallback, useContext, useEffect} from "react";
 import { StdTableContext } from './TableContext';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { setPaginationQuery } from "./studentSlice";
 
-export function useAllStudents(queries) {
-  const{updateStdOntable} = useContext(StdTableContext)
-  const dispatch = useDispatch() 
-  const queryList = [...queries]
-
-  let query = '';
-  for(let i = 0; i < queryList.length; i++){
-    if(queryList[i]){
-      query =  queryList[i] + '&' + query
-    } 
-  }
- // const location = useLocation({});
-  //const queryParams = query || location.search;
-
+export function useAllStudents() {
+  const dispatch = useDispatch(); 
+  const{updateStdOntable:_updateStdOntable,state} = useContext(StdTableContext);
+  const updateStdOntable = useCallback(()=>_updateStdOntable,[_updateStdOntable])
+  
   const {data:students,isLoading,isSuccess, error,}= useBackendSearch({
     queryFn:getAllStudents,
-    queryKey:['students',query],
-    query:query
-    
+    queryKey:['allStudents',state.query],
+    query:state.query
   }) 
    useEffect(()=>{
     updateStdOntable(students?.length || 0)
-  },[dispatch, students])
+  },[dispatch, students,updateStdOntable  ])
   return { students, isSuccess, isLoading, error };
 }
 
-export function useStudentsInTeacher(queries,classId) {
-  const{updateStdOntable} = useContext(StdTableContext)
+export function useStudentsInTeacher() {
+  const { id: classId } = useParams();
   const dispatch = useDispatch() 
-  const queryList = [...queries]
+  const{updateStdOntable:_updateStdOntable,state} = useContext(StdTableContext);
+  const {paginationQuery} = useSelector((store)=>store.student) 
+  const updateStdOntable = useCallback(()=>_updateStdOntable,[_updateStdOntable])
+  
+  const query = [paginationQuery, state.filterQuery, state.searchQuery]
+  .filter((query)=> (query.split('=')[1] !== 'undefined') && query !== '' ).join('&')
+  
+  useEffect(()=>{
+    if(state.paginationQuery){
+      dispatch(setPaginationQuery(state.paginationQuery)) 
+    }
+  },[dispatch, state.paginationQuery])
 
-  let query = '';
-  for(let i = 0; i < queryList.length; i++){
-    if(queryList[i]){
-      query =  queryList[i] + '&' + query
-    } 
-  }
-  const {data:students,isLoading,isSuccess, error,}= useBackendSearch({
+  const {data:students,isLoading,isSuccess, error}= useBackendSearch({
     queryFn:getStudents,
     queryKey:['students',classId,query],
-    query:{query,classId}
-    
+    query:{query:query,classId}
   })
   useEffect(()=>{
     updateStdOntable(students?.length || 0)
-  },[dispatch, students])
+  },[dispatch, students, updateStdOntable])
 
   return { students, isSuccess, isLoading, error };
 }

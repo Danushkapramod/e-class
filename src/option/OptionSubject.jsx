@@ -1,20 +1,25 @@
 import OptionTable from './OptioTable';
-import useCreateOption from './useCreateOption';
-import useDeleteOption from './useDeleteOption';
-import useOptions from './useOptions';
+import useCreateSubItem from './useCreateSubItem';
+import useDeleteSubItem from './useDelete';
+import useSubItems from './useSubIttems';
 
 function OptionSubject() {
-  const { options, isLoading, error } = useOptions('subject');
-  const { isCreating, mutate: mutateCreate, isSuccess } = useCreateOption('subject');
-  const { isDeleting, mutate: mutateDelete } = useDeleteOption('subject');
+  const {
+    data: subjects,
+    isLoading,
+    error,
+  } = useSubItems({ key: 'subjects', category: 'subject' });
+  const { isPending: isCreating, mutate: create, isSuccess } = useCreateSubItem('subjects');
+  const { isPending: isDeleting, mutate: _delete } = useDeleteSubItem('subjects');
 
-  const data = options?.map((subject) => [subject._id, subject.subjectName]);
+  const data = subjects?.map((subject) => [subject._id, subject.itemName]);
 
   function createHandler(subject) {
-    mutateCreate({ optionData: { subjectName: subject }, option: 'subject' });
+    create({ itemName: subject, category: 'subject' });
   }
-  function deleteHandler(subjectId) {
-    mutateDelete({ option: 'subject', optionId: subjectId });
+
+  function deleteHandler(id) {
+    _delete(id);
   }
   return (
     <OptionTable

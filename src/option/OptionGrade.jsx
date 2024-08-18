@@ -1,21 +1,21 @@
 import OptionTable from './OptioTable';
-import useCreateOption from './useCreateOption';
-import useDeleteOption from './useDeleteOption';
-import useOptions from './useOptions';
+import useCreateSubItem from './useCreateSubItem';
+import useDeleteSubItem from './useDelete';
+import useSubItems from './useSubIttems';
 
 export default function OptionGrade() {
-  const { options, isLoading, error } = useOptions('grade');
-  const { isCreating, mutate: mutateCreate, isSuccess } = useCreateOption('grade');
-  const { isDeleting, mutate: mutateDelete } = useDeleteOption('grade');
+  const { data: grades, isLoading, error } = useSubItems({ key: 'grades', category: 'grade' });
+  const { isPending: isCreating, mutate: create, isSuccess } = useCreateSubItem('grades');
+  const { isPending: isDeleting, mutate: _delete } = useDeleteSubItem('grades');
 
-  const data = options?.map((grade) => [grade._id, grade.gradeName]);
+  const data = grades?.map((grade) => [grade._id, grade.itemName]);
 
   function createHandler(grade) {
-    mutateCreate({ option: 'grade', optionData: { gradeName: grade } });
+    create({ itemName: grade, category: 'grade' });
   }
 
-  function deleteHandler(gradeId) {
-    mutateDelete({ option: 'grade', optionId: gradeId });
+  function deleteHandler(id) {
+    _delete(id);
   }
 
   return (

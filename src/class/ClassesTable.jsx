@@ -15,12 +15,16 @@ import DeleteConfirmation from '../ui/components/DeleteConfirmation';
 import { setDeleteConfirmation } from '../GlobalUiState';
 import Exports from '../ui/components/Exports';
 import useHide from '../user/useHide';
+import { useQuery } from '@tanstack/react-query';
 
 export default function ClassesTable() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { isCreateClassOpen, tableView, totalClasses } = useSelector((store) => store.class);
-
+  const { data: classesCount } = useQuery({
+    queryKey: ['classesCount'],
+    queryFn: () => getClassesCount(),
+  });
+  const { isCreateClassOpen, tableView } = useSelector((store) => store.class);
   const { classes: data, isLoading, error } = useClasses({ teacher: true });
 
   useEffect(() => {
@@ -81,7 +85,7 @@ export default function ClassesTable() {
                 <th className="  px-2 text-left"></th>
               </tr>
             </thead>
-            <tbody className=" divide-border-4 divide-y bg-bg--primary-200">
+            <tbody className=" divide-y divide-border-4 bg-bg--primary-200">
               <DataLoader
                 data={classes?.map((classData) => {
                   return <TableRow classData={classData} key={classData._id} />;
@@ -95,7 +99,7 @@ export default function ClassesTable() {
         </div>
       )}
       <div className=" mb-10 mt-2 flex w-full flex-col items-center justify-center">
-        <Pagination getTotal={getClassesCount} total={totalClasses} />
+        <Pagination total={classesCount} />
       </div>
     </>
   );

@@ -59,7 +59,12 @@ export const deleteManyStudents = axiousWrapper((studentIds)=>{
 
 
 export const getStudentsCount = axiousWrapper((classId)=>{
+  if(!classId){
+    return axios.get(`${BASE_URL}/students/total`,{
+      withCredentials:true
+    })
+  }
   return axios.get(`${BASE_URL}/students/total/${classId}`,{
       withCredentials:true
-    });
+  });
 })
