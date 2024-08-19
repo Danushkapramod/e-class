@@ -36,3 +36,38 @@ export function formatLocalTime(startTime, offset = '+0600') {
   
   return time;
 }
+
+
+export function getSpecificDaysInMonth(dayName) {
+  const daysOfWeek = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+  ];
+  const dayIndex = daysOfWeek.indexOf(dayName);
+
+  if (dayIndex === -1) {
+    throw new Error('Invalid day name');
+  }
+
+  const dates = [];
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth();
+
+  // Get the number of days in the current month
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  for (let i = 1; i <= daysInMonth; i++) {
+    const date = new Date(year, month, i);
+    if (date.getDay() === dayIndex) {
+      dates.push(date);
+    }
+  }
+
+  return dates;
+}

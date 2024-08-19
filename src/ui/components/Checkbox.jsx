@@ -7,6 +7,7 @@ Checkbox.propTypes = {
   trueCall: PropTypes.func,
   falseCall: PropTypes.func,
   border: PropTypes.string,
+  onClick: PropTypes.func,
   _checked: PropTypes.bool,
   undefined: PropTypes.string,
   borderColor: PropTypes.string,
@@ -19,6 +20,7 @@ export default function Checkbox({
   trueCall,
   falseCall,
   border,
+  onClick,
   _checked,
   unchecked,
   borderColor,
@@ -39,6 +41,7 @@ export default function Checkbox({
         `border-[${border}]`,
         `bg-[${unchecked}]`
       )}
+      onClick={onClick}
     >
       <input
         id={id}

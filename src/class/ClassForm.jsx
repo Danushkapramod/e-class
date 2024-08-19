@@ -72,7 +72,7 @@ export default function ClassForm() {
       avatar: data.avatar[0] || undefined,
     };
 
-    addSubject(data.subject);
+    // addSubject(data.subject);
     createClass(classData);
   };
 

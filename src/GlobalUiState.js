@@ -4,13 +4,17 @@ const initialState = {
   alerts: [],
   root: "",
   theme:'dark',
-  deleteConfirmation:null
+  deleteConfirmation:null,
+  isBackuping:false
 };
 
 const globalReducer = createSlice({
   name: "global",
   initialState,
   reducers: {
+    setIsBackuping(state, action) {
+      state.isBackuping = action.payload;
+    },
     setRootName(state, action) {
       state.root = action.payload;
     },
@@ -31,4 +35,4 @@ const globalReducer = createSlice({
 });
 const globalUiReducer = globalReducer.reducer;
 export default globalUiReducer;
-export const {  removeAlert,setUiTheme, setRootName,setDeleteConfirmation } = globalReducer.actions;
+export const {  removeAlert,setUiTheme,setIsBackuping, setRootName,setDeleteConfirmation } = globalReducer.actions;

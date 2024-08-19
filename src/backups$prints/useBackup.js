@@ -10,7 +10,7 @@ function useBackup(){
       },
       onError: (err) => {
         console.log(err.message);
-        toast.error("Failed to delete class. Please try again.");
+        toast.error(err.message);
       },
         
     })

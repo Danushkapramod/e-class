@@ -27,7 +27,13 @@ export const getClassesCount = axiousWrapper(()=>{
       withCredentials:true
   });
 })
- 
+
+export const getAttendances = axiousWrapper((classId)=>{
+  return axios.get(`${BASE_URL}/classes/attendance/${classId}`,{
+     withCredentials:true
+ });
+}) 
+
 export const createClass = axiousWrapper(classData=>{
     const formData = new FormData();
     Object.entries(classData).forEach(([key, value]) => {
