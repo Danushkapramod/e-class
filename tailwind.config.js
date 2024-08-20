@@ -33,7 +33,10 @@ export default {
         'border-2': 'var(--color-border-2)',
         'border-3': 'var(--color-border-3)',
         'border-4': 'var(--color-border-4)',
+
         'hover-1' : 'var(--color-hover-1)',
+         
+        'hilight-1' : 'var(--color-hilight-1)',
 
         'optinal-1': 'var(--color-optinal-1)',
         'text--option-1': 'var(--color-text-option-1)',

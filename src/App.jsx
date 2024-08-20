@@ -20,6 +20,7 @@ import VerifyAccount from './pages/VerifyAccount';
 import { StudentRoutes } from './routes/StudentRoutes';
 import DeletedTable from './deleted/DeletedTable';
 import Backups from './backups$prints/Backups';
+import CameraComponent from './Camera';
 
 function App() {
   const router = createBrowserRouter([
@@ -63,6 +64,10 @@ function App() {
         {
           path: 'backups',
           element: <Backups />,
+        },
+        {
+          path: 'camera',
+          element: <CameraComponent />,
         },
         {
           path: 'deleted',

@@ -44,12 +44,7 @@ function SelectItem({
   return (
     <>
       {btn ? (
-        <button
-          onClick={optionClick}
-          disabled={disabled}
-          ref={btnRef}
-          className="material-symbols-outlined flex h-6 scale-[80%] items-center "
-        >
+        <button onClick={optionClick} disabled={disabled} ref={btnRef}>
           {btn}
         </button>
       ) : (

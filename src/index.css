@@ -41,6 +41,8 @@
 
   --color-hover-1: #36454f;
 
+  --color-hilight-1: #28333a;
+
   --color-border-1: #334155;
   --color-border-2: #546679;
   --color-border-3: #35404b;
@@ -69,6 +71,8 @@
   --color-text-muted: #424242;
 
   --color-hover-1: #dbeafe;
+
+  --color-hilight-1: #ebf1f7;
 
   --color-border-1: #f8f8f8;
   --color-border-2: #bdcad1;

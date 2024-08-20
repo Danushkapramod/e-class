@@ -28,11 +28,6 @@ export const getClassesCount = axiousWrapper(()=>{
   });
 })
 
-export const getAttendances = axiousWrapper((classId)=>{
-  return axios.get(`${BASE_URL}/classes/attendance/${classId}`,{
-     withCredentials:true
- });
-}) 
 
 export const createClass = axiousWrapper(classData=>{
     const formData = new FormData();
@@ -78,6 +73,30 @@ export const deleteClass =  axiousWrapper((classId)=>{
     });
 })
 
+
+
+
+
+
+
+
+
+
+
+
+export const getAttendances = axiousWrapper((classId)=>{
+  return axios.get(`${BASE_URL}/classes/attendance/${classId}`,{
+     withCredentials:true
+ });
+}) 
+
+
+export const createAttendance = axiousWrapper((data)=>{
+   return axios.post(`${BASE_URL}/classes/attendance`,data,{
+      withCredentials:true,
+      timeout:10000
+   });
+})
 
 
 

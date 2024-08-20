@@ -589,7 +589,7 @@
 // }
 
 import { useContext, useEffect, useRef, useState } from 'react';
-import { Form } from 'react-router-dom';
+import { Form, useParams } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
 import { Button } from '../ui/components/ButtonNew';
 import DataLoader from '../ui/components/DataLoader';
@@ -611,6 +611,7 @@ import { getStudentsCount } from '../services/apiStudents';
 import { getOptionsCount } from '../services/apiOptions';
 import { getSpecificDaysInMonth } from '../utils/formateDates&Times';
 import useAttendances from './useAttendances';
+import useCreateStudent from './useCreateStudent';
 
 // const statusOptions = [
 //   ['paid', 'paid'],
@@ -629,6 +630,7 @@ export default function StudentTableAll() {
         >
           <TableNav />
           <StatusForm />
+          <StdForm1 />
           <Operation />
         </div>
         <Table />
@@ -636,18 +638,24 @@ export default function StudentTableAll() {
     </TableProvider>
   );
 }
-
+const statusOptions = [['payment labels']];
 function TableNav() {
-  const { updatePaginationQuery } = useContext(StdTableContext);
+  const { updatePaginationQuery, updateFormState, state, updateStatusForm } =
+    useContext(StdTableContext);
   const { data: students } = useQuery({
     queryKey: ['studentsCount'],
     queryFn: () => getOptionsCount('student'),
   });
+
+  function onSelectHandler(selected) {
+    if (selected === 'payment labels') {
+      updateStatusForm(!state.statusFormIsOpen);
+    }
+  }
   return (
     <div className=" flex items-end justify-between px-2">
       <StudentSearch />
-      <div className=" flex gap-2">
-        <StudentsOnTable />
+      <div className=" flex items-end gap-2">
         <Pagination
           getTotal={async () => await getStudentsCount()}
           type="simple"
@@ -656,7 +664,21 @@ function TableNav() {
           set={updatePaginationQuery}
           total={students}
         />
-        <StudentFilter />
+
+        <Button
+          label="ADD STUDENT"
+          onClick={() => updateFormState(!state.addFormIsOpen)}
+          size="sm"
+        />
+        <SelectItem
+          btn={
+            <span className="material-symbols-outlined mx-1 flex scale-95 items-end p-1 transition-all duration-100 active:rotate-90">
+              settings
+            </span>
+          }
+          items={statusOptions}
+          onClick={onSelectHandler}
+        />
       </div>
     </div>
   );
@@ -732,13 +754,15 @@ function StudentsOnTable() {
 
 function DaysHeder() {
   const days = getSpecificDaysInMonth('Saturday').map((day) => day.toString().split(' ')[2]);
-  return days.map((day) => {
-    return (
-      <div key={day} className="w-12 text-center">
-        {day}
-      </div>
-    );
-  });
+  return (
+    <ul className=" flex text-sm font-normal">
+      {days.map((day) => (
+        <li key={day} className="w-12 text-center">
+          {day}
+        </li>
+      ))}
+    </ul>
+  );
 }
 
 function Table() {
@@ -769,16 +793,13 @@ function Table() {
               <th className=" text-start ">Student name</th>
               <th className=" text-start ">Phone</th>
               <th className=" flex h-10 items-center gap-10 ">
-                <div className=" flex text-sm font-normal">
-                  <DaysHeder />
-                </div>
-
+                <DaysHeder />
                 <div className=" flex items-center">
                   <div>Status</div>
                   <button
                     onClick={() => updateFormState(!state.addFormIsOpen)}
                     className="material-symbols-outlined scale-75 transition-all 
-                  duration-100 hover:scale-[80%] active:rotate-90"
+                    duration-100 hover:scale-[80%] active:rotate-90"
                   >
                     settings
                   </button>
@@ -791,11 +812,11 @@ function Table() {
             <DataLoader
               data={students?.map((student, index) => {
                 const attendances = classAttendances
-                  .filter((attendance) => attendance.studentId === student._id)
-                  .map((attendance) => {
+                  ?.filter(({ studentId }) => studentId === student._id)
+                  .map(({ date, isPresent }) => {
                     return {
-                      date: new Date(attendance.date).getDate().toString().padStart(2, '0'),
-                      isPresent: attendance.isPresent,
+                      date: new Date(date).getDate().toString().padStart(2, '0'),
+                      isPresent,
                     };
                   });
                 return (
@@ -816,17 +837,21 @@ function Table() {
 
 function DaysChexboxes({ id, attendances }) {
   const days = getSpecificDaysInMonth('Saturday').map((day) => day.toString().split(' ')[2]);
-  return days.map((date) => {
-    const isPresent = attendances.some(
-      (attendance) => attendance.date === date && attendance.isPresent
-    );
-    const key = `${id}-${date}`;
-    return (
-      <li key={key} className="flex w-12 justify-center">
-        <Checkbox _checked={isPresent} id={key} />
-      </li>
-    );
-  });
+  return (
+    <ul className=" flex items-center">
+      {days.map((date) => {
+        const isPresent = attendances.some(
+          (attendance) => attendance.date === date && attendance.isPresent
+        );
+        const key = `${id}-${date}`;
+        return (
+          <li key={key} className="flex w-12 justify-center">
+            <Checkbox _checked={isPresent} id={key} />
+          </li>
+        );
+      })}
+    </ul>
+  );
 }
 
 function TableRow({ student }) {
@@ -934,9 +959,7 @@ function TableRow({ student }) {
 
       <td className="w-[32rem]">
         <div className=" flex items-center  gap-8">
-          <ul className=" flex items-center">
-            <DaysChexboxes id={_id} attendances={attendances} />
-          </ul>
+          <DaysChexboxes id={_id} attendances={attendances} />
           <div className=" flex min-w-28 items-center gap-2">
             <div
               style={
@@ -1081,7 +1104,7 @@ function HoverInfo({ student }) {
 
 function StatusForm() {
   const { mutate: setDefaultStatus } = useMutation({ mutationFn: statusOptionsDefault });
-  const { updateFormState, state, updateTempStatusList } = useContext(StdTableContext);
+  const { updateStatusForm, state, updateTempStatusList } = useContext(StdTableContext);
   const { mutate, isPending } = useUpdateAppSetings();
   const { setFocus, getValues, handleSubmit, control } = useForm();
 
@@ -1100,7 +1123,7 @@ function StatusForm() {
     await e.preventDefault();
     setDefaultStatus();
   }
-  if (!state.addFormIsOpen) return null;
+  if (!state.statusFormIsOpen) return null;
   return (
     <Form
       onSubmit={handleSubmit(onSubmit)}
@@ -1125,9 +1148,127 @@ function StatusForm() {
         <button
           onClick={(e) => {
             e.preventDefault();
-            updateFormState(false);
+            updateStatusForm(false);
           }}
           className=" material-symbols-outlined flex aspect-square h-8 
+          items-center justify-center rounded-full bg-bg--primary-300 text-lg"
+        >
+          close
+        </button>
+      </div>
+    </Form>
+  );
+}
+
+function StdForm1() {
+  const { id } = useParams();
+  const { updateFormState, state } = useContext(StdTableContext);
+  const { isPending, mutate } = useCreateStudent();
+  const { setValue, setFocus, watch, handleSubmit, register, control } = useForm();
+
+  useEffect(() => {
+    setFocus('name');
+  }, [setFocus, state.addFormIsOpen]);
+
+  function onSubmit(data) {
+    if (!id) return;
+    mutate(
+      { ...data, classId: id },
+      {
+        onSettled: () => {
+          setValue('name', '');
+          setValue('phone', '');
+          setValue('gmail', '');
+          setFocus('name');
+        },
+      }
+    );
+  }
+  if (!state.addFormIsOpen) return null;
+  return (
+    <Form
+      onSubmit={handleSubmit(onSubmit)}
+      control={control}
+      className=" flex items-center justify-between border-b border-t border-bg--primary-100 px-2 py-2"
+    >
+      {' '}
+      <div>
+        <div className=" flex items-end gap-2">
+          <input
+            {...register('name')}
+            name="name"
+            placeholder="Name"
+            className="rounded border border-border-2 bg-bg--primary-200 px-4 py-2 text-sm outline-none"
+            type="text"
+          />
+          <input
+            {...register('phone')}
+            name="phone"
+            placeholder="Phone"
+            className="  rounded border border-border-2 bg-bg--primary-200 px-4 py-2 text-sm outline-none"
+            type="text"
+          />
+          {watch('sendQr_gmail') && (
+            <input
+              {...register('gmail')}
+              name="gmail"
+              placeholder="Gmail"
+              className="rounded border border-border-2 bg-bg--primary-200 px-4 py-2 text-sm outline-none"
+              type="email"
+            />
+          )}
+
+          <div className=" flex flex-col justify-center  text-sm">
+            <div className="text-gray-400">SEND-QR</div>
+            <div className=" flex gap-2">
+              <div className=" flex items-center">
+                <input
+                  {...register('sendQr_whatsapp')}
+                  id="checkbox"
+                  name="sendQr_whatsapp"
+                  type="checkbox"
+                  defaultChecked
+                  className="h-4 w-4 rounded  text-blue-600 
+                accent-blue-600 focus:ring-2 focus:ring-blue-500"
+                />
+                <label htmlFor="checkbox" className="ms-2 text-sm font-medium text-gray-400 ">
+                  Whatsapp
+                </label>
+              </div>
+
+              <div className=" flex items-center">
+                <input
+                  {...register('sendQr_gmail')}
+                  id="checkbox"
+                  name="sendQr_gmail"
+                  type="checkbox"
+                  className="h-4 w-4 rounded  text-blue-600
+                 accent-blue-600 focus:ring-2 focus:ring-blue-500"
+                />
+                <label htmlFor="checkbox" className="ms-2 text-sm font-medium text-gray-400 ">
+                  Gmail
+                </label>
+              </div>
+            </div>
+          </div>
+          <input
+            {...register('status')}
+            value="unpaid"
+            name="status"
+            type="text"
+            className="hidden"
+          />
+        </div>
+        <div></div>
+      </div>
+      <div className=" flex items-center gap-3 ">
+        <Button spinner={isPending} disabled={isPending} type="primary" label="SUBMIT" />
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            updateFormState(false);
+          }}
+          className="material-symbols-outlined flex aspect-square h-8
           items-center justify-center rounded-full bg-bg--primary-300 text-lg"
         >
           close

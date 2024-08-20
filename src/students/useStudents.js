@@ -26,9 +26,8 @@ export function useAllStudents() {
 export function useStudentsInTeacher() {
   const { id: classId } = useParams();
   const dispatch = useDispatch() 
-  const{updateStdOntable:_updateStdOntable,state} = useContext(StdTableContext);
+  const{state} = useContext(StdTableContext);
   const {paginationQuery} = useSelector((store)=>store.student) 
-  const updateStdOntable = useCallback(()=>_updateStdOntable,[_updateStdOntable])
   
   const query = [paginationQuery, state.filterQuery, state.searchQuery]
   .filter((query)=> (query.split('=')[1] !== 'undefined') && query !== '' ).join('&')
@@ -44,9 +43,5 @@ export function useStudentsInTeacher() {
     queryKey:['students',classId,query],
     query:{query:query,classId}
   })
-  useEffect(()=>{
-    updateStdOntable(students?.length || 0)
-  },[dispatch, students, updateStdOntable])
-
   return { students, isSuccess, isLoading, error };
 }

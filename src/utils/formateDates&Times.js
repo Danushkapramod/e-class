@@ -51,7 +51,7 @@ export function getSpecificDaysInMonth(dayName) {
   const dayIndex = daysOfWeek.indexOf(dayName);
 
   if (dayIndex === -1) {
-    throw new Error('Invalid day name');
+    return
   }
 
   const dates = [];
