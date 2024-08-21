@@ -98,7 +98,11 @@ function ClassView() {
         <SelectItem
           disabled={isDeleting}
           onClick={onSelectHandler}
-          btn="more_vert"
+          btn={
+            <div className=" h-full">
+              <span className=" material-symbols-outlined scale-90 ">more_vert</span>
+            </div>
+          }
           buttonType="xsSecondery"
           items={[
             ['update', 'edit'],

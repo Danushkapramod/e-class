@@ -112,7 +112,7 @@ function CardItem({ teacherData }) {
     >
       <div className="absolute right-2 top-2 z-30">
         <SelectItem
-          btn="more_vert"
+          btn={<span className=" material-symbols-outlined scale-[80%]">more_vert</span>}
           disabled={isDeleting}
           onClick={onSelectHandler}
           items={[

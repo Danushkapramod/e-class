@@ -42,7 +42,12 @@ export const updateManyStudent = axiousWrapper(({studentIds, newData })=>{
      timeout:10000
     });
 })
-
+export const updateManyStudentClass = axiousWrapper(({studentIds, newData })=>{
+  return axios.post(`${BASE_URL}/students/updateMany/classes`,{studentIds, newData },{
+     withCredentials:true,
+     timeout:10000
+    });
+})
 export const deleteStudent = axiousWrapper((studentId)=>{
     return axios.delete(`${BASE_URL}/students/${studentId}`,{
       withCredentials:true,

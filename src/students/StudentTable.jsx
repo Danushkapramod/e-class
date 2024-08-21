@@ -56,6 +56,7 @@ function TableNav() {
     queryKey: ['studentsCount'],
     queryFn: () => getOptionsCount('student'),
   });
+
   return (
     <div className=" flex items-end justify-between px-2">
       <div className=" flex items-end gap-4">
@@ -255,7 +256,7 @@ function DaysChexboxes({ id, attendances }) {
   return (
     <ul className=" flex items-center">
       {days.map((date) => {
-        const isPresent = attendances.some(
+        const isPresent = attendances?.some(
           (attendance) => attendance.date === date.toString().split(' ')[2] && attendance.isPresent
         );
         return (
@@ -285,7 +286,7 @@ function CheckBoxWithSpinner({ isPresent, id, date }) {
     }
   }
   return (
-    <li className={`flex w-10 justify-center ${!isActive && 'opacity-50'}`}>
+    <li className={`flex w-10 justify-center ${!isActive && !isPresent && 'opacity-50'}`}>
       {!isCreating ? (
         <Checkbox
           trueCall={onCreate}
@@ -405,7 +406,11 @@ function TableRow({ student }) {
         <div className=" flex w-24 items-center justify-between">
           {!isEditing ? (
             <SelectItem
-              btn="more_vert"
+              btn={
+                <span className=" material-symbols-outlined flex scale-[80%] items-center">
+                  more_vert
+                </span>
+              }
               disabled={isUpdating || isDeleting}
               onClick={onSelectHandler}
               items={[

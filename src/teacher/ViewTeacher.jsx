@@ -10,6 +10,7 @@ import moment from 'moment/moment';
 import useDeleteClass from '../class/useDeleteClass';
 import DataLoader from '../ui/components/DataLoader';
 import { useMemo } from 'react';
+import { formatLocalTime } from '../utils/formateDates&Times';
 
 function ViewTeacher() {
   useSetRoot('view');
@@ -144,8 +145,6 @@ function ClassItem({ classData }) {
     day: classDay,
   } = classData;
 
-  const formattedclassTime = moment('2000-01-01T' + classTime + 'Z').format('LT');
-
   function onSelectHandler(selected) {
     if (selected === 'update') {
       navigate(`/app/classes/${classId}/update`);
@@ -171,7 +170,7 @@ function ClassItem({ classData }) {
           <div className=" mt-auto flex flex-col text-sm opacity-80">
             <span>{hallNumber}</span>
             <span>
-              {classDay} {formattedclassTime}
+              {classDay} {formatLocalTime(classTime)}
             </span>
           </div>
         </div>

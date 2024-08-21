@@ -588,7 +588,7 @@
 //   );
 // }
 
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Form, useParams } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
 import { Button } from '../ui/components/ButtonNew';
@@ -600,18 +600,26 @@ import { StdTableContext, TableProvider } from './TableContext';
 import { StudentFilter, StudentSearch } from './StudentTableOperations';
 import useUpdateStudent, { useUpdateManyStudents } from './useUpdateStudent';
 import { useAllStudents } from './useStudents';
-import useOColor from '../utils/getOColor';
 import Checkbox from '../ui/components/Checkbox';
 import useAppSetings from '../user/useAppSetings';
 import useUpdateAppSetings from '../user/useUpdateAppSetings';
 import { statusOptionsDefault } from '../services/apiAuth';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import useHide from '../user/useHide';
-import { getStudentsCount } from '../services/apiStudents';
+import { getStudentsCount, updateManyStudentClass } from '../services/apiStudents';
 import { getOptionsCount } from '../services/apiOptions';
-import { getSpecificDaysInMonth } from '../utils/formateDates&Times';
+import { formatLocalTime, getSpecificDaysInMonth } from '../utils/formateDates&Times';
 import useAttendances from './useAttendances';
 import useCreateStudent from './useCreateStudent';
+import { ClassSearch } from '../class/ClassTableOperations';
+import useClasses from '../class/useClasses';
+import { useDispatch, useSelector } from 'react-redux';
+import { getClassesCount } from '../services/apiClasses';
+import { twMerge } from 'tailwind-merge';
+import useStudentRow from './useStudentRow';
+import HoverInfo from '../ui/components/HoverInfo';
+import toast from 'react-hot-toast';
+import { useAddClass } from './useAddClass';
 
 // const statusOptions = [
 //   ['paid', 'paid'],
@@ -625,13 +633,15 @@ export default function StudentTableAll() {
     <TableProvider>
       <div className=" flex min-w-[40rem]  grow flex-col shadow-md">
         <div
-          className="flex w-full  flex-col justify-between gap-2 
+          className="flex w-full flex-col justify-between gap-2 
            rounded-t bg-bg--primary-200 pb-2 pt-3 text-text--primary"
         >
           <TableNav />
           <StatusForm />
           <StdForm1 />
           <Operation />
+          <AddClassAlredyInStudents />
+          <SelectClass />
         </div>
         <Table />
       </div>
@@ -640,8 +650,13 @@ export default function StudentTableAll() {
 }
 const statusOptions = [['payment labels']];
 function TableNav() {
-  const { updatePaginationQuery, updateFormState, state, updateStatusForm } =
-    useContext(StdTableContext);
+  const {
+    updatePaginationQuery,
+    updateFormState,
+    updateSelectClassIsOpen,
+    state,
+    updateStatusForm,
+  } = useContext(StdTableContext);
   const { data: students } = useQuery({
     queryKey: ['studentsCount'],
     queryFn: () => getOptionsCount('student'),
@@ -660,14 +675,17 @@ function TableNav() {
           getTotal={async () => await getStudentsCount()}
           type="simple"
           url={false}
-          limit={10}
+          limit={50}
           set={updatePaginationQuery}
           total={students}
         />
 
         <Button
           label="ADD STUDENT"
-          onClick={() => updateFormState(!state.addFormIsOpen)}
+          onClick={() => {
+            updateFormState(!state.addFormIsOpen);
+            updateSelectClassIsOpen(!state.selectClassIsOpen);
+          }}
           size="sm"
         />
         <SelectItem
@@ -685,7 +703,7 @@ function TableNav() {
 }
 
 export function Operation() {
-  const { state, updateSelectedList } = useContext(StdTableContext);
+  const { state, updateSelectedList, updateSelectClassIsOpen } = useContext(StdTableContext);
   const { students } = useAllStudents([
     state.searchQuery,
     state.filterQuery,
@@ -697,9 +715,7 @@ export function Operation() {
   function onDeletsHandler() {
     hideMany({ endPoit: 'students/hide', idList: state.selectedList });
   }
-  function onUpdateStatusHandler(selected) {
-    updateMany({ studentIds: state.selectedList, newData: { status: selected } });
-  }
+
   function onSelect() {
     const allIdList = students?.map((std) => std._id);
     updateSelectedList('addAll', allIdList);
@@ -714,13 +730,14 @@ export function Operation() {
       <div className=" mr-2">
         <Checkbox width="18px" id="stdAllSelect" trueCall={onSelect} falseCall={onUnSelect} />
       </div>
-      <SelectItem
-        buttonSize="sm"
-        btnTitle="STATUS"
-        disabled={isUpdating}
-        onClick={onUpdateStatusHandler}
-        icon="currency_exchange"
-        items={state.statusOptions}
+      <Button
+        className="!border-border-2"
+        size="sm"
+        variant="outline"
+        disabled={isDeleting}
+        icon="delete"
+        onClick={() => updateSelectClassIsOpen(!state.selectClassIsOpen)}
+        label="ADD CLASS"
       />
       <Button
         className="!border-border-2"
@@ -747,9 +764,140 @@ export function Operation() {
   );
 }
 
-function StudentsOnTable() {
+function AddClassAlredyInStudents() {
   const { state } = useContext(StdTableContext);
-  return <div className=" flex items-end px-2 text-sm">{`${state.totalStdOntable} results`}</div>;
+  const { mutate, isPending } = useAddClass();
+
+  function onAddClass() {
+    const classId = state.selectedClassList.map(({ _id }) => _id);
+    mutate({ studentIds: state.selectedList, newData: classId });
+  }
+  return (
+    <div className=" p-2">
+      <div className=" pl-1 text-sm uppercase text-text--secondery">Add class</div>
+      <div className=" flex justify-between">
+        <SelectedClasses />
+        <div className=" flex items-center gap-3 ">
+          <Button
+            spinner={isPending}
+            disabled={isPending}
+            onClick={onAddClass}
+            type="primary"
+            label="SUBMIT"
+          />
+          <button
+            className="material-symbols-outlined flex aspect-square h-8
+           items-center justify-center rounded-full bg-bg--primary-300 text-lg"
+          >
+            close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function SelectClass() {
+  const { state, updateSelectClassIsOpen } = useContext(StdTableContext);
+  const { classes, isLoading, error } = useClasses({ teacher: true });
+  const { data: toalClasses } = useQuery({
+    queryKey: ['classesCount'],
+    queryFn: () => getClassesCount(),
+  });
+
+  if (!state.selectClassIsOpen) return null;
+  return (
+    <div className="relative flex w-full p-2 ">
+      <div className=" flex w-full flex-col gap-2 ">
+        <div className=" pl-1 text-sm uppercase text-text--secondery">Select Class</div>
+        <div className=" flex justify-between ">
+          <div className="w-max">
+            <ClassSearch />
+          </div>
+          <Pagination
+            getTotal={async () => await getClassesCount()}
+            type="simple"
+            url={false}
+            limit={10}
+            total={50}
+          />
+        </div>
+        <ul className=" flex w-full flex-wrap gap-2">
+          <DataLoader
+            isLoading={isLoading}
+            error={error}
+            data={classes?.map((classData) => {
+              return <ClassItem classData={classData} key={classData._id} />;
+            })}
+          />
+        </ul>
+      </div>
+      <button
+        onClick={() => {
+          updateSelectClassIsOpen(false);
+        }}
+        className="material-symbols-outlined  absolute right-2 top-0 flex aspect-square h-8
+          items-center justify-center rounded-full bg-bg--primary-300 text-lg "
+      >
+        close
+      </button>
+    </div>
+  );
+}
+
+function ClassItem({ classData, className, onClick }) {
+  const { updateSelectedClassList } = useContext(StdTableContext);
+  const { _id, teacher, subject, avatar, startTime, day } = classData;
+  return (
+    <li
+      key={_id}
+      onClick={() => onClick || updateSelectedClassList('add', classData)}
+      className={twMerge(
+        `bg-hilight-1 flex cursor-pointer items-center rounded border
+         border-border-3 transition-all duration-150 hover:scale-105 ${className}`
+      )}
+    >
+      <div className="flex aspect-square h-[4.5rem] items-center justify-center overflow-hidden rounded-l">
+        <img className="  h-full object-cover " src={avatar} alt="class-avatar" />
+      </div>
+      <div className=" flex h-full flex-col justify-between px-2 py-1 pr-3">
+        <div className="text-sm capitalize">{subject}</div>
+        <div className=" flex flex-col justify-between text-sm capitalize text-text--secondery">
+          <span>{teacher.name}</span>
+          <span className=" text-xs">
+            {day} {formatLocalTime(startTime)}
+          </span>
+        </div>
+      </div>
+    </li>
+  );
+}
+
+function SelectedClasses() {
+  const { state, updateSelectedClassList } = useContext(StdTableContext);
+  return (
+    <ul className=" flex w-full flex-wrap gap-2">
+      {state.selectedClassList?.map((classData) => {
+        return (
+          <div className=" bg-hilight-1 flex gap-2 rounded pr-2" key={classData._id} onClick={null}>
+            <ClassItem
+              className=" cursor-default border-none hover:scale-100"
+              classData={classData}
+            />
+            <div className="flex items-center">
+              <button
+                onClick={() => updateSelectedClassList('remove', classData)}
+                className=" material-symbols-outlined scale-90 rounded-full 
+                bg-bg--primary-200 p-2 transition-all duration-150 hover:scale-[1.02]"
+              >
+                close
+              </button>
+            </div>
+          </div>
+        );
+      })}
+    </ul>
+  );
 }
 
 function DaysHeder() {
@@ -775,6 +923,26 @@ function Table() {
     if (appSetingsIsSuccess) updateStatusOptions(data?.students.statusOptions || {});
   }, [appSetingsIsSuccess, data?.students.statusOptions]);
 
+  const rowsHtml = useMemo(() => {
+    return (
+      <DataLoader
+        data={students?.map((student, index) => {
+          const attendances = classAttendances
+            ?.filter(({ studentId }) => studentId === student._id)
+            .map(({ date, isPresent }) => {
+              return {
+                date: new Date(date).getDate().toString().padStart(2, '0'),
+                isPresent,
+              };
+            });
+          return <TableRow key={student.studentId} student={{ ...student, index, attendances }} />;
+        })}
+        isLoading={isLoading}
+        error={error}
+        options={{ colSpan: '7' }}
+      />
+    );
+  }, [classAttendances, error, isLoading, students]);
   if (students?.length < 1) {
     return '';
   }
@@ -808,26 +976,7 @@ function Table() {
               <th className="py-2 text-start"></th>
             </tr>
           </thead>
-          <tbody className=" divide-y divide-bg--primary-100">
-            <DataLoader
-              data={students?.map((student, index) => {
-                const attendances = classAttendances
-                  ?.filter(({ studentId }) => studentId === student._id)
-                  .map(({ date, isPresent }) => {
-                    return {
-                      date: new Date(date).getDate().toString().padStart(2, '0'),
-                      isPresent,
-                    };
-                  });
-                return (
-                  <TableRow key={student.studentId} student={{ ...student, index, attendances }} />
-                );
-              })}
-              isLoading={isLoading}
-              error={error}
-              options={{ colSpan: '7' }}
-            />
-          </tbody>
+          <tbody className=" divide-y divide-bg--primary-100">{rowsHtml}</tbody>
         </table>
       </div>
       <div className="h-4 w-full rounded-b bg-bg--primary-200"></div>
@@ -855,61 +1004,26 @@ function DaysChexboxes({ id, attendances }) {
 }
 
 function TableRow({ student }) {
-  const theam = useOColor();
+  const {
+    ref1,
+    isEditing,
+    setIsEditing,
+    formState,
+    setFormState,
+    isSelected,
+    onStatusHandler,
+    onSubmitHandler,
+    onAddhandler,
+    onRemoveHandler,
+    onSelectHandler,
+    isUpdating,
+    isDeleting,
+    state,
+  } = useStudentRow(student);
+
   const { name, phone, status, studentId, attendances, index, _id } = student;
-  const { updateSelectedList, state } = useContext(StdTableContext);
-  const { isUpdating, isSuccess, mutate } = useUpdateStudent();
-  const [isEditing, setIsEditing] = useState();
-  const { mutate: hide, isPending: isDeleting } = useHide('students');
-  const [formState, setFormState] = useState({ name, phone });
-  const [isSelected, setIsSelected] = useState();
-  const ref1 = useRef();
-
-  useEffect(() => {
-    setIsSelected(state.selectedList?.includes(_id));
-  }, [state.selectedList, _id]);
-
-  useEffect(() => {
-    if (isEditing) ref1.current.focus();
-  }, [isEditing]);
-
-  useEffect(() => {
-    if (isSuccess) setIsEditing(false);
-  }, [isSuccess]);
-
-  function onStatusHandler(selected) {
-    mutate({ studentId: _id, newData: { status: selected } });
-  }
-  function onSubmitHandler() {
-    mutate({
-      studentId: _id,
-      newData: {
-        name: formState.name,
-        phone: formState.phone,
-      },
-    });
-  }
-
-  function onAddhandler() {
-    updateSelectedList('add', _id);
-  }
-
-  function onRemoveHandler() {
-    updateSelectedList('remove', _id);
-  }
-
-  function onSelectHandler(selected) {
-    if (selected === 'update') {
-      setIsEditing(!isEditing);
-    }
-
-    if (selected === 'delete') {
-      hide({ endPoit: 'students/hide', idList: [_id] });
-    }
-  }
-
   const stdStatus = state.statusOptions?.find(({ option }) => option === status);
-  const bgColor = isSelected ? (theam ? 'bg-black/10' : 'bg-blue-50') : '';
+  const bgColor = isSelected ? 'bg-hilight-1' : null;
   return (
     <tr className={`text-sm ${bgColor} `}>
       <td className="relative px-4">
@@ -991,11 +1105,16 @@ function TableRow({ student }) {
           </div>
         </div>
       </td>
+
       <td className="w-1">
         <div className=" flex w-24 items-center justify-between">
           {!isEditing ? (
             <SelectItem
-              btn="more_vert"
+              btn={
+                <span className=" material-symbols-outlined flex scale-[80%] items-center">
+                  more_vert
+                </span>
+              }
               disabled={isUpdating || isDeleting}
               onClick={onSelectHandler}
               items={[
@@ -1007,7 +1126,7 @@ function TableRow({ student }) {
             <Button onClick={onSubmitHandler} type="sm" label="SAVE" />
           )}
           {!isEditing ? (
-            <HoverInfo student={student} />
+            <Info student={student} />
           ) : (
             <button
               onClick={() => {
@@ -1025,80 +1144,39 @@ function TableRow({ student }) {
   );
 }
 
-function HoverInfo({ student }) {
-  const inforef = useRef();
+function Info({ student }) {
   const { studentId, status, statusChangedAt, createdAt } = student;
-  const [tooltipData, setTooltipData] = useState(null);
-
-  function showTooltip(event, student) {
-    const rect = event.target.getBoundingClientRect();
-    setTooltipData({
-      student,
-      position: {
-        top: rect.top + window.scrollY + rect.height,
-        left: rect.left + window.scrollX + rect.width,
-      },
-    });
-  }
-
-  useEffect(() => {
-    const ref = inforef.current;
-
-    function callback1(event) {
-      showTooltip(event, student);
-    }
-
-    function callback2() {
-      setTooltipData(null);
-    }
-    ref.addEventListener('mouseenter', callback1);
-    ref.addEventListener('mouseleave', callback2);
-    return () => {
-      ref.removeEventListener('mouseenter', callback1);
-      ref.removeEventListener('mouseleave', callback2);
-    };
-  }, [student]);
-
   return (
-    <div className=" ">
-      <button
-        ref={inforef}
-        className=" material-symbols-outlined mr-2  px-1 text-xl font-light text-text--muted"
-      >
-        help
-      </button>
-
-      {tooltipData && (
-        <Tooltip position={tooltipData.position}>
-          <div
-            className="absolute right-4 z-20  w-60  max-w-56 rounded bg-bg--primary-500 
-             p-4 text-sm text-text--primary"
-          >
-            <div className=" flex flex-col leading-loose">
-              <div className="flex justify-between">
-                <p className="basis-[60%]">Student ID</p>:{' '}
-                <p className="w-full pl-2"> {studentId}</p>
-              </div>
-              <div className="flex justify-between">
-                <p className=" basis-[60%]">Joined</p>:
-                <p className="w-full pl-2">{new Date(createdAt).toLocaleDateString()}</p>{' '}
-              </div>
-              <div className="flex  justify-between">
-                <p className="basis-[60%]">Status</p>:
-                <p className="w-full pl-2 capitalize"> {status}</p>
-              </div>
-              <div className="flex  justify-between">
-                <p className="basis-[60%] ">Status At</p>:{' '}
-                <p className="w-full pl-2">
-                  {' '}
-                  {statusChangedAt ? new Date(statusChangedAt).toLocaleString() : '----------'}
-                </p>
-              </div>
+    <HoverInfo>
+      <HoverInfo.Icon>
+        <span className=" material-symbols-outlined z-40 mr-2 cursor-default px-1 text-xl font-light text-text--muted">
+          help
+        </span>
+      </HoverInfo.Icon>
+      <HoverInfo.Content>
+        <div className="absolute right-4 z-20  w-60  max-w-56 rounded bg-bg--primary-500 p-4 text-sm text-text--primary">
+          <div className=" flex flex-col leading-loose">
+            <div className="flex justify-between">
+              <p className="basis-[60%]">Student ID</p>: <p className="w-full pl-2"> {studentId}</p>
+            </div>
+            <div className="flex justify-between">
+              <p className=" basis-[60%]">Joined</p>:
+              <p className="w-full pl-2">{new Date(createdAt).toLocaleDateString()}</p>{' '}
+            </div>
+            <div className="flex  justify-between">
+              <p className="basis-[60%]">Status</p>:
+              <p className="w-full pl-2 capitalize"> {status}</p>
+            </div>
+            <div className="flex  justify-between">
+              <p className="basis-[60%] ">Status At</p>:{' '}
+              <p className="w-full pl-2">
+                {statusChangedAt ? new Date(statusChangedAt).toLocaleString() : '----------'}
+              </p>
             </div>
           </div>
-        </Tooltip>
-      )}
-    </div>
+        </div>
+      </HoverInfo.Content>
+    </HoverInfo>
   );
 }
 
@@ -1128,41 +1206,43 @@ function StatusForm() {
     <Form
       onSubmit={handleSubmit(onSubmit)}
       control={control}
-      className=" flex items-center justify-between border-b border-t border-bg--primary-100 px-2 py-2"
+      className=" flex flex-col gap-2 border-t border-bg--primary-100 px-2 py-2"
     >
-      <div className=" flex flex-wrap items-start gap-2">
-        <AddStatus />
-        <Button onClick={onDefault} variant="outline" size="sm" label="Default" />
-        {state.tempStatusList.map((option) => (
-          <StatusOption
-            control={control}
-            getValues={getValues}
-            key={option.option}
-            option={option}
-          />
-        ))}
-      </div>
+      <div className=" pl-1 text-sm uppercase text-text--secondery">Edit payment labels</div>
+      <div className=" flex justify-between ">
+        <div className=" flex flex-wrap items-start gap-2">
+          <AddStatus />
+          <Button onClick={onDefault} variant="outline" size="sm" label="Default" />
+          {state.tempStatusList.map((option) => (
+            <StatusOption
+              control={control}
+              getValues={getValues}
+              key={option.option}
+              option={option}
+            />
+          ))}
+        </div>
 
-      <div className=" flex items-center gap-3 ">
-        <Button spinner={isPending} type="primary" label="SUBMIT" />
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            updateStatusForm(false);
-          }}
-          className=" material-symbols-outlined flex aspect-square h-8 
+        <div className=" flex items-center gap-3 ">
+          <Button spinner={isPending} type="primary" label="SUBMIT" />
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              updateStatusForm(false);
+            }}
+            className=" material-symbols-outlined flex aspect-square h-8 
           items-center justify-center rounded-full bg-bg--primary-300 text-lg"
-        >
-          close
-        </button>
+          >
+            close
+          </button>
+        </div>
       </div>
     </Form>
   );
 }
 
 function StdForm1() {
-  const { id } = useParams();
-  const { updateFormState, state } = useContext(StdTableContext);
+  const { updateFormState, state, selectedClassList } = useContext(StdTableContext);
   const { isPending, mutate } = useCreateStudent();
   const { setValue, setFocus, watch, handleSubmit, register, control } = useForm();
 
@@ -1171,9 +1251,10 @@ function StdForm1() {
   }, [setFocus, state.addFormIsOpen]);
 
   function onSubmit(data) {
-    if (!id) return;
+    const classId = state.selectedClassList.map(({ _id }) => _id);
+    if (!classId.length) return;
     mutate(
-      { ...data, classId: id },
+      { ...data, classId },
       {
         onSettled: () => {
           setValue('name', '');
@@ -1189,23 +1270,24 @@ function StdForm1() {
     <Form
       onSubmit={handleSubmit(onSubmit)}
       control={control}
-      className=" flex items-center justify-between border-b border-t border-bg--primary-100 px-2 py-2"
+      className=" flex items-center justify-between border-b border-t border-bg--primary-100 px-2 py-4"
     >
       {' '}
-      <div>
+      <div className=" flex flex-col gap-2">
+        <div className=" pl-1 text-sm uppercase text-text--secondery">Add Student</div>
         <div className=" flex items-end gap-2">
           <input
             {...register('name')}
             name="name"
             placeholder="Name"
-            className="rounded border border-border-2 bg-bg--primary-200 px-4 py-2 text-sm outline-none"
+            className="rounded border border-border-2 bg-bg--primary-200 px-4 py-2 outline-none"
             type="text"
           />
           <input
             {...register('phone')}
             name="phone"
             placeholder="Phone"
-            className="  rounded border border-border-2 bg-bg--primary-200 px-4 py-2 text-sm outline-none"
+            className="  rounded border border-border-2 bg-bg--primary-200 px-4 py-2 outline-none"
             type="text"
           />
           {watch('sendQr_gmail') && (
@@ -1213,7 +1295,7 @@ function StdForm1() {
               {...register('gmail')}
               name="gmail"
               placeholder="Gmail"
-              className="rounded border border-border-2 bg-bg--primary-200 px-4 py-2 text-sm outline-none"
+              className="rounded border border-border-2 bg-bg--primary-200 px-4 py-2  outline-none"
               type="email"
             />
           )}
@@ -1259,7 +1341,9 @@ function StdForm1() {
             className="hidden"
           />
         </div>
-        <div></div>
+        <div>
+          <SelectedClasses />
+        </div>
       </div>
       <div className=" flex items-center gap-3 ">
         <Button spinner={isPending} disabled={isPending} type="primary" label="SUBMIT" />

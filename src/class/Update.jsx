@@ -95,7 +95,7 @@ function Update() {
                     data={subjects}
                     isLoading={subjectsIsloading}
                     showValue={false}
-                    valueName="subjectName"
+                    valueName="itemName"
                   />
                 </div>
               </div>
@@ -117,7 +117,7 @@ function Update() {
                     data={grades}
                     isLoading={gradesIsloading}
                     showValue={false}
-                    valueName="gradeName"
+                    valueName="itemName"
                   />
                 </div>
               </div>
@@ -139,7 +139,7 @@ function Update() {
                     data={halls}
                     isLoading={hallsIsloading}
                     showValue={false}
-                    valueName="hallName"
+                    valueName="itemName"
                   />
                 </div>
               </div>

@@ -12,10 +12,8 @@ export default function useClasses(options) {
   const {queryParams} = useSelector((store)=>store.class)
   
   useEffect(()=>{
-    if(options?.query || location.search){
       let query = options?.query || location.search
      dispatch(setQueryParams(query)) 
-    }
   },[dispatch, location.search, options?.query])
  
 

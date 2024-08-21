@@ -138,7 +138,11 @@ function CardItem({ classData }) {
       <div className="absolute right-2 top-2">
         <SelectItem
           disabled={isDeleting}
-          btn="more_vert"
+          btn={
+            <span className=" material-symbols-outlined flex scale-[80%] items-center">
+              more_vert
+            </span>
+          }
           buttonType="xsSecondery"
           onClick={onSelectHandler}
           items={[
