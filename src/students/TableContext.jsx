@@ -66,7 +66,13 @@ const reducer = (state, action) => {
       return { ...state, classData: action.payload };
 
     case SET_ADD_FORM_STATE:
-      return { ...state, addFormIsOpen: action.payload, selectedList: [] };
+      return {
+        ...state,
+        selectedList: [],
+        addClassIsOpen: false,
+        addFormIsOpen: action.payload,
+        selectedClassList: [],
+      };
 
     case SET_ADD_FORM_STATE2:
       return { ...state, statusFormIsOpen: action.payload };
@@ -87,22 +93,21 @@ const reducer = (state, action) => {
       if (action.payload.operation === 'add') {
         return {
           ...state,
-          selectedList: [...state.selectedList, action.payload.item],
           addFormIsOpen: false,
-          selectClassIsOpen: state.selectClassIsOpen ? true : false,
+          selectedList: [...state.selectedList, action.payload.item],
+          selectedClassList: [],
         };
       } else if (action.payload.operation === 'remove') {
         return {
           ...state,
           selectedList: state.selectedList.filter((item) => item !== action.payload.item),
-          selectClassIsOpen: state.selectedList.length <= 1 ? false : true,
-          selectedClassList: state.selectedList.length <= 1 ? [] : state.selectedClassList,
+          addClassIsOpen: state.selectedList.length <= 1 ? false : true,
         };
       } else if (action.payload.operation === 'clear') {
         return {
           ...state,
           selectedList: [],
-          selectClassIsOpen: false,
+          addClassIsOpen: false,
           selectedClassList: [],
         };
       } else if (action.payload.operation === 'addAll') {
