@@ -654,6 +654,7 @@ function TableNav() {
     updatePaginationQuery,
     updateFormState,
     updateSelectClassIsOpen,
+    updateSelectedList,
     state,
     updateStatusForm,
   } = useContext(StdTableContext);
@@ -666,6 +667,10 @@ function TableNav() {
     if (selected === 'payment labels') {
       updateStatusForm(!state.statusFormIsOpen);
     }
+  }
+  function onAddStudentHandler() {
+    updateFormState(true);
+    updateSelectClassIsOpen(true);
   }
   return (
     <div className=" flex items-end justify-between px-2">
@@ -680,14 +685,7 @@ function TableNav() {
           total={students}
         />
 
-        <Button
-          label="ADD STUDENT"
-          onClick={() => {
-            updateFormState(!state.addFormIsOpen);
-            updateSelectClassIsOpen(!state.selectClassIsOpen);
-          }}
-          size="sm"
-        />
+        <Button label="ADD STUDENT" onClick={onAddStudentHandler} size="sm" />
         <SelectItem
           btn={
             <span className="material-symbols-outlined mx-1 flex scale-95 items-end p-1 transition-all duration-100 active:rotate-90">
@@ -703,7 +701,8 @@ function TableNav() {
 }
 
 export function Operation() {
-  const { state, updateSelectedList, updateSelectClassIsOpen } = useContext(StdTableContext);
+  const { state, updateSelectedList, updateSelectClassIsOpen, updateAddClassIsOpen } =
+    useContext(StdTableContext);
   const { students } = useAllStudents([
     state.searchQuery,
     state.filterQuery,
@@ -724,6 +723,10 @@ export function Operation() {
   function onUnSelect() {
     updateSelectedList('clear');
   }
+  function onAddClass() {
+    updateSelectClassIsOpen(true);
+    updateAddClassIsOpen(true);
+  }
   if (!state.selectedList?.length > 0) return null;
   return (
     <div className="flex h-12 w-full items-center gap-1.5 px-4">
@@ -736,7 +739,7 @@ export function Operation() {
         variant="outline"
         disabled={isDeleting}
         icon="delete"
-        onClick={() => updateSelectClassIsOpen(!state.selectClassIsOpen)}
+        onClick={onAddClass}
         label="ADD CLASS"
       />
       <Button
@@ -765,13 +768,15 @@ export function Operation() {
 }
 
 function AddClassAlredyInStudents() {
-  const { state } = useContext(StdTableContext);
+  const { state, updateAddClassIsOpen } = useContext(StdTableContext);
   const { mutate, isPending } = useAddClass();
 
   function onAddClass() {
     const classId = state.selectedClassList.map(({ _id }) => _id);
     mutate({ studentIds: state.selectedList, newData: classId });
   }
+  if ((!state.addClassIsOpen && !state.selectedClassList.length) || state.addFormIsOpen)
+    return null;
   return (
     <div className=" p-2">
       <div className=" pl-1 text-sm uppercase text-text--secondery">Add class</div>
@@ -786,8 +791,9 @@ function AddClassAlredyInStudents() {
             label="SUBMIT"
           />
           <button
+            onClick={() => updateAddClassIsOpen(false)}
             className="material-symbols-outlined flex aspect-square h-8
-           items-center justify-center rounded-full bg-bg--primary-300 text-lg"
+            items-center justify-center rounded-full bg-bg--primary-300 text-lg"
           >
             close
           </button>
@@ -875,6 +881,7 @@ function ClassItem({ classData, className, onClick }) {
 
 function SelectedClasses() {
   const { state, updateSelectedClassList } = useContext(StdTableContext);
+
   return (
     <ul className=" flex w-full flex-wrap gap-2">
       {state.selectedClassList?.map((classData) => {

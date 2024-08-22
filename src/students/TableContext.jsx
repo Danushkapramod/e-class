@@ -11,6 +11,7 @@ const initialState = {
   addFormIsOpen: false,
   statusFormIsOpen: false,
   selectClassIsOpen: false,
+  addClassIsOpen: false,
   selectedList: [],
   selectedClassList: [],
   classData: {},
@@ -23,6 +24,7 @@ const SET_FILTER_QUERY = 'SET_FILTER_QUERY';
 const SET_PAGINATION_QUERY = 'SET_PAGINATION_QUERY';
 const SET_ADD_FORM_STATE = 'SET_ADD_FORM_STATE';
 const SET_ADD_FORM_STATE2 = 'SET_ADD_FORM_STATE2';
+const SET_ADD_CLASS_STATE = 'SET_ADD_CLASS_STATE';
 const SET_SELECT_CLASS_STATE = 'SET_SELECT_CLASS_STATE';
 const SET_SELECTD_LIST = 'SET_SELECTD_LIST';
 const SET_SELECTD_CLASS_LIST = 'SET_SELECTD_CLASS_LIST';
@@ -64,13 +66,16 @@ const reducer = (state, action) => {
       return { ...state, classData: action.payload };
 
     case SET_ADD_FORM_STATE:
-      return { ...state, addFormIsOpen: action.payload };
+      return { ...state, addFormIsOpen: action.payload, selectedList: [] };
 
     case SET_ADD_FORM_STATE2:
       return { ...state, statusFormIsOpen: action.payload };
 
     case SET_SELECT_CLASS_STATE:
       return { ...state, selectClassIsOpen: action.payload };
+
+    case SET_ADD_CLASS_STATE:
+      return { ...state, addClassIsOpen: action.payload };
 
     case SET_TOTAl_STD_ON_TABLE:
       return { ...state, totalStdOntable: action.payload };
@@ -80,14 +85,26 @@ const reducer = (state, action) => {
 
     case SET_SELECTD_LIST:
       if (action.payload.operation === 'add') {
-        return { ...state, selectedList: [...state.selectedList, action.payload.item] };
+        return {
+          ...state,
+          selectedList: [...state.selectedList, action.payload.item],
+          addFormIsOpen: false,
+          selectClassIsOpen: state.selectClassIsOpen ? true : false,
+        };
       } else if (action.payload.operation === 'remove') {
         return {
           ...state,
           selectedList: state.selectedList.filter((item) => item !== action.payload.item),
+          selectClassIsOpen: state.selectedList.length <= 1 ? false : true,
+          selectedClassList: state.selectedList.length <= 1 ? [] : state.selectedClassList,
         };
       } else if (action.payload.operation === 'clear') {
-        return { ...state, selectedList: [] };
+        return {
+          ...state,
+          selectedList: [],
+          selectClassIsOpen: false,
+          selectedClassList: [],
+        };
       } else if (action.payload.operation === 'addAll') {
         return { ...state, selectedList: action.payload.item };
       } else return state;
@@ -146,6 +163,9 @@ function TableProvider({ children }) {
   const updateSelectClassIsOpen = (state) => {
     dispatch({ type: SET_SELECT_CLASS_STATE, payload: state });
   };
+  const updateAddClassIsOpen = (state) => {
+    dispatch({ type: SET_ADD_CLASS_STATE, payload: state });
+  };
   const updateSelectedList = (operation, item) => {
     dispatch({ type: SET_SELECTD_LIST, payload: { operation, item } });
   };
@@ -171,6 +191,7 @@ function TableProvider({ children }) {
         updateStatusOptions,
         updateTempStatusList,
         updateSelectClassIsOpen,
+        updateAddClassIsOpen,
         setClassData,
       }}
     >

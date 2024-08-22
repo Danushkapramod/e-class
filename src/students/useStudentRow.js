@@ -10,7 +10,7 @@ export default function useStudentRow(student) {
     const [isSelected, setIsSelected] = useState(false);
     const ref1 = useRef();
   
-    const { updateSelectedList, state } = useContext(StdTableContext);
+    const { updateSelectedList, state} = useContext(StdTableContext);
     const { isUpdating, isSuccess, mutate } = useUpdateStudent();
     const { isDeleting, mutate: deleteStudent } = useDeleteStudent();
   
