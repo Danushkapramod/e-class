@@ -6,7 +6,6 @@ import useSetRoot from '../utils/setRoot';
 import useDeleteTeacher from './useDeleteTeacher';
 import useClasses from '../class/useClasses';
 import useTeachers from './useTeachers';
-import moment from 'moment/moment';
 import useDeleteClass from '../class/useDeleteClass';
 import DataLoader from '../ui/components/DataLoader';
 import { useMemo } from 'react';

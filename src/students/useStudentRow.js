@@ -2,6 +2,8 @@ import { useContext, useEffect, useRef, useState } from "react";
 import useUpdateStudent from "./useUpdateStudent";
 import useDeleteStudent from "./useDeleteStudent";
 import { StdTableContext } from "./TableContext";
+import { useParams } from "react-router-dom";
+import { useUpdateStatus } from "./useUpdateStatus";
 
 export default function useStudentRow(student) {
     const { _id, name, phone } = student;
@@ -10,9 +12,11 @@ export default function useStudentRow(student) {
     const [isSelected, setIsSelected] = useState(false);
     const ref1 = useRef();
   
+    const {id} = useParams()
     const { updateSelectedList, state} = useContext(StdTableContext);
     const { isUpdating, isSuccess, mutate } = useUpdateStudent();
     const { isDeleting, mutate: deleteStudent } = useDeleteStudent();
+    const {  mutate: updateStatus } = useUpdateStatus();
   
     useEffect(() => {
       setIsSelected(state.selectedList?.includes(_id));
@@ -27,7 +31,7 @@ export default function useStudentRow(student) {
     }, [isSuccess]);
   
     const onStatusHandler = (selected) => {
-      mutate({ studentId: _id, newData: { status: selected } });
+      updateStatus({ studentIds: [_id], newData: { status: selected },classId:id });
     };
   
     const onSubmitHandler = () => {

@@ -320,7 +320,7 @@ function TableRow({ student }) {
   } = useStudentRow(student);
 
   const { name, phone, class: classes, studentId, attendances, index, _id } = student;
-  const status = classes.find((classData) => classData.classId === state.classData._id).status;
+  const status = classes?.find((classData) => classData.classId === state.classData._id)?.status;
   const stdStatus = state.statusOptions?.find(({ option }) => option === status);
   const bgColor = isSelected ? 'bg-hilight-1' : null;
   return (

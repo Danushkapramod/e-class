@@ -42,6 +42,14 @@ export const updateManyStudent = axiousWrapper(({studentIds, newData })=>{
      timeout:10000
     });
 })
+
+export const updateStatus = axiousWrapper((newData)=>{
+  return axios.post(`${BASE_URL}/students/updateStatus`,newData,{
+     withCredentials:true,
+     timeout:10000
+    });
+})
+
 export const updateManyStudentClass = axiousWrapper(({studentIds, newData })=>{
   return axios.post(`${BASE_URL}/students/updateMany/classes`,{studentIds, newData },{
      withCredentials:true,

@@ -53,8 +53,7 @@ export const updateUserAvatar = axiousWrapper((newData)=>{
 
 export const updateAuther = axiousWrapper(async (newData)=>{
     return axios.patch(`${BASE_URL}/users/me/update`,newData,
-      { withCredentials: true,
-      },
+      { withCredentials: true },
     );
 })
 export const updateAppSetings = axiousWrapper(async (newData)=>{
@@ -162,6 +161,7 @@ export const deletedMany = axiousWrapper(({endPoit,idList})=>{
        },
     );
 })
+
 
 // function formDataToObject(formData) {
 //   const obj = {};
