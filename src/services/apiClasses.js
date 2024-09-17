@@ -2,15 +2,25 @@ import axios from "axios";
 import { BASE_URL } from "./apiData";
 import { axiousWrapper } from "../utils/wrappers";
 
+// export const getClasses = axiousWrapper(({signal,queryParams})=>{
+//    let query;
+//     queryParams ? (query = `&${queryParams.split("?")[1]}`) : (query = "");
+//     return axios.get(`${BASE_URL}/classes?teacher=true${query}`,{
+//       withCredentials:true,
+//       timeout:6000,
+//       signal
+//     });
+// })
+
 export const getClasses = axiousWrapper(({signal,queryParams})=>{
-   let query;
-    queryParams ? (query = `&${queryParams.split("?")[1]}`) : (query = "");
-    return axios.get(`${BASE_URL}/classes?teacher=true${query}`,{
-      withCredentials:true,
-      timeout:6000,
-      signal
-    });
+   return axios.get(`${BASE_URL}/classes`,{
+     params: { teacher: true, ...queryParams },
+     withCredentials:true,
+     timeout:6000,
+     signal
+   });
 })
+
 
 export const getClassesWithoutTeacher = axiousWrapper(({signal,queryParams})=>{
   let query;

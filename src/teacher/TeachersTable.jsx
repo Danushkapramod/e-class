@@ -6,21 +6,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import AppNav from '../ui/layouts/AppNav';
 import { setTableView } from './teacherSlice';
 import useClientSearch from '../hooks/useClientSearch';
-import { getTeachersCount } from '../services/apiTeachers';
-import Pagination from '../ui/components/Pagination';
 import { Button } from '../ui/components/ButtonNew';
 import DataLoader from '../ui/components/DataLoader';
 import DeleteConfirmation from '../ui/components/DeleteConfirmation';
 import { setDeleteConfirmation } from '../GlobalUiState';
 import useHide from '../user/useHide';
-import { useQuery } from '@tanstack/react-query';
 
 function TeachersTable() {
   useSetRoot('');
-  const { data: teachersTotal } = useQuery({
-    queryKey: ['teachersCount'],
-    queryFn: () => getTeachersCount(),
-  });
+
   const { tableView } = useSelector((store) => store.teacher);
   const { teachers: data, isLoading, error } = useTeachers();
   const { searchResults: teachers, setQuery } = useClientSearch(data, {
@@ -75,9 +69,6 @@ function TeachersTable() {
           </table>
         </div>
       )}
-      <div className="mb-10 mt-2 flex w-full flex-col items-center justify-center">
-        <Pagination total={teachersTotal} />
-      </div>
     </>
   );
 }

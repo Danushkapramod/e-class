@@ -1,4 +1,3 @@
-import useClasses from '../class/useClasses';
 import ButtonList from '../ui/components/ButtonList';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -8,17 +7,25 @@ import SelectItem from '../ui/components/SelectItem';
 import { useNavigate } from 'react-router-dom';
 import { formatLocalTime } from '../utils/formateDates&Times';
 import DataLoader from '../ui/components/DataLoader';
+import { useQuery } from '@tanstack/react-query';
+import { getClasses } from '../services/apiClasses';
 
 const daysOfWeek = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
 function TodayClasses() {
   const dispatch = useDispatch();
-
   const [newClassesArray, setNwClassesArray] = useState([]);
-  const { classes, isLoading, error } = useClasses({
-    query: `?day=${daysOfWeek[new Date().getDay()]}`,
-    teacher: false,
+
+  const {
+    data: classes,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ['classes', daysOfWeek[new Date().getDay()]],
+    queryFn: ({ signal }) =>
+      getClasses({ signal, queryParams: { day: daysOfWeek[new Date().getDay()] } }),
   });
+
   dispatch(todayTotal(classes?.length));
 
   const [status, setStatus] = useState('all');
