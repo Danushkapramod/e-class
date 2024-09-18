@@ -1,11 +1,11 @@
 
-import { getAllStudents, getStudents } from "../services/apiStudents";
+import { getAllStudents, getStudents, getStudentsCount } from "../services/apiStudents";
 import useBackendSearch from "../hooks/useBackendSearch";
-import { useCallback, useContext, useEffect} from "react";
+import { useCallback, useContext, useEffect, useMemo, useState} from "react";
 import { StdTableContext } from './TableContext';
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { setPaginationQuery } from "./studentSlice";
+import { useQuery } from "@tanstack/react-query";
 
 export function useAllStudents() {
   const dispatch = useDispatch(); 
@@ -25,23 +25,16 @@ export function useAllStudents() {
 
 export function useStudentsInTeacher() {
   const { id: classId } = useParams();
-  const dispatch = useDispatch() 
-  const{state} = useContext(StdTableContext);
-  const {paginationQuery} = useSelector((store)=>store.student) 
-  
-  const query = [paginationQuery, state.filterQuery, state.searchQuery]
-  .filter((query)=> (query.split('=')[1] !== 'undefined') && query !== '' ).join('&')
-  
-  useEffect(()=>{
-    if(state.paginationQuery){
-      dispatch(setPaginationQuery(state.paginationQuery)) 
-    }
-  },[dispatch, state.paginationQuery])
+  const{ state } = useContext(StdTableContext);
 
-  const {data:students,isLoading,isSuccess, error}= useBackendSearch({
-    queryFn:getStudents,
-    queryKey:['students',classId,query],
-    query:{query:query,classId}
+  const query = useMemo(()=>{ return {
+    ...state.filterQuery, ...state.searchQuery, ...state.paginationQuery}}
+    ,[state]
+  )
+
+  const {data: students, isLoading,isSuccess, error} =  useQuery({
+    queryKey: ['students',classId, query],
+    queryFn:({signal})=> getStudents({query,classId, signal})
   })
   return { students, isSuccess, isLoading, error };
 }

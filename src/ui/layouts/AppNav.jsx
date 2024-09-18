@@ -1,35 +1,21 @@
-import { useDispatch } from 'react-redux';
-import { ClassFilter, ClassSearch, ClassSort } from '../../class/ClassTableOperations';
-import { TeacherFilter, TeacherSearch } from '../../teacher/TeacherTableOperations';
-import { Button } from '../components/ButtonNew';
-
-function AppNav({ type, tableView, setTableView, onChange }) {
-  const dispatch = useDispatch();
-  let Filter, view;
-  if (type === 'class') Filter = ClassFilter;
-  if (type === 'teacher') Filter = TeacherFilter;
-
-  if (tableView === 'card') view = 'grid_view';
-  if (tableView === 'list') view = 'format_list_bulleted';
-
-  function handleView() {
-    if (tableView === 'list') dispatch(setTableView('card'));
-    if (tableView === 'card') dispatch(setTableView('list'));
-  }
+function AppNav({ children }) {
   return (
     <div
-      className=" z-40 mt-2 flex items-center justify-between rounded border border-border-1 
+      className="z-40 mt-2 flex items-center rounded border border-border-1 
       bg-bg--primary-200 px-[6px] py-[5px] text-text--primary shadow-neumorphism"
     >
-      {type === 'class' ? <ClassSearch /> : <TeacherSearch />}
-      <div className="flex items-center gap-2">
-        <Filter />
-        {type === 'class' && <ClassSort />}
-
-        <Button onClick={handleView} variant="outline" size="sm" icon={view} />
-      </div>
+      {children}
     </div>
   );
 }
+
+function Right({ children }) {
+  return <div className="flex w-full justify-end gap-2">{children}</div>;
+}
+function Left({ children }) {
+  return <div className="flex w-full justify-start gap-2">{children}</div>;
+}
+AppNav.Right = Right;
+AppNav.Left = Left;
 
 export default AppNav;

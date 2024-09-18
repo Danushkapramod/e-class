@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 
-function Pagination({ limit = 20, getTotal, url = true, set, type, total }) {
-  const pageLimit = limit;
+function Pagination({ limit = 2, getTotal, url = true, set, type, total }) {
+  const pageLimit = 2;
   const location = useLocation();
   const newParams = useMemo(() => new URLSearchParams(location.search), [location]);
 

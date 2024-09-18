@@ -9,7 +9,7 @@ const initialState = {
   todayUpcoming: 0,
   todayStarted: 0,
   todayEnded: 0,
-  queryParams:''
+  pagginationQuery: {}
 };
 
 const classSlice = createSlice({
@@ -19,8 +19,8 @@ const classSlice = createSlice({
     totalClasses(state, action) {
       state.totalClasses = action.payload;
     },
-    setQueryParams(state, action) {
-      state.queryParams = action.payload;
+    setPagginationQuery(state, action) {
+      state.pagginationQuery = action.payload;
     },
     setTableView(state, action) {
       state.tableView = action.payload;
@@ -58,5 +58,5 @@ export let {
   todayStarted,
   todayUpcoming,
   totalClasses,
-  setQueryParams
+  setPagginationQuery
 } = classSlice.actions;

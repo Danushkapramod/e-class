@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Select from './Select';
 import PropTypes from 'prop-types';
 import { useSearchParams } from 'react-router-dom';
+import { debounce } from 'lodash';
 
 Search.propTypes = {
   setFn: PropTypes.func,
@@ -25,6 +26,11 @@ export function Search({ url, searchFields, setFn, inputComp, initialSearchBy })
   const [_, setParams] = useSearchParams();
   const params = useMemo(() => new URLSearchParams(), []);
 
+  const setQueryParams = debounce(() => {
+    if (url) setParams(params.toString());
+    if (setFn) setFn(Object.fromEntries(params.entries()));
+  }, 500);
+
   useEffect(() => {
     if (!search) {
       params.delete('search');
@@ -33,13 +39,10 @@ export function Search({ url, searchFields, setFn, inputComp, initialSearchBy })
       params.set('search', search);
       params.set('field', searchBy);
     }
-  }, [search, params, searchBy]);
-
-  useEffect(() => {
-    if (url) setParams(params.toString());
-    if (setFn) setFn(params.toString());
+    setQueryParams();
+    return () => setQueryParams.cancel();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params, search]);
+  }, [search, params, searchBy]);
 
   return (
     <div className=" relative flex items-center rounded border border-border-2">

@@ -14,7 +14,7 @@ import { axiousWrapper } from "../utils/wrappers";
 
 export const getClasses = axiousWrapper(({signal,queryParams})=>{
    return axios.get(`${BASE_URL}/classes`,{
-     params: { teacher: true, ...queryParams },
+     params: queryParams,
      withCredentials:true,
      timeout:6000,
      signal

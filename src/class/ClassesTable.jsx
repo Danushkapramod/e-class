@@ -2,10 +2,8 @@ import useClasses from './useClasses';
 import SelectItem from '../ui/components/SelectItem';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { setTableView } from './classSlice';
+import { setPagginationQuery, setTableView } from './classSlice';
 import AppNav from '../ui/layouts/AppNav';
-import useClientSearch from '../hooks/useClientSearch';
-import Pagination from '../ui/components/Pagination';
 import { getClassesCount } from '../services/apiClasses';
 import { useEffect, useRef } from 'react';
 import { Button } from '../ui/components/ButtonNew';
@@ -16,30 +14,22 @@ import { setDeleteConfirmation } from '../GlobalUiState';
 import Exports from '../ui/components/Exports';
 import useHide from '../user/useHide';
 import { useQuery } from '@tanstack/react-query';
+import { ClassFilter, ClassSearch, ClassSort } from './ClassTableOperations';
+import usePagginationNew from '../ui/hookComponents/usePagginationNew';
+import PagginationNew from '../ui/components/PagginationNew';
 
 export default function ClassesTable() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { data: classesCount } = useQuery({
-    queryKey: ['classesCount'],
-    queryFn: () => getClassesCount(),
-  });
+
   const { isCreateClassOpen, tableView } = useSelector((store) => store.class);
-  const { classes: data, isLoading, error } = useClasses({ teacher: true });
+  const { classes, isLoading, error } = useClasses({ teacher: true });
 
   useEffect(() => {
     if (!isCreateClassOpen) return;
     navigate('new');
   }, [isCreateClassOpen, navigate]);
 
-  const { searchResults: classes, setQuery } = useClientSearch(data, {
-    type: 'obj',
-    valueName: 'subject',
-  });
-
-  function setSearchQuery(e) {
-    setQuery(e.target.value.trim());
-  }
   return (
     <>
       <div className="flex items-center justify-between">
@@ -53,12 +43,7 @@ export default function ClassesTable() {
           <Button to="new" icon="add" label="ADD CLASS" />
         </div>
       </div>
-      <AppNav
-        type="class"
-        setTableView={setTableView}
-        tableView={tableView}
-        onChange={setSearchQuery}
-      />
+      <Nav />
       {tableView === 'card' ? (
         <div className=" mt-2 grid grow grid-cols-[repeat(auto-fill,minmax(13rem,1fr))] gap-2  rounded ">
           <DataLoader
@@ -98,10 +83,49 @@ export default function ClassesTable() {
           </table>
         </div>
       )}
-      <div className=" mb-10 mt-2 flex w-full flex-col items-center justify-center">
-        <Pagination total={classesCount} />
-      </div>
     </>
+  );
+}
+
+function Nav() {
+  const dispatch = useDispatch();
+  const { tableView } = useSelector((store) => store.class);
+  const { setPage, page, limit, setLimit } = usePagginationNew({
+    setFun: (query) => dispatch(setPagginationQuery(query)),
+  });
+
+  const { data: classesCount } = useQuery({
+    queryKey: ['classesCount'],
+    queryFn: () => getClassesCount(),
+  });
+
+  function handleView() {
+    if (tableView === 'list') dispatch(setTableView('card'));
+    if (tableView === 'card') dispatch(setTableView('list'));
+  }
+  return (
+    <AppNav>
+      <AppNav.Left>
+        <ClassSearch />
+      </AppNav.Left>
+      <AppNav.Right>
+        <PagginationNew
+          setPage={setPage}
+          page={page}
+          setLimit={setLimit}
+          limit={limit}
+          total={classesCount}
+        />
+        <ClassFilter />
+        <ClassSort />
+        <Button
+          onClick={handleView}
+          variant="outline"
+          size="sm"
+          icon={tableView === 'list' ? 'format_list_bulleted' : 'grid_view'}
+        />
+      </AppNav.Right>
+    </AppNav>
   );
 }
 
@@ -191,7 +215,6 @@ function TableRow({ classData }) {
   const { _id, teacher, subject, avatar, hall, startTime, grade, day } = classData;
 
   const handleDelete = () => {
-    // mutate(_id);
     hide({ endPoit: 'classes/hide', idList: [deleteConfirmation] });
     dispatch(setDeleteConfirmation(null));
   };
@@ -248,82 +271,3 @@ function TableRow({ classData }) {
     </>
   );
 }
-
-// function CardItem1({ classData }) {
-//   const navigate = useNavigate();
-//   const { isDeleting, mutate } = useDeleteClass();
-
-//   const {
-//     _id,
-//     teacher,
-//     subject,
-//     avatar,
-//     hall,
-//     startTime,
-//     grade,
-//     day,
-//   } = classData;
-
-//   function onSelectHandler(e) {
-//     if (selected === "update") {
-//       navigate(`/app/classes/${_id}/update`);
-//     }
-//     if (selected === "view") {
-//       navigate(`/app/classes/${_id}`);
-//     }
-//     if (selected === "delete") {
-//       mutate(_id);
-//     }
-//   }
-//   const formatedstartTime = moment
-//     .tz(`2000-01-01T${startTime}Z`, "Asia")
-//     .format("hh:mm A");
-
-//   return (
-//     <div
-//       className=" relative m-1 flex  flex-grow flex-col
-//                    items-center justify-center rounded border border-b-[3px]  border-slate-700
-//                  border-b-blue-600 bg-dark-secondery  shadow-md "
-//     >
-//       <div className="  absolute right-2 top-2">
-//         <SelectItem
-//           disabled={isDeleting}
-//           buttonType="xsSecondery"
-//           bg="bg-neutral-900"
-//           onClick={onSelectHandler}
-//           items={[
-//             ["update", "edit"],
-//             ["delete", "delete"],
-//             ["view", "wysiwyg"],
-//           ]}
-//         />
-//       </div>
-
-//       <div className="relative ">
-//         <div
-//           className="  flex  h-32 w-full  items-center justify-center overflow-hidden
-//        rounded-t  object-cover  object-center
-//        "
-//         >
-//           <img className=" w-full opacity-80 " src={avatar} alt="image" />
-//         </div>
-//         <div
-//           className="absolute bottom-0  flex h-8 w-full items-center  bg-black/50
-//         px-4  backdrop-blur "
-//         >
-//           <p className=" line-clamp-1 text-lg  capitalize ">{subject}</p>
-//         </div>
-//       </div>
-
-//       <div className=" flex w-full  flex-col items-start px-4  py-3 text-center opacity-70  ">
-//         <p className=" flex items-center">{teacher}</p>
-//         <p className="text-sm">Grade {grade}</p>
-//         <p className="text-sm">{hall}</p>
-
-//         <p className=" text-sm">
-//           {day} {formatedstartTime}
-//         </p>
-//       </div>
-//     </div>
-//   );
-// }

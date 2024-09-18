@@ -1,21 +1,15 @@
 import { useContext, useEffect } from 'react';
-import { Form, useParams } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
 import { Button } from '../ui/components/ButtonNew';
 import DataLoader from '../ui/components/DataLoader';
 import Exports from '../ui/components/Exports';
-import Pagination from '../ui/components/Pagination';
 import SelectItem from '../ui/components/SelectItem';
 import { StdTableContext, TableProvider } from './TableContext';
 import { StudentFilter, StudentSearch } from './StudentTableOperations';
-import useCreateStudent from './useCreateStudent';
-import { useUpdateManyStudents } from './useUpdateStudent';
 import { useStudentsInTeacher } from './useStudents';
 import Checkbox from '../ui/components/Checkbox';
 import useAppSetings from '../user/useAppSetings';
 import useHide from '../user/useHide';
 import { useQuery } from '@tanstack/react-query';
-import { getOptionsCount } from '../services/apiOptions';
 import { getSpecificDaysInMonth } from '../utils/formateDates&Times';
 import useAttendances from './useAttendances';
 import useClasses from '../class/useClasses';
@@ -24,6 +18,11 @@ import toast from 'react-hot-toast';
 import { CircleSpinner } from 'react-spinners-kit';
 import useStudentRow from './useStudentRow';
 import HoverInfo from '../ui/components/HoverInfo';
+import { getStudentsCount } from '../services/apiStudents';
+import PagginationNew from '../ui/components/PagginationNew';
+import usePagginationNew from '../ui/hookComponents/usePagginationNew';
+import { useParams } from 'react-router-dom';
+import { useUpdateStatus } from './useUpdateStatus';
 
 export default function StudentTable() {
   return (
@@ -31,7 +30,6 @@ export default function StudentTable() {
       <div className="flex min-w-[40rem] grow flex-col text-text--primary shadow-md">
         <div className="flex flex-col gap-2 rounded-t bg-bg--primary-200 pb-2 pt-3">
           <TableNav />
-          <StdForm />
           <Operation />
         </div>
         <Table />
@@ -42,8 +40,13 @@ export default function StudentTable() {
 
 function TableNav() {
   const { id } = useParams();
-  const { state, updateFormState, updatePaginationQuery, setClassData } =
-    useContext(StdTableContext);
+  const { data: studentsCount } = useQuery({
+    queryKey: ['studentCount', id],
+    queryFn: () => getStudentsCount(id),
+  });
+
+  const { setClassData, updatePaginationQuery } = useContext(StdTableContext);
+  const { page, limit, setPage } = usePagginationNew({ setFun: updatePaginationQuery });
   const { classes } = useClasses();
   const classData = classes?.find((classData) => classData._id === id);
 
@@ -52,11 +55,6 @@ function TableNav() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [classData, classes]);
 
-  const { data: students } = useQuery({
-    queryKey: ['studentsCount'],
-    queryFn: () => getOptionsCount('student'),
-  });
-
   return (
     <div className=" flex items-end justify-between px-2">
       <div className=" flex items-end gap-4">
@@ -64,13 +62,7 @@ function TableNav() {
         <div className=" text-sm">{new Date().toDateString()}</div>
       </div>
       <div className=" flex gap-2">
-        <Pagination
-          type="simple"
-          url={false}
-          limit={10}
-          set={updatePaginationQuery}
-          total={students}
-        />
+        <PagginationNew page={page} limit={limit} setPage={setPage} total={studentsCount} />
         <Exports
           classId={id}
           size="small"
@@ -83,11 +75,6 @@ function TableNav() {
           ]}
         />
         <StudentFilter />
-        <Button
-          label="ADD STUDENT"
-          onClick={() => updateFormState(!state.addFormIsOpen)}
-          size="sm"
-        />
       </div>
     </div>
   );
@@ -96,18 +83,19 @@ function TableNav() {
 export function Operation() {
   const { id: classId } = useParams();
   const { state, updateSelectedList } = useContext(StdTableContext);
-  const { students } = useStudentsInTeacher(
-    [state.searchQuery, state.filterQuery, state.paginationQuery],
-    classId
-  );
+  const { students } = useStudentsInTeacher();
   const { isPending: isDeleting, mutate: hideMany } = useHide('students');
-  const { isUpdating, mutate: updateMany } = useUpdateManyStudents();
+  const { mutate: updateStatus, isPending: isUpdating } = useUpdateStatus();
 
   function onDeletsHandler() {
     hideMany({ endPoit: 'students/hide', idList: state.selectedList });
   }
   function onUpdateStatusHandler(selected) {
-    updateMany({ studentIds: state.selectedList, newData: { status: selected } });
+    updateStatus({
+      studentIds: state.selectedList,
+      newData: { status: selected },
+      classId: classId,
+    });
   }
   function onSelect() {
     const allIdList = students?.map((std) => std._id);
@@ -474,120 +462,5 @@ function Info({ student }) {
         </div>
       </HoverInfo.Content>
     </HoverInfo>
-  );
-}
-
-function StdForm() {
-  const { id } = useParams();
-  const { updateFormState, state } = useContext(StdTableContext);
-  const { isPending, mutate } = useCreateStudent();
-  const { setValue, setFocus, watch, handleSubmit, register, control } = useForm();
-
-  useEffect(() => {
-    setFocus('name');
-  }, [setFocus, state.addFormIsOpen]);
-
-  function onSubmit(data) {
-    if (!id) return;
-    mutate(
-      { ...data, classId: id },
-      {
-        onSettled: () => {
-          setValue('name', '');
-          setValue('phone', '');
-          setValue('gmail', '');
-          setFocus('name');
-        },
-      }
-    );
-  }
-  if (!state.addFormIsOpen) return null;
-  return (
-    <Form
-      onSubmit={handleSubmit(onSubmit)}
-      control={control}
-      className=" flex items-center justify-between border-b border-t border-bg--primary-100 px-2 py-2"
-    >
-      <div className=" flex items-end gap-2">
-        <input
-          {...register('name')}
-          name="name"
-          placeholder="Name"
-          className="rounded border border-border-2 bg-bg--primary-200 px-4 py-2 text-sm outline-none"
-          type="text"
-        />
-        <input
-          {...register('phone')}
-          name="phone"
-          placeholder="Phone"
-          className="  rounded border border-border-2 bg-bg--primary-200 px-4 py-2 text-sm outline-none"
-          type="text"
-        />
-        {watch('sendQr_gmail') && (
-          <input
-            {...register('gmail')}
-            name="gmail"
-            placeholder="Gmail"
-            className="rounded border border-border-2 bg-bg--primary-200 px-4 py-2 text-sm outline-none"
-            type="email"
-          />
-        )}
-
-        <div className=" flex flex-col justify-center  text-sm">
-          <div className="text-gray-400">SEND-QR</div>
-          <div className=" flex gap-2">
-            <div className=" flex items-center">
-              <input
-                {...register('sendQr_whatsapp')}
-                id="checkbox"
-                name="sendQr_whatsapp"
-                type="checkbox"
-                defaultChecked
-                className="h-4 w-4 rounded  text-blue-600 
-                accent-blue-600 focus:ring-2 focus:ring-blue-500"
-              />
-              <label htmlFor="checkbox" className="ms-2 text-sm font-medium text-gray-400 ">
-                Whatsapp
-              </label>
-            </div>
-
-            <div className=" flex items-center">
-              <input
-                {...register('sendQr_gmail')}
-                id="checkbox"
-                name="sendQr_gmail"
-                type="checkbox"
-                className="h-4 w-4 rounded  text-blue-600
-                 accent-blue-600 focus:ring-2 focus:ring-blue-500"
-              />
-              <label htmlFor="checkbox" className="ms-2 text-sm font-medium text-gray-400 ">
-                Gmail
-              </label>
-            </div>
-          </div>
-        </div>
-        <input
-          {...register('status')}
-          value="unpaid"
-          name="status"
-          type="text"
-          className="hidden"
-        />
-      </div>
-
-      <div className=" flex items-center gap-3 ">
-        <Button spinner={isPending} disabled={isPending} type="primary" label="SUBMIT" />
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            updateFormState(false);
-          }}
-          className="material-symbols-outlined flex aspect-square h-8
-          items-center justify-center rounded-full bg-bg--primary-300 text-lg"
-        >
-          close
-        </button>
-      </div>
-    </Form>
   );
 }

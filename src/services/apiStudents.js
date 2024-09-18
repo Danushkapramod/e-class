@@ -9,11 +9,9 @@ export const createStudent = axiousWrapper((stdData)=>{
     });
 })
 
-export const getStudents = axiousWrapper(({query:{query,classId},signal})=>{
-    let queryParams;
-    query ? (queryParams = `?${query}`) : (queryParams = "");
-
-      return axios.get(`${BASE_URL}/students/${classId}${queryParams}`,{
+export const getStudents = axiousWrapper(({query,classId, signal})=>{
+      return axios.get(`${BASE_URL}/students/${classId}`,{
+      params: query,  
       withCredentials:true,
       signal,
       timeout:6000

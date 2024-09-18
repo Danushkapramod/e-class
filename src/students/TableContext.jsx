@@ -3,10 +3,9 @@ import { createContext, useReducer } from 'react';
 const initialState = {
   statusOptions: [],
   tempStatusList: [],
-  searchQuery: '',
-  filterQuery: '',
-  paginationQuery: '',
-  query: '',
+  searchQuery: {},
+  filterQuery: {},
+  paginationQuery: {},
   totalStdOntable: 0,
   addFormIsOpen: false,
   statusFormIsOpen: false,
@@ -34,31 +33,11 @@ const SET_CLASS_DATA = 'SET_CLASS_DAY';
 const reducer = (state, action) => {
   switch (action.type) {
     case SET_SEARCH_QUERY:
-      return {
-        ...state,
-        searchQuery: action.payload,
-        query: [action.payload, state.filterQuery, state.paginationQuery]
-          .filter((query) => query && query.split('=')[1] !== 'undefined')
-          .join('&'),
-      };
-
+      return { ...state, searchQuery: action.payload };
     case SET_FILTER_QUERY:
-      return {
-        ...state,
-        filterQuery: action.payload,
-        query: [state.searchQuery, action.payload, state.paginationQuery]
-          .filter((query) => query && query.split('=')[1] !== 'undefined')
-          .join('&'),
-      };
-
+      return { ...state, filterQuery: action.payload };
     case SET_PAGINATION_QUERY:
-      return {
-        ...state,
-        paginationQuery: action.payload,
-        query: [state.searchQuery, state.filterQuery, action.payload]
-          .filter((query) => query && query.split('=')[1] !== 'undefined')
-          .join('&'),
-      };
+      return { ...state, paginationQuery: action.payload };
     case SET_TEMP_STATUS_LIST:
       return { ...state, tempStatusList: action.payload };
 
