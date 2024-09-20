@@ -1,8 +1,8 @@
-import ClassForm from '../class/ClassForm';
 import ClassView from '../class/ClassView';
-import Update from '../class/Update';
+import CreateStudent from '../students/CreateStudent';
 import StudentLayout from '../students/StudentLayout';
 import StudentTableAll from '../students/StudentTableAll';
+import UpdateStudent from '../students/UpdateStudent';
 
 export const StudentRoutes = {
   path: 'students',
@@ -14,7 +14,7 @@ export const StudentRoutes = {
     },
     {
       path: 'new',
-      element: <ClassForm />,
+      element: <CreateStudent />,
     },
 
     {
@@ -23,7 +23,7 @@ export const StudentRoutes = {
     },
     {
       path: ':id/update',
-      element: <Update />,
+      element: <UpdateStudent />,
     },
     {
       path: ':id/delete',

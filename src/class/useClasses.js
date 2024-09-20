@@ -20,7 +20,7 @@ export default function useClasses() {
     error,
   } = useQuery({
     queryKey: ['classes', queryParams],
-    queryFn: ({signal}) => pagginationQuery ? getClasses({signal,queryParams }) : null,
+    queryFn: ({signal}) =>  getClasses({signal,queryParams })
   });
   return { classes, isLoading, error, isSuccess };
 }

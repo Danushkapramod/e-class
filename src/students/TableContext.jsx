@@ -6,6 +6,7 @@ const initialState = {
   searchQuery: {},
   filterQuery: {},
   paginationQuery: {},
+  paginationQuery1: {},
   totalStdOntable: 0,
   addFormIsOpen: false,
   statusFormIsOpen: false,
@@ -21,6 +22,7 @@ const SET_STATUS_OPTIONS = 'SET_STATUS_OPTIONS';
 const SET_SEARCH_QUERY = 'SET_SEARCH_QUERY';
 const SET_FILTER_QUERY = 'SET_FILTER_QUERY';
 const SET_PAGINATION_QUERY = 'SET_PAGINATION_QUERY';
+const SET_PAGINATION_QUERY1 = 'SET_PAGINATION_QUERY1';
 const SET_ADD_FORM_STATE = 'SET_ADD_FORM_STATE';
 const SET_ADD_FORM_STATE2 = 'SET_ADD_FORM_STATE2';
 const SET_ADD_CLASS_STATE = 'SET_ADD_CLASS_STATE';
@@ -38,6 +40,8 @@ const reducer = (state, action) => {
       return { ...state, filterQuery: action.payload };
     case SET_PAGINATION_QUERY:
       return { ...state, paginationQuery: action.payload };
+    case SET_PAGINATION_QUERY1:
+      return { ...state, paginationQuery1: action.payload };
     case SET_TEMP_STATUS_LIST:
       return { ...state, tempStatusList: action.payload };
 
@@ -138,6 +142,9 @@ function TableProvider({ children }) {
   const updatePaginationQuery = (query) => {
     dispatch({ type: SET_PAGINATION_QUERY, payload: query });
   };
+  const updatePaginationQuery1 = (query) => {
+    dispatch({ type: SET_PAGINATION_QUERY1, payload: query });
+  };
   const updateFormState = (state) => {
     dispatch({ type: SET_ADD_FORM_STATE, payload: state });
   };
@@ -171,6 +178,7 @@ function TableProvider({ children }) {
         updateStatusForm,
         updateFlterhQuery,
         updatePaginationQuery,
+        updatePaginationQuery1,
         updateStdOntable,
         updateStatusOptions,
         updateTempStatusList,

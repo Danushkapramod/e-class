@@ -2,11 +2,12 @@ import { useContext, useEffect, useRef, useState } from "react";
 import useUpdateStudent from "./useUpdateStudent";
 import useDeleteStudent from "./useDeleteStudent";
 import { StdTableContext } from "./TableContext";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useUpdateStatus } from "./useUpdateStatus";
 
 export default function useStudentRow(student) {
     const { _id, name, phone } = student;
+    const navigate = useNavigate()
     const [isEditing, setIsEditing] = useState(false);
     const [formState, setFormState] = useState({ name, phone });
     const [isSelected, setIsSelected] = useState(false);
@@ -54,7 +55,7 @@ export default function useStudentRow(student) {
   
     const onSelectHandler = (selected) => {
       if (selected === 'update') {
-        setIsEditing(!isEditing);
+        navigate(`/app/students/${_id}/update`)
       }
       if (selected === 'delete') {
         deleteStudent(_id);

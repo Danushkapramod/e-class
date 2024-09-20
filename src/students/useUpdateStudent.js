@@ -4,16 +4,11 @@ import { updateManyStudent, updateStudent } from "../services/apiStudents";
 
 export default function useUpdateStudent() {
   const queqyClient = useQueryClient()
-  const {
-    isPending: isUpdating,
-    error,
-    mutate,
-    isSuccess,
-    status
-  } = useMutation({
+  const query = useMutation({
     mutationFn: updateStudent,
     onSuccess: (data) => {
       queqyClient.invalidateQueries({queryKey:['students']})
+      queqyClient.invalidateQueries({queryKey:['AllStudents']})
       if(data)toast.success("Status updated successfully.");
     },
     onError: (err) => {
@@ -22,7 +17,7 @@ export default function useUpdateStudent() {
     },
   });
 
-  return { isUpdating, error, mutate, isSuccess ,status};
+  return query;
 }
 
 

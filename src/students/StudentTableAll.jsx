@@ -1,627 +1,20 @@
-// import { useContext, useEffect, useRef, useState } from 'react';
-// import { Form } from 'react-router-dom';
-// import { Controller, useForm } from 'react-hook-form';
-// import { Button } from '../ui/components/ButtonNew';
-// import DataLoader from '../ui/components/DataLoader';
-// import Pagination from '../ui/components/Pagination';
-// import SelectItem from '../ui/components/SelectItem';
-// import Tooltip from '../ui/components/Potral';
-// import { StdTableContext, TableProvider } from './TableContext';
-// import { StudentFilter, StudentSearch } from './StudentTableOperations';
-// import useUpdateStudent, { useUpdateManyStudents } from './useUpdateStudent';
-// import { useAllStudents } from './useStudents';
-// import useOColor from '../utils/getOColor';
-// import Checkbox from '../ui/components/Checkbox';
-// import useAppSetings from '../user/useAppSetings';
-// import useUpdateAppSetings from '../user/useUpdateAppSetings';
-// import { statusOptionsDefault } from '../services/apiAuth';
-// import { useMutation, useQuery } from '@tanstack/react-query';
-// import useHide from '../user/useHide';
-// import { getStudentsCount } from '../services/apiStudents';
-// import { getOptionsCount } from '../services/apiOptions';
-
-// // const statusOptions = [
-// //   ['paid', 'paid'],
-// //   ['unpaid', 'pending'],
-// //   ['half', 'side_navigation'],
-// //   ['free', 'published_with_changes'],
-// // ];
-
-// export default function StudentTableAll() {
-//   return (
-//     <TableProvider>
-//       <div className=" flex min-w-[40rem]  grow flex-col shadow-md">
-//         <div
-//           className="flex w-full  flex-col justify-between gap-2
-//            rounded-t bg-bg--primary-200 pb-2 pt-3 text-text--primary"
-//         >
-//           <TableNav />
-//           <StatusForm />
-//           <Operation />
-//         </div>
-//         <Table />
-//       </div>
-//     </TableProvider>
-//   );
-// }
-
-// function TableNav() {
-//   const { updatePaginationQuery } = useContext(StdTableContext);
-//   const { data: students } = useQuery({
-//     queryKey: ['studentsCount'],
-//     queryFn: () => getOptionsCount('student'),
-//   });
-//   return (
-//     <div className=" flex items-end justify-between px-2">
-//       <StudentSearch />
-//       <div className=" flex gap-2">
-//         <StudentsOnTable />
-//         <Pagination
-//           getTotal={async () => await getStudentsCount()}
-//           type="simple"
-//           url={false}
-//           limit={10}
-//           set={updatePaginationQuery}
-//           total={students}
-//         />
-//         <StudentFilter />
-//       </div>
-//     </div>
-//   );
-// }
-
-// export function Operation() {
-//   const { state, updateSelectedList } = useContext(StdTableContext);
-//   const { students } = useAllStudents([
-//     state.searchQuery,
-//     state.filterQuery,
-//     state.paginationQuery,
-//   ]);
-//   const { isPending: isDeleting, mutate: hideMany } = useHide('students');
-//   const { isUpdating, mutate: updateMany } = useUpdateManyStudents();
-
-//   function onDeletsHandler() {
-//     hideMany({ endPoit: 'students/hide', idList: state.selectedList });
-//   }
-//   function onUpdateStatusHandler(selected) {
-//     updateMany({ studentIds: state.selectedList, newData: { status: selected } });
-//   }
-//   function onSelect() {
-//     const allIdList = students?.map((std) => std._id);
-//     updateSelectedList('addAll', allIdList);
-//   }
-
-//   function onUnSelect() {
-//     updateSelectedList('clear');
-//   }
-//   if (!state.selectedList?.length > 0) return null;
-//   return (
-//     <div className="flex h-12 w-full items-center gap-1.5 px-4">
-//       <div className=" mr-2">
-//         <Checkbox width="18px" id="stdAllSelect" trueCall={onSelect} falseCall={onUnSelect} />
-//       </div>
-//       <SelectItem
-//         buttonSize="sm"
-//         btnTitle="STATUS"
-//         disabled={isUpdating}
-//         onClick={onUpdateStatusHandler}
-//         icon="currency_exchange"
-//         items={state.statusOptions}
-//       />
-//       <Button
-//         className="!border-border-2"
-//         size="sm"
-//         variant="outline"
-//         disabled={isDeleting}
-//         icon="delete"
-//         onClick={onDeletsHandler}
-//         label="DELETE"
-//       />
-//       <div className=" mb-1 ml-2 self-end text-sm text-text--secondery">
-//         {state.selectedList.length.toString().padStart(2, '0')}
-//         <span> selected</span>
-//       </div>
-
-//       <button
-//         onClick={onUnSelect}
-//         className=" material-symbols-outlined ml-auto flex aspect-square h-8
-//         items-center justify-center rounded-full bg-bg--primary-300 text-lg"
-//       >
-//         close
-//       </button>
-//     </div>
-//   );
-// }
-
-// function StudentsOnTable() {
-//   const { state } = useContext(StdTableContext);
-//   return <div className=" flex items-end px-2 text-sm">{`${state.totalStdOntable} results`}</div>;
-// }
-
-// function Table() {
-//   const { data, isSuccess: appSetingsIsSuccess } = useAppSetings();
-//   const { state, updateStatusOptions, updateFormState } = useContext(StdTableContext);
-//   const { students, isLoading, error } = useAllStudents();
-
-//   useEffect(() => {
-//     if (appSetingsIsSuccess) updateStatusOptions(data?.students.statusOptions || {});
-//   }, [appSetingsIsSuccess, data?.students.statusOptions]);
-
-//   if (students?.length < 1) {
-//     return '';
-//   }
-//   return (
-//     <div className="fle flex-col border-t border-border-2">
-//       <div className="z-0 max-h-[calc(100vh-18.75rem)] overflow-auto ">
-//         <table className="text-smbg-bg--primary-200 w-full bg-bg--primary-200">
-//           <thead>
-//             <tr
-//               className="sticky -top-[1px] z-10 border-b border-b-bg--primary-100
-//               bg-bg--primary-200 py-2 text-base font-medium transition-all duration-100"
-//             >
-//               <th className=" w-1 px-4 py-2 text-start text-text--muted "></th>
-//               <th className=" w-1  py-2 text-start text-text--muted ">#</th>
-//               <th className="max-w-[130px] py-2 text-start ">ID</th>
-//               <th className=" py-2 text-start ">Student name</th>
-//               <th className="py-2 text-start ">Phone</th>
-//               <th className=" flex gap-1 py-2 text-start ">
-//                 <div>Status</div>
-//                 <button
-//                   onClick={() => updateFormState(!state.addFormIsOpen)}
-//                   className="material-symbols-outlined scale-75 transition-all
-//                   duration-100 hover:scale-[80%] active:rotate-90"
-//                 >
-//                   settings
-//                 </button>
-//               </th>
-//               <th className="py-2 text-start"></th>
-//             </tr>
-//           </thead>
-//           <tbody className=" divide-y divide-bg--primary-100">
-//             <DataLoader
-//               data={students?.map((student, index) => {
-//                 return <TableRow key={student.studentId} student={{ ...student, index }} />;
-//               })}
-//               isLoading={isLoading}
-//               error={error}
-//               options={{ colSpan: '7' }}
-//             />
-//           </tbody>
-//         </table>
-//       </div>
-//       <div className="h-4 w-full rounded-b bg-bg--primary-200"></div>
-//     </div>
-//   );
-// }
-
-// function TableRow({ student }) {
-//   const theam = useOColor();
-//   const { name, phone, status, studentId, index, _id } = student;
-//   const { updateSelectedList, state } = useContext(StdTableContext);
-//   const { isUpdating, isSuccess, mutate } = useUpdateStudent();
-//   const [isEditing, setIsEditing] = useState();
-//   const { mutate: hide, isPending: isDeleting } = useHide('students');
-//   const [formState, setFormState] = useState({ name, phone });
-//   const [isSelected, setIsSelected] = useState();
-//   const ref1 = useRef();
-
-//   useEffect(() => {
-//     setIsSelected(state.selectedList?.includes(_id));
-//   }, [state.selectedList, _id]);
-
-//   useEffect(() => {
-//     if (isEditing) ref1.current.focus();
-//   }, [isEditing]);
-
-//   useEffect(() => {
-//     if (isSuccess) setIsEditing(false);
-//   }, [isSuccess]);
-
-//   function onStatusHandler(selected) {
-//     mutate({ studentId: _id, newData: { status: selected } });
-//   }
-//   function onSubmitHandler() {
-//     mutate({
-//       studentId: _id,
-//       newData: {
-//         name: formState.name,
-//         phone: formState.phone,
-//       },
-//     });
-//   }
-
-//   function onAddhandler() {
-//     updateSelectedList('add', _id);
-//   }
-
-//   function onRemoveHandler() {
-//     updateSelectedList('remove', _id);
-//   }
-
-//   function onSelectHandler(selected) {
-//     if (selected === 'update') {
-//       setIsEditing(!isEditing);
-//     }
-
-//     if (selected === 'delete') {
-//       hide({ endPoit: 'students/hide', idList: [_id] });
-//     }
-//   }
-
-//   const stdStatus = state.statusOptions?.find(({ option }) => option === status);
-//   const bgColor = isSelected ? (theam ? 'bg-black/10' : 'bg-blue-50') : '';
-//   return (
-//     <tr className={`text-sm ${bgColor} `}>
-//       <td className="relative px-4">
-//         <div className=" flex items-center justify-center px-2">
-//           <label htmlFor={_id} className="ho absolute rounded-full p-3 hover:bg-hover-1">
-//             <Checkbox
-//               id={_id}
-//               trueCall={onAddhandler}
-//               falseCall={onRemoveHandler}
-//               _checked={isSelected}
-//             />
-//           </label>
-//         </div>
-//       </td>
-//       <td className=" py-3 pr-6 text-text--muted ">{(index + 1).toString().padStart(2, '0')}</td>
-//       <td className="py-3">{studentId}</td>
-//       <td className="relative py-3 ">
-//         {isEditing ? (
-//           <div className=" flex items-center">
-//             <input
-//               ref={ref1}
-//               onChange={(e) => setFormState({ ...formState, name: e.target.value })}
-//               className=" w-max rounded border-border-1 bg-bg--primary-300 px-2 py-1.5 outline-none"
-//               type="text"
-//               value={formState.name}
-//             />
-//           </div>
-//         ) : (
-//           name
-//         )}
-//       </td>
-//       <td className="relative py-3 ">
-//         {isEditing ? (
-//           <div className="flex  items-center">
-//             <input
-//               onChange={(e) => setFormState({ ...formState, phone: e.target.value })}
-//               className=" w-max rounded border border-border-1
-//                bg-bg--primary-300 px-2 py-1.5 outline-none"
-//               type="text"
-//               value={formState.phone}
-//             />
-//           </div>
-//         ) : (
-//           phone
-//         )}
-//       </td>
-//       <td className="gap-3 ">
-//         <div className=" flex w-28 items-center gap-2">
-//           <div
-//             style={
-//               stdStatus?.color
-//                 ? { backgroundColor: stdStatus.color }
-//                 : {
-//                     border: '1px solid',
-//                     borderColor: 'var(--color-border-2)',
-//                     color: 'var(--color-text-primary)',
-//                   }
-//             }
-//             className="w-full justify-between rounded-full px-3 py-1
-//             text-center text-xs capitalize tracking-wider text-slate-100"
-//           >
-//             {status}
-//           </div>
-//           <SelectItem
-//             disabled={isUpdating || isDeleting}
-//             btn={
-//               <span className="material-symbols-outlined px-1 text-lg text-text--muted">
-//                 currency_exchange
-//               </span>
-//             }
-//             onClick={onStatusHandler}
-//             items={state.statusOptions
-//               ?.filter((option) => option.option !== status)
-//               .map((option) => [option.option])}
-//           />
-//         </div>
-//       </td>
-//       <td className=" w-1">
-//         <div className=" flex w-24 items-center justify-between">
-//           {!isEditing ? (
-//             <SelectItem
-//               btn="more_vert"
-//               disabled={isUpdating || isDeleting}
-//               onClick={onSelectHandler}
-//               items={[
-//                 ['update', 'edit'],
-//                 ['delete', 'delete'],
-//               ]}
-//             />
-//           ) : (
-//             <Button onClick={onSubmitHandler} type="sm" label="SAVE" />
-//           )}
-//           {!isEditing ? (
-//             <HoverInfo student={student} />
-//           ) : (
-//             <button
-//               onClick={() => {
-//                 setIsEditing(false);
-//               }}
-//               className=" material-symbols-outlined mr-3 flex aspect-square h-6
-//                items-center justify-center rounded-full bg-bg--primary-300 text-lg"
-//             >
-//               close
-//             </button>
-//           )}
-//         </div>
-//       </td>
-//     </tr>
-//   );
-// }
-
-// function HoverInfo({ student }) {
-//   const inforef = useRef();
-
-//   const { studentId, status, statusChangedAt, createdAt } = student;
-//   const [tooltipData, setTooltipData] = useState(null);
-
-//   function showTooltip(event, student) {
-//     const rect = event.target.getBoundingClientRect();
-//     setTooltipData({
-//       student,
-//       position: {
-//         top: rect.top + window.scrollY + rect.height,
-//         left: rect.left + window.scrollX + rect.width,
-//       },
-//     });
-//   }
-
-//   useEffect(() => {
-//     const ref = inforef.current;
-
-//     function callback1(event) {
-//       showTooltip(event, student);
-//     }
-
-//     function callback2() {
-//       setTooltipData(null);
-//     }
-//     ref.addEventListener('mouseenter', callback1);
-//     ref.addEventListener('mouseleave', callback2);
-//     return () => {
-//       ref.removeEventListener('mouseenter', callback1);
-//       ref.removeEventListener('mouseleave', callback2);
-//     };
-//   }, [student]);
-
-//   return (
-//     <div className=" ">
-//       <button
-//         ref={inforef}
-//         className=" material-symbols-outlined mr-2  px-1 text-xl font-light text-text--muted"
-//       >
-//         help
-//       </button>
-
-//       {tooltipData && (
-//         <Tooltip position={tooltipData.position}>
-//           <div
-//             className="absolute right-4 z-20  w-60  max-w-56 rounded bg-bg--primary-500
-//              p-4 text-sm text-text--primary"
-//           >
-//             <div className=" flex flex-col leading-loose">
-//               <div className="flex justify-between">
-//                 <p className="basis-[60%]">Student ID</p>:{' '}
-//                 <p className="w-full pl-2"> {studentId}</p>
-//               </div>
-//               <div className="flex justify-between">
-//                 <p className=" basis-[60%]">Joined</p>:
-//                 <p className="w-full pl-2">{new Date(createdAt).toLocaleDateString()}</p>{' '}
-//               </div>
-//               <div className="flex  justify-between">
-//                 <p className="basis-[60%]">Status</p>:
-//                 <p className="w-full pl-2 capitalize"> {status}</p>
-//               </div>
-//               <div className="flex  justify-between">
-//                 <p className="basis-[60%] ">Status At</p>:{' '}
-//                 <p className="w-full pl-2">
-//                   {' '}
-//                   {statusChangedAt ? new Date(statusChangedAt).toLocaleString() : '----------'}
-//                 </p>
-//               </div>
-//             </div>
-//           </div>
-//         </Tooltip>
-//       )}
-//     </div>
-//   );
-// }
-
-// function StatusForm() {
-//   const { mutate: setDefaultStatus } = useMutation({ mutationFn: statusOptionsDefault });
-//   const { updateFormState, state, updateTempStatusList } = useContext(StdTableContext);
-//   const { mutate, isPending } = useUpdateAppSetings();
-//   const { setFocus, getValues, handleSubmit, control } = useForm();
-
-//   useEffect(() => {
-//     updateTempStatusList(state.statusOptions);
-//   }, [state.statusOptions]);
-
-//   useEffect(() => {
-//     setFocus('name');
-//   }, [setFocus]);
-
-//   function onSubmit() {
-//     mutate({ students: { statusOptions: state.tempStatusList } });
-//   }
-//   async function onDefault(e) {
-//     await e.preventDefault();
-//     setDefaultStatus();
-//   }
-//   if (!state.addFormIsOpen) return null;
-//   return (
-//     <Form
-//       onSubmit={handleSubmit(onSubmit)}
-//       control={control}
-//       className=" flex items-center justify-between border-b border-t border-bg--primary-100 px-2 py-2"
-//     >
-//       <div className=" flex flex-wrap items-start gap-2">
-//         <AddStatus />
-//         <Button onClick={onDefault} variant="outline" size="sm" label="Default" />
-//         {state.tempStatusList.map((option) => (
-//           <StatusOption
-//             control={control}
-//             getValues={getValues}
-//             key={option.option}
-//             option={option}
-//           />
-//         ))}
-//       </div>
-
-//       <div className=" flex items-center gap-3 ">
-//         <Button spinner={isPending} type="primary" label="SUBMIT" />
-//         <button
-//           onClick={(e) => {
-//             e.preventDefault();
-//             updateFormState(false);
-//           }}
-//           className=" material-symbols-outlined flex aspect-square h-8
-//           items-center justify-center rounded-full bg-bg--primary-300 text-lg"
-//         >
-//           close
-//         </button>
-//       </div>
-//     </Form>
-//   );
-// }
-
-// function AddStatus() {
-//   const { updateTempStatusList, state } = useContext(StdTableContext);
-//   const [value, setValue] = useState();
-
-//   function onSubmit(e) {
-//     e.preventDefault();
-//     updateTempStatusList([...state.tempStatusList, { option: value, color: '' }]);
-//   }
-
-//   return (
-//     <div className=" flex gap-2">
-//       <input
-//         name="status"
-//         onChange={(e) => setValue(e.target.value)}
-//         value={value}
-//         placeholder="Status"
-//         className="rounded border border-border-2 bg-bg--primary-200 px-4 py-2 text-sm outline-none"
-//         type="text"
-//       />
-//       <Button onClick={onSubmit} size="sm" label="ADD" icon="add" variant="outline" />
-//     </div>
-//   );
-// }
-
-// function StatusOption({ option: { option, color }, control }) {
-//   const { updateTempStatusList, state } = useContext(StdTableContext);
-//   const [_color, setColor] = useState(color);
-
-//   useEffect(() => {
-//     updateTempStatusList(
-//       state.tempStatusList.map((item) => {
-//         if (item.option === option) {
-//           return { option, color: _color };
-//         } else {
-//           return item;
-//         }
-//       })
-//     );
-//   }, [_color, option]);
-
-//   function deleteHandler(e) {
-//     e.preventDefault();
-//     updateTempStatusList(state.tempStatusList.filter((item) => item.option !== option));
-//   }
-//   return (
-//     <div
-//       style={{
-//         backgroundColor: _color,
-//         border: '1px solid',
-//         borderColor: _color || 'var(--color-border-2)',
-//       }}
-//       className=" flex items-center gap-1 rounded px-2  pl-3 text-sm capitalize"
-//     >
-//       {option}
-//       <div className="flex items-center">
-//         <label
-//           htmlFor={option}
-//           className="material-symbols-outlined flex scale-[70%]
-//           items-center justify-center rounded-full p-0.5 hover:scale-75"
-//         >
-//           format_color_fill
-//         </label>
-//         <Controller
-//           id={option}
-//           name={option}
-//           control={control}
-//           render={({ field }) => (
-//             <input
-//               {...field}
-//               className="h-0 w-0 opacity-0"
-//               onChange={(e) => {
-//                 setColor(e.target.value);
-//               }}
-//               type="color"
-//               name={option}
-//               id={option}
-//             />
-//           )}
-//         />
-//         <button
-//           onClick={deleteHandler}
-//           className="material-symbols-outlined flex scale-[70%]
-//           items-center justify-center rounded-full p-0.5  hover:scale-75"
-//         >
-//           delete
-//         </button>
-//       </div>
-//     </div>
-//   );
-// }
-
-import { useContext, useEffect, useMemo, useState } from 'react';
-import { Form } from 'react-router-dom';
-import { Controller, useForm } from 'react-hook-form';
+import { useContext, useMemo } from 'react';
 import { Button } from '../ui/components/ButtonNew';
 import DataLoader from '../ui/components/DataLoader';
-import Pagination from '../ui/components/Pagination';
 import SelectItem from '../ui/components/SelectItem';
 import { StdTableContext, TableProvider } from './TableContext';
 import { StudentSearch } from './StudentTableOperations';
 import { useAllStudents } from './useStudents';
 import Checkbox from '../ui/components/Checkbox';
-import useUpdateAppSetings from '../user/useUpdateAppSetings';
-import { statusOptionsDefault } from '../services/apiAuth';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import useHide from '../user/useHide';
 import { getStudentsCount } from '../services/apiStudents';
-import { getOptionsCount } from '../services/apiOptions';
-import { formatLocalTime, getSpecificDaysInMonth } from '../utils/formateDates&Times';
-import useCreateStudent from './useCreateStudent';
-import { ClassSearch } from '../class/ClassTableOperations';
-import useClasses from '../class/useClasses';
-import { getClassesCount } from '../services/apiClasses';
-import { twMerge } from 'tailwind-merge';
 import useStudentRow from './useStudentRow';
 import HoverInfo from '../ui/components/HoverInfo';
-import { useAddClass } from './useAddClass';
-import useAttendances from './useAttendances';
-
-// const statusOptions = [
-//   ['paid', 'paid'],
-//   ['unpaid', 'pending'],
-//   ['half', 'side_navigation'],
-//   ['free', 'published_with_changes'],
-// ];
+import StatusForm from './StatusLabelEditForm';
+import PagginationNew from '../ui/components/PagginationNew';
+import { useNavigate, useParams } from 'react-router-dom';
+import usePagginationNew from '../ui/hookComponents/usePagginationNew';
 
 export default function StudentTableAll() {
   return (
@@ -633,8 +26,6 @@ export default function StudentTableAll() {
         >
           <TableNav />
           <StatusForm />
-          <StdForm1 />
-          <AddClassAlredyInStudents />
           <Operation />
         </div>
         <Table />
@@ -643,12 +34,19 @@ export default function StudentTableAll() {
   );
 }
 const statusOptions = [['payment labels']];
+
 function TableNav() {
-  const { updatePaginationQuery, updateFormState, state, updateStatusForm } =
-    useContext(StdTableContext);
-  const { data: students } = useQuery({
-    queryKey: ['studentsCount'],
-    queryFn: () => getOptionsCount('student'),
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { updatePaginationQuery1, state, updateStatusForm } = useContext(StdTableContext);
+
+  const { page, limit, setPage } = usePagginationNew({
+    setFun: updatePaginationQuery1,
+  });
+
+  const { data: studentsCount } = useQuery({
+    queryKey: ['studentCount', id],
+    queryFn: () => getStudentsCount(id),
   });
 
   function onSelectHandler(selected) {
@@ -657,21 +55,13 @@ function TableNav() {
     }
   }
   function onAddStudentHandler() {
-    updateFormState(!state.addFormIsOpen);
+    navigate('new');
   }
   return (
     <div className=" flex items-end justify-between px-2">
       <StudentSearch />
       <div className=" flex items-end gap-2">
-        <Pagination
-          getTotal={async () => await getStudentsCount()}
-          type="simple"
-          url={false}
-          limit={50}
-          set={updatePaginationQuery}
-          total={students}
-        />
-
+        <PagginationNew page={page} limit={limit} setPage={setPage} total={studentsCount} />
         <Button label="ADD STUDENT" onClick={onAddStudentHandler} size="sm" />
         <SelectItem
           btn={
@@ -688,29 +78,21 @@ function TableNav() {
 }
 
 export function Operation() {
-  const { state, updateSelectedList, updateAddClassIsOpen } = useContext(StdTableContext);
-  const { students } = useAllStudents([
-    state.searchQuery,
-    state.filterQuery,
-    state.paginationQuery,
-  ]);
+  const { state, updateSelectedList } = useContext(StdTableContext);
+  const { students } = useAllStudents();
   const { isPending: isDeleting, mutate: hideMany } = useHide('students');
 
   function onDeletsHandler() {
     hideMany({ endPoit: 'students/hide', idList: state.selectedList });
   }
-
   function onSelect() {
     const allIdList = students?.map((std) => std._id);
     updateSelectedList('addAll', allIdList);
   }
-
   function onUnSelect() {
     updateSelectedList('clear');
   }
-  function onAddClass() {
-    updateAddClassIsOpen(!state.addClassIsOpen);
-  }
+  function onAddClass() {}
   if (!state.selectedList?.length > 0) return null;
   return (
     <div className="flex h-12 w-full items-center gap-1.5 px-4">
@@ -751,139 +133,6 @@ export function Operation() {
   );
 }
 
-function AddClassAlredyInStudents() {
-  const { state, updateAddClassIsOpen } = useContext(StdTableContext);
-  const { mutate, isPending } = useAddClass();
-
-  function onAddClass() {
-    const classes = state.selectedClassList.map(({ _id }) => {
-      return { classId: _id, status: 'unpaid' };
-    });
-    mutate({ studentIds: state.selectedList, newData: classes });
-  }
-  if (!state.addClassIsOpen) return null;
-  return (
-    <>
-      <div className=" p-2">
-        <div className=" pl-1 text-sm uppercase text-text--secondery">Add class</div>
-        <div className=" flex justify-between">
-          <SelectedClasses />
-          <div className=" flex items-center gap-3 ">
-            <Button
-              spinner={isPending}
-              disabled={isPending}
-              onClick={onAddClass}
-              type="primary"
-              label="SUBMIT"
-            />
-            <button
-              onClick={() => updateAddClassIsOpen(false)}
-              className="material-symbols-outlined flex aspect-square h-8
-            items-center justify-center rounded-full bg-bg--primary-300 text-lg"
-            >
-              close
-            </button>
-          </div>
-        </div>
-      </div>
-      <SelectClass />
-    </>
-  );
-}
-
-export function SelectClass() {
-  const { classes, isLoading, error } = useClasses({ teacher: true });
-  const { data: toalClasses } = useQuery({
-    queryKey: ['classesCount'],
-    queryFn: () => getClassesCount(),
-  });
-
-  return (
-    <div className="relative flex w-full p-2 ">
-      <div className=" flex w-full flex-col gap-2 ">
-        <div className=" pl-1 text-sm uppercase text-text--secondery">Select Class</div>
-        <div className=" flex justify-between ">
-          <div className="w-max">
-            <ClassSearch />
-          </div>
-          <Pagination
-            getTotal={async () => await getClassesCount()}
-            type="simple"
-            url={false}
-            limit={10}
-            total={50}
-          />
-        </div>
-        <ul className=" flex w-full flex-wrap gap-2">
-          <DataLoader
-            isLoading={isLoading}
-            error={error}
-            data={classes?.map((classData) => {
-              return <ClassItem classData={classData} key={classData._id} />;
-            })}
-          />
-        </ul>
-      </div>
-    </div>
-  );
-}
-
-function ClassItem({ classData, className, onClick }) {
-  const { updateSelectedClassList } = useContext(StdTableContext);
-  const { _id, teacher, subject, avatar, startTime, day } = classData;
-  return (
-    <li
-      key={_id}
-      onClick={() => onClick || updateSelectedClassList('add', classData)}
-      className={twMerge(
-        `flex cursor-pointer items-center rounded border border-border-3
-         bg-hilight-1 transition-all duration-150 hover:scale-105 ${className}`
-      )}
-    >
-      <div className="flex aspect-square h-[4.5rem] items-center justify-center overflow-hidden rounded-l">
-        <img className="  h-full object-cover " src={avatar} alt="class-avatar" />
-      </div>
-      <div className=" flex h-full flex-col justify-between px-2 py-1 pr-3">
-        <div className="text-sm capitalize">{subject}</div>
-        <div className=" flex flex-col justify-between text-sm capitalize text-text--secondery">
-          <span>{teacher.name}</span>
-          <span className=" text-xs">
-            {day} {formatLocalTime(startTime)}
-          </span>
-        </div>
-      </div>
-    </li>
-  );
-}
-
-function SelectedClasses() {
-  const { state, updateSelectedClassList } = useContext(StdTableContext);
-
-  return (
-    <ul className=" flex w-full flex-wrap gap-2">
-      {state.selectedClassList?.map((classData) => {
-        return (
-          <div className=" flex gap-2 rounded bg-hilight-1 pr-2" key={classData._id} onClick={null}>
-            <ClassItem
-              className=" cursor-default border-none hover:scale-100"
-              classData={classData}
-            />
-            <div className="flex items-center">
-              <button
-                onClick={() => updateSelectedClassList('remove', classData)}
-                className=" material-symbols-outlined scale-90 rounded-full 
-                bg-bg--primary-200 p-2 transition-all duration-150 hover:scale-[1.02]"
-              >
-                close
-              </button>
-            </div>
-          </div>
-        );
-      })}
-    </ul>
-  );
-}
-
 function Table() {
   const { students, isLoading, error } = useAllStudents();
   const rowsHtml = useMemo(() => {
@@ -914,9 +163,6 @@ function Table() {
               <th className="max-w-[130px] py-2 text-start ">ID</th>
               <th className=" text-start ">Student name</th>
               <th className=" text-start ">Phone</th>
-              <th className="h-10 text-start">
-                <div>Status</div>
-              </th>
               <th className="py-2 text-start"></th>
             </tr>
           </thead>
@@ -929,25 +175,10 @@ function Table() {
 }
 
 function TableRow({ student }) {
-  const {
-    ref1,
-    isEditing,
-    setIsEditing,
-    formState,
-    setFormState,
-    isSelected,
-    onStatusHandler,
-    onSubmitHandler,
-    onAddhandler,
-    onRemoveHandler,
-    onSelectHandler,
-    isUpdating,
-    isDeleting,
-    state,
-  } = useStudentRow(student);
+  const { isSelected, onAddhandler, onRemoveHandler, onSelectHandler, isUpdating, isDeleting } =
+    useStudentRow(student);
 
-  const { name, phone, status, classId, studentId, index, _id } = student;
-  const stdStatus = state.statusOptions?.find(({ option }) => option === status);
+  const { name, phone, studentId, index, _id } = student;
   const bgColor = isSelected ? 'bg-hilight-1' : null;
   return (
     <tr className={`text-sm ${bgColor} `}>
@@ -965,102 +196,29 @@ function TableRow({ student }) {
       </td>
       <td className=" py-3 pr-6 text-text--muted ">{(index + 1).toString().padStart(2, '0')}</td>
       <td className="py-3">{studentId}</td>
-      <td className="relative py-3 ">
-        {isEditing ? (
-          <div className=" flex items-center">
-            <input
-              ref={ref1}
-              onChange={(e) => setFormState({ ...formState, name: e.target.value })}
-              className=" w-max rounded border-border-1 bg-bg--primary-300 px-2 py-1.5 outline-none"
-              type="text"
-              value={formState.name}
-            />
-          </div>
-        ) : (
-          name
-        )}
-      </td>
-      <td className="relative py-3 ">
-        {isEditing ? (
-          <div className="flex items-center">
-            <input
-              onChange={(e) => setFormState({ ...formState, phone: e.target.value })}
-              className=" w-max rounded border border-border-1
-               bg-bg--primary-300 px-2 py-1.5 outline-none"
-              type="text"
-              value={formState.phone}
-            />
-          </div>
-        ) : (
-          phone
-        )}
-      </td>
-
-      <td className="w-[25rem]">
-        <div className=" flex items-center gap-2">
-          {classId?.length.toString().padStart(2, '0')}
-          {/* <ClassInfo classId={classId} /> */}
-        </div>
-      </td>
-
+      <td className="relative py-3">{name}</td>
+      <td className="relative py-3">{phone}</td>
       <td className="w-1">
         <div className=" flex w-24 items-center justify-between">
-          {!isEditing ? (
-            <SelectItem
-              btn={
-                <span className=" material-symbols-outlined flex scale-[80%] items-center">
-                  more_vert
-                </span>
-              }
-              disabled={isUpdating || isDeleting}
-              onClick={onSelectHandler}
-              items={[
-                ['update', 'edit'],
-                ['delete', 'delete'],
-              ]}
-            />
-          ) : (
-            <Button onClick={onSubmitHandler} type="sm" label="SAVE" />
-          )}
-          {!isEditing ? (
-            <Info student={student} />
-          ) : (
-            <button
-              onClick={() => {
-                setIsEditing(false);
-              }}
-              className=" material-symbols-outlined mr-3 flex aspect-square h-6
-               items-center justify-center rounded-full bg-bg--primary-300 text-lg"
-            >
-              close
-            </button>
-          )}
+          <SelectItem
+            btn={
+              <span className=" material-symbols-outlined flex scale-[80%] items-center">
+                more_vert
+              </span>
+            }
+            disabled={isUpdating || isDeleting}
+            onClick={onSelectHandler}
+            items={[
+              ['update', 'edit'],
+              ['delete', 'delete'],
+            ]}
+          />
+          <Info student={student} />
         </div>
       </td>
     </tr>
   );
 }
-
-// function ClassInfo({ classId }) {
-//   const { classes } = useClasses({ teacher: true });
-//   const joinedClasses = classes?.filter((classData) => classId?.includes(classData._id));
-//   const { data: attendances } = useAttendances('');
-
-//   console.log();
-
-//   return (
-//     <HoverInfo>
-//       <HoverInfo.Icon>
-//         <button className="material-symbols-outlined scale-90 px-1">arrow_drop_down</button>
-//       </HoverInfo.Icon>
-//       <HoverInfo.Content>
-//         <div className="absolute right-4 z-20 w-60 max-w-56 rounded bg-bg--primary-500 p-4 text-sm text-text--primary">
-//           <div>{joinedClasses?.map((classData) => classData._id)}</div>
-//         </div>
-//       </HoverInfo.Content>
-//     </HoverInfo>
-//   );
-// }
 
 function Info({ student }) {
   const { studentId, status, statusChangedAt, createdAt } = student;
@@ -1095,285 +253,5 @@ function Info({ student }) {
         </div>
       </HoverInfo.Content>
     </HoverInfo>
-  );
-}
-
-function StatusForm() {
-  const { mutate: setDefaultStatus } = useMutation({ mutationFn: statusOptionsDefault });
-  const { updateStatusForm, state, updateTempStatusList } = useContext(StdTableContext);
-  const { mutate, isPending } = useUpdateAppSetings();
-  const { setFocus, getValues, handleSubmit, control } = useForm();
-
-  useEffect(() => {
-    updateTempStatusList(state.statusOptions);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.statusOptions]);
-
-  useEffect(() => {
-    setFocus('name');
-  }, [setFocus]);
-
-  function onSubmit() {
-    mutate({ students: { statusOptions: state.tempStatusList } });
-  }
-  async function onDefault(e) {
-    await e.preventDefault();
-    setDefaultStatus();
-  }
-  if (!state.statusFormIsOpen) return null;
-  return (
-    <Form
-      onSubmit={handleSubmit(onSubmit)}
-      control={control}
-      className=" flex flex-col gap-2 border-t border-bg--primary-100 px-2 py-2"
-    >
-      <div className=" pl-1 text-sm uppercase text-text--secondery">Edit payment labels</div>
-      <div className=" flex justify-between ">
-        <div className=" flex flex-wrap items-start gap-2">
-          <AddStatus />
-          <Button onClick={onDefault} variant="outline" size="sm" label="Default" />
-          {state.tempStatusList.map((option) => (
-            <StatusOption
-              control={control}
-              getValues={getValues}
-              key={option.option}
-              option={option}
-            />
-          ))}
-        </div>
-
-        <div className=" flex items-center gap-3 ">
-          <Button spinner={isPending} type="primary" label="SUBMIT" />
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              updateStatusForm(false);
-            }}
-            className=" material-symbols-outlined flex aspect-square h-8 
-          items-center justify-center rounded-full bg-bg--primary-300 text-lg"
-          >
-            close
-          </button>
-        </div>
-      </div>
-    </Form>
-  );
-}
-
-function StdForm1() {
-  const { updateFormState, state } = useContext(StdTableContext);
-  const { isPending, mutate } = useCreateStudent();
-  const { setValue, setFocus, watch, handleSubmit, register, control } = useForm();
-
-  useEffect(() => {
-    setFocus('name');
-  }, [setFocus, state.addFormIsOpen]);
-
-  function onSubmit(data) {
-    const classes = state.selectedClassList.map(({ _id }) => {
-      return { classId: _id, status: 'unpaid' };
-    });
-    if (!classes.length) return;
-    mutate(
-      { ...data, class: classes },
-      {
-        onSettled: () => {
-          setValue('name', '');
-          setValue('phone', '');
-          setValue('gmail', '');
-          setFocus('name');
-        },
-      }
-    );
-  }
-  if (!state.addFormIsOpen) return null;
-  return (
-    <>
-      <Form
-        onSubmit={handleSubmit(onSubmit)}
-        control={control}
-        className=" flex items-center justify-between border-b border-t border-bg--primary-100 px-2 py-4"
-      >
-        {' '}
-        <div className=" flex flex-col gap-2">
-          <div className=" pl-1 text-sm uppercase text-text--secondery">Add Student</div>
-          <div className=" flex items-end gap-2">
-            <input
-              {...register('name')}
-              name="name"
-              placeholder="Name"
-              className="rounded border border-border-2 bg-bg--primary-200 px-4 py-2 outline-none"
-              type="text"
-            />
-            <input
-              {...register('phone')}
-              name="phone"
-              placeholder="Phone"
-              className="  rounded border border-border-2 bg-bg--primary-200 px-4 py-2 outline-none"
-              type="text"
-            />
-            {watch('sendQr_gmail') && (
-              <input
-                {...register('gmail')}
-                name="gmail"
-                placeholder="Gmail"
-                className="rounded border border-border-2 bg-bg--primary-200 px-4 py-2  outline-none"
-                type="email"
-              />
-            )}
-
-            <div className=" flex flex-col justify-center  text-sm">
-              <div className="text-gray-400">SEND-QR</div>
-              <div className=" flex gap-2">
-                <div className=" flex items-center">
-                  <input
-                    {...register('sendQr_whatsapp')}
-                    id="checkbox"
-                    name="sendQr_whatsapp"
-                    type="checkbox"
-                    defaultChecked
-                    className="h-4 w-4 rounded  text-blue-600 
-                accent-blue-600 focus:ring-2 focus:ring-blue-500"
-                  />
-                  <label htmlFor="checkbox" className="ms-2 text-sm font-medium text-gray-400 ">
-                    Whatsapp
-                  </label>
-                </div>
-
-                <div className=" flex items-center">
-                  <input
-                    {...register('sendQr_gmail')}
-                    id="checkbox"
-                    name="sendQr_gmail"
-                    type="checkbox"
-                    className="h-4 w-4 rounded  text-blue-600
-                 accent-blue-600 focus:ring-2 focus:ring-blue-500"
-                  />
-                  <label htmlFor="checkbox" className="ms-2 text-sm font-medium text-gray-400 ">
-                    Gmail
-                  </label>
-                </div>
-              </div>
-            </div>
-            <input
-              {...register('status')}
-              value="unpaid"
-              name="status"
-              type="text"
-              className="hidden"
-            />
-          </div>
-          <div>
-            <SelectedClasses />
-          </div>
-        </div>
-        <div className=" flex items-center gap-3 ">
-          <Button spinner={isPending} disabled={isPending} type="primary" label="SUBMIT" />
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              updateFormState(false);
-            }}
-            className="material-symbols-outlined flex aspect-square h-8
-          items-center justify-center rounded-full bg-bg--primary-300 text-lg"
-          >
-            close
-          </button>
-        </div>
-      </Form>
-      <SelectClass />
-    </>
-  );
-}
-
-function AddStatus() {
-  const { updateTempStatusList, state } = useContext(StdTableContext);
-  const [value, setValue] = useState();
-
-  function onSubmit(e) {
-    e.preventDefault();
-    updateTempStatusList([...state.tempStatusList, { option: value, color: '' }]);
-  }
-
-  return (
-    <div className=" flex gap-2">
-      <input
-        name="status"
-        onChange={(e) => setValue(e.target.value)}
-        value={value}
-        placeholder="Status"
-        className="rounded border border-border-2 bg-bg--primary-200 px-4 py-2 text-sm outline-none"
-        type="text"
-      />
-      <Button onClick={onSubmit} size="sm" label="ADD" icon="add" variant="outline" />
-    </div>
-  );
-}
-
-function StatusOption({ option: { option, color }, control }) {
-  const { updateTempStatusList, state } = useContext(StdTableContext);
-  const [_color, setColor] = useState(color);
-
-  useEffect(() => {
-    const newList = state.tempStatusList.map((item) => {
-      if (item.option === option) {
-        return { option, color: _color };
-      } else {
-        return item;
-      }
-    });
-
-    updateTempStatusList(newList);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [_color, option]);
-
-  function deleteHandler(e) {
-    e.preventDefault();
-    updateTempStatusList(state.tempStatusList.filter((item) => item.option !== option));
-  }
-  return (
-    <div
-      style={{
-        backgroundColor: _color,
-        border: '1px solid',
-        borderColor: _color || 'var(--color-border-2)',
-      }}
-      className=" flex items-center gap-1 rounded px-2  pl-3 text-sm capitalize"
-    >
-      {option}
-      <div className="flex items-center">
-        <label
-          htmlFor={option}
-          className="material-symbols-outlined flex scale-[70%] 
-          items-center justify-center rounded-full p-0.5 hover:scale-75"
-        >
-          format_color_fill
-        </label>
-        <Controller
-          id={option}
-          name={option}
-          control={control}
-          render={({ field }) => (
-            <input
-              {...field}
-              className="h-0 w-0 opacity-0"
-              onChange={(e) => {
-                setColor(e.target.value);
-              }}
-              type="color"
-              name={option}
-              id={option}
-            />
-          )}
-        />
-        <button
-          onClick={deleteHandler}
-          className="material-symbols-outlined flex scale-[70%]
-          items-center justify-center rounded-full p-0.5  hover:scale-75"
-        >
-          delete
-        </button>
-      </div>
-    </div>
   );
 }

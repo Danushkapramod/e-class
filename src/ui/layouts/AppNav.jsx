@@ -13,7 +13,7 @@ function Right({ children }) {
   return <div className="flex w-full justify-end gap-2">{children}</div>;
 }
 function Left({ children }) {
-  return <div className="flex w-full justify-start gap-2">{children}</div>;
+  return <div className="flex w-full items-end justify-start gap-2">{children}</div>;
 }
 AppNav.Right = Right;
 AppNav.Left = Left;
