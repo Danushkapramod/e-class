@@ -1,4 +1,4 @@
-import { useContext, useMemo } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '../ui/components/ButtonNew';
 import DataLoader from '../ui/components/DataLoader';
 import SelectItem from '../ui/components/SelectItem';
@@ -8,13 +8,16 @@ import { useAllStudents } from './useStudents';
 import Checkbox from '../ui/components/Checkbox';
 import { useQuery } from '@tanstack/react-query';
 import useHide from '../user/useHide';
-import { getStudentsCount } from '../services/apiStudents';
+import { getStudentInfoForUpdate, getStudentsCount } from '../services/apiStudents';
 import useStudentRow from './useStudentRow';
-import HoverInfo from '../ui/components/HoverInfo';
 import StatusForm from './StatusLabelEditForm';
 import PagginationNew from '../ui/components/PagginationNew';
 import { useNavigate, useParams } from 'react-router-dom';
 import usePagginationNew from '../ui/hookComponents/usePagginationNew';
+import Tooltip from '../ui/components/Potral';
+import DeleteConfirmation from '../ui/components/DeleteConfirmation';
+import { useDispatch, useSelector } from 'react-redux';
+import { setDeleteConfirmation } from '../GlobalUiState';
 
 export default function StudentTableAll() {
   return (
@@ -78,6 +81,7 @@ function TableNav() {
 }
 
 export function Operation() {
+  const navigate = useNavigate();
   const { state, updateSelectedList } = useContext(StdTableContext);
   const { students } = useAllStudents();
   const { isPending: isDeleting, mutate: hideMany } = useHide('students');
@@ -92,22 +96,26 @@ export function Operation() {
   function onUnSelect() {
     updateSelectedList('clear');
   }
-  function onAddClass() {}
+  const onUpdate = () => {
+    navigate(`/app/students/${state.selectedList[0]}/update`);
+  };
+
   if (!state.selectedList?.length > 0) return null;
   return (
     <div className="flex h-12 w-full items-center gap-1.5 px-4">
       <div className=" mr-2">
         <Checkbox width="18px" id="stdAllSelect" trueCall={onSelect} falseCall={onUnSelect} />
       </div>
-      <Button
-        className="!border-border-2"
-        size="sm"
-        variant="outline"
-        disabled={isDeleting}
-        icon="delete"
-        onClick={onAddClass}
-        label="ADD CLASS"
-      />
+      {state.selectedList.length === 1 && (
+        <Button
+          className="!border-border-2"
+          size="sm"
+          variant="outline"
+          icon="edit_square"
+          onClick={onUpdate}
+          label="UPDATE"
+        />
+      )}
       <Button
         className="!border-border-2"
         size="sm"
@@ -175,11 +183,21 @@ function Table() {
 }
 
 function TableRow({ student }) {
-  const { isSelected, onAddhandler, onRemoveHandler, onSelectHandler, isUpdating, isDeleting } =
+  const dispatch = useDispatch();
+
+  const { mutate: hide, isPending: isDeleting } = useHide('students');
+  const { deleteConfirmation } = useSelector((store) => store.global);
+  const { isSelected, onAddhandler, onRemoveHandler, onSelectHandler, isUpdating } =
     useStudentRow(student);
 
   const { name, phone, studentId, index, _id } = student;
   const bgColor = isSelected ? 'bg-hilight-1' : null;
+
+  const handleDelete = () => {
+    hide({ endPoit: 'students/hide', idList: [deleteConfirmation] });
+    dispatch(setDeleteConfirmation(null));
+  };
+
   return (
     <tr className={`text-sm ${bgColor} `}>
       <td className="relative px-4">
@@ -216,42 +234,126 @@ function TableRow({ student }) {
           <Info student={student} />
         </div>
       </td>
+      <DeleteConfirmation
+        show={deleteConfirmation}
+        onClose={() => dispatch(setDeleteConfirmation(null))}
+        onConfirm={handleDelete}
+      />
     </tr>
   );
 }
 
 function Info({ student }) {
-  const { studentId, status, statusChangedAt, createdAt } = student;
+  const ref = useRef();
+  const [tooltipData, setTooltipData] = useState({ position: '' });
+
+  const showTooltip = useCallback((event) => {
+    const rect = event.target.getBoundingClientRect();
+    setTooltipData({
+      position: {
+        top: rect.top + window.scrollY + rect.height,
+        left: rect.left + window.scrollX + rect.width,
+      },
+    });
+  }, []);
+
+  useEffect(() => {
+    const element = ref.current;
+
+    const handleMouseEnter = (event) => {
+      showTooltip(event);
+    };
+
+    const handleMouseLeave = () => {
+      setTooltipData({ position: '' });
+    };
+
+    if (element) {
+      element.addEventListener('mouseenter', handleMouseEnter);
+      element.addEventListener('mouseleave', handleMouseLeave);
+    }
+
+    return () => {
+      if (element) {
+        element.removeEventListener('mouseenter', handleMouseEnter);
+        element.removeEventListener('mouseleave', handleMouseLeave);
+      }
+    };
+  }, [showTooltip]);
+
   return (
-    <HoverInfo>
-      <HoverInfo.Icon>
-        <span className=" material-symbols-outlined z-40 mr-2 cursor-default px-1 text-xl font-light text-text--muted">
-          help
-        </span>
-      </HoverInfo.Icon>
-      <HoverInfo.Content>
-        <div className="absolute right-4 z-20  w-60  max-w-56 rounded bg-bg--primary-500 p-4 text-sm text-text--primary">
-          <div className=" flex flex-col leading-loose">
-            <div className="flex justify-between">
-              <p className="basis-[60%]">Student ID</p>: <p className="w-full pl-2"> {studentId}</p>
-            </div>
-            <div className="flex justify-between">
-              <p className=" basis-[60%]">Joined</p>:
-              <p className="w-full pl-2">{new Date(createdAt).toLocaleDateString()}</p>{' '}
-            </div>
-            <div className="flex  justify-between">
-              <p className="basis-[60%]">Status</p>:
-              <p className="w-full pl-2 capitalize"> {status}</p>
-            </div>
-            <div className="flex  justify-between">
-              <p className="basis-[60%] ">Status At</p>:{' '}
-              <p className="w-full pl-2">
-                {statusChangedAt ? new Date(statusChangedAt).toLocaleString() : '----------'}
-              </p>
-            </div>
+    <>
+      <span
+        ref={ref}
+        className="material-symbols-outlined z-40 mr-2 cursor-default px-1 text-xl font-light text-text--muted"
+      >
+        help
+      </span>
+      {tooltipData.position && <InfoContent position={tooltipData} student={student} />}
+    </>
+  );
+}
+
+function InfoContent({ student: _student, position }) {
+  const { _id, studentId, createdAt, phone, name } = _student;
+
+  const { data: student, isFetching } = useQuery({
+    queryKey: ['stdData', _id],
+    queryFn: () => getStudentInfoForUpdate(_id),
+  });
+
+  return (
+    <Tooltip position={position.position}>
+      <div
+        className="absolute right-4 z-20 w-max min-w-[20rem] max-w-xl rounded 
+          bg-bg--primary-500 p-4 text-sm text-text--primary"
+      >
+        <div className="flex flex-col leading-loose">
+          <div className="flex justify-between">
+            <p className="basis-[60%]">Student ID</p>: <p className="w-full pl-2"> {studentId}</p>
           </div>
+          <div className="flex justify-between">
+            <p className="basis-[60%]">Name</p>: <p className="w-full pl-2"> {name}</p>
+          </div>
+          <div className="flex justify-between">
+            <p className="basis-[60%]">Phone</p>: <p className="w-full pl-2"> {phone}</p>
+          </div>
+          <div className="flex justify-between">
+            <p className="basis-[60%]">Joined</p>:
+            <p className="w-full pl-2">{new Date(createdAt).toLocaleDateString()}</p>
+          </div>
+          <p className="text-xs text-text--secondery">Classes</p>
+          <ul className="flex w-full flex-wrap items-start gap-2">
+            <DataLoader
+              isLoading={isFetching}
+              data={student?.class?.map((classData) => (
+                <ClassItem key={classData.classId} classData={classData} />
+              ))}
+            />
+          </ul>
         </div>
-      </HoverInfo.Content>
-    </HoverInfo>
+      </div>
+    </Tooltip>
+  );
+}
+
+function ClassItem({ classData }) {
+  const { _id, teacher, subject, avatar, grade } = classData;
+  return (
+    <li
+      key={_id}
+      className="flex cursor-pointer items-center rounded border border-border-3 
+      bg-hilight-1 transition-all duration-150 hover:scale-105"
+    >
+      <div className="flex aspect-square h-[2.5rem] items-center justify-center overflow-hidden rounded-l">
+        <img className="h-full object-cover" src={avatar} alt="class-avatar" />
+      </div>
+      <div className="flex h-full flex-col justify-between px-2 py-1 pr-3">
+        <div className="text-xs capitalize">{`${subject} / Grade ${grade}`}</div>
+        <div className="flex flex-col justify-between text-sm capitalize text-text--secondery">
+          <span className="text-xs">{teacher.name}</span>
+        </div>
+      </div>
+    </li>
   );
 }

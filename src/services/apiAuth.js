@@ -13,7 +13,7 @@ export const getAuth = axiousWrapper(()=>{
 export const login = axiousWrapper((loginData)=>{
   return axios.post(`${BASE_URL}/users/login`,loginData,
       {withCredentials: true,
-        timeout: 6000
+       
       });
 })
 
@@ -161,6 +161,13 @@ export const deletedMany = axiousWrapper(({endPoit,idList})=>{
        },
     );
 })
+
+export const getAdmins = axiousWrapper(() => {
+  return axios.get(`${BASE_URL}/users/admins`,
+    { withCredentials: true, 
+      timeout: 6000 },
+  );
+});
 
 
 // function formDataToObject(formData) {
