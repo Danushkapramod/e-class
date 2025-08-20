@@ -1,21 +1,17 @@
 import { useQuery } from '@tanstack/react-query';
-import { getClasses, getClassesWithoutTeacher } from '../services/apiClasses';
+import { getClasses  } from '../services/apiClasses';
 import { useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
-import { setQueryParams } from './classSlice';
+import { useSelector } from 'react-redux';
+import { useMemo } from 'react';
 
-
-export default function useClasses(options) {
-  const dispatch = useDispatch() 
+export default function useClasses() {
   const location = useLocation();
-  const {queryParams} = useSelector((store)=>store.class)
-  
-  useEffect(()=>{
-      let query = options?.query || location.search
-     dispatch(setQueryParams(query)) 
-  },[dispatch, location.search, options?.query])
- 
+  const {pagginationQuery} = useSelector((store)=>store.class)
+
+  const queryParams = useMemo(() => {
+    const urlParams = Object.fromEntries(new URLSearchParams(location.search).entries());
+    return { ...pagginationQuery, ...urlParams, teacher: true };
+  }, [pagginationQuery, location.search]);
 
   const {
     data: classes,
@@ -24,10 +20,8 @@ export default function useClasses(options) {
     error,
   } = useQuery({
     queryKey: ['classes', queryParams],
-    queryFn: ({signal}) => options.teacher?getClasses({signal,queryParams}) :
-     getClassesWithoutTeacher({signal,queryParams}),
+    queryFn: ({signal}) =>  getClasses({signal,queryParams })
   });
-
   return { classes, isLoading, error, isSuccess };
 }
 

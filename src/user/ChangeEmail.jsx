@@ -57,6 +57,7 @@ function EnterPinWindow({ setWindow }) {
     e.preventDefault();
     const formData = new FormData(e.target);
     const pin = Object.fromEntries(formData.entries());
+    console.log(pin);
     mutate(pin);
   }
 

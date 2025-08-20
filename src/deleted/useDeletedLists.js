@@ -70,6 +70,7 @@ function useDeletedLists(){
       setAllDeleted(finalList);
     }
   }, [categoryBy, classes, students, teachers]);
+  
 return {classes,students,teachers,alldeleted,setCategoryBy,restoreTeachers,restoreClasses,restoreStudents,
        deleteClasses,deleteStudents,deleteTeachers,isDeleting:del1 ||del2 || del3,categoryBy,
       isRestoring:rs1|| rs2|| rs3 ,isloading:teacherLoading || studentLoading || classLoading}

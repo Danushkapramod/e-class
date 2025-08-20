@@ -9,21 +9,17 @@ export const createStudent = axiousWrapper((stdData)=>{
     });
 })
 
-export const getStudents = axiousWrapper(({query:{query,classId},signal})=>{
-    let queryParams;
-    query ? (queryParams = `?${query}`) : (queryParams = "");
-
-      return axios.get(`${BASE_URL}/students/${classId}${queryParams}`,{
+export const getStudents = axiousWrapper(({query,classId, signal})=>{
+      return axios.get(`${BASE_URL}/students/${classId}`,{
+      params: query,  
       withCredentials:true,
       signal,
       timeout:6000
     })
  }) 
  export const getAllStudents = axiousWrapper(({query,signal})=>{
-  let queryParams;
-  query ? (queryParams = `?${query}`) : (queryParams = "");
-
-    return axios.get(`${BASE_URL}/students${queryParams}`,{
+    return axios.get(`${BASE_URL}/students`,{
+    params: query,    
     withCredentials:true,
     signal,
     timeout:6000
@@ -42,6 +38,14 @@ export const updateManyStudent = axiousWrapper(({studentIds, newData })=>{
      timeout:10000
     });
 })
+
+export const updateStatus = axiousWrapper((newData)=>{
+  return axios.post(`${BASE_URL}/students/updateStatus`,newData,{
+     withCredentials:true,
+     timeout:10000
+    });
+})
+
 export const updateManyStudentClass = axiousWrapper(({studentIds, newData })=>{
   return axios.post(`${BASE_URL}/students/updateMany/classes`,{studentIds, newData },{
      withCredentials:true,
@@ -73,3 +77,17 @@ export const getStudentsCount = axiousWrapper((classId)=>{
       withCredentials:true
   });
 })
+
+export const resedQr = axiousWrapper(({ studentId, newData }) => {
+  return axios.post(`${BASE_URL}/students/resendQr/${studentId}`, newData, {
+    withCredentials: true,
+    timeout: 10000,
+  });
+});
+
+export const getStudentInfoForUpdate = axiousWrapper((studentId) => {
+  return axios.get(`${BASE_URL}/students/updateInfo/${studentId}`, {
+    withCredentials: true,
+    timeout: 10000,
+  });
+});

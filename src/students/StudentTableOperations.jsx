@@ -27,7 +27,7 @@ const sortData = [
 export function StudentFilter() {
   const { updateFlterhQuery } = useContext(StdTableContext);
   const dispatch = useDispatch();
-  const [isFilter, setIsFilter] = useState();
+  const [isFilter, setIsFilter] = useState('none');
   const params = useMemo(() => new URLSearchParams(), []);
 
   useEffect(() => {
@@ -39,7 +39,8 @@ export function StudentFilter() {
   }, [dispatch, isFilter, params]);
 
   useEffect(() => {
-    updateFlterhQuery(params.toString());
+    updateFlterhQuery(Object.fromEntries(params.entries()));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params, isFilter]);
 
   return (
@@ -52,13 +53,13 @@ export function StudentFilter() {
     />
   );
 }
-
+const searchFields = [
+  { searchBy: 'Name', fieldName: 'name' },
+  { searchBy: 'ID', fieldName: 'studentId' },
+  { searchBy: 'Phone', fieldName: 'phone' },
+];
 export function StudentSearch() {
-  const searchFields = [
-    { searchBy: 'Name', fieldName: 'name' },
-    { searchBy: 'ID', fieldName: 'studentId' },
-    { searchBy: 'Phone', fieldName: 'phone' },
-  ];
   const { updateSearchQuery } = useContext(StdTableContext);
+
   return <Search setFn={updateSearchQuery} initialSearchBy="name" searchFields={searchFields} />;
 }

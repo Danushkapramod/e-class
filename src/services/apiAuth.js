@@ -13,7 +13,7 @@ export const getAuth = axiousWrapper(()=>{
 export const login = axiousWrapper((loginData)=>{
   return axios.post(`${BASE_URL}/users/login`,loginData,
       {withCredentials: true,
-        timeout: 6000
+       
       });
 })
 
@@ -53,8 +53,7 @@ export const updateUserAvatar = axiousWrapper((newData)=>{
 
 export const updateAuther = axiousWrapper(async (newData)=>{
     return axios.patch(`${BASE_URL}/users/me/update`,newData,
-      { withCredentials: true,
-      },
+      { withCredentials: true },
     );
 })
 export const updateAppSetings = axiousWrapper(async (newData)=>{
@@ -162,6 +161,14 @@ export const deletedMany = axiousWrapper(({endPoit,idList})=>{
        },
     );
 })
+
+export const getAdmins = axiousWrapper(() => {
+  return axios.get(`${BASE_URL}/users/admins`,
+    { withCredentials: true, 
+      timeout: 6000 },
+  );
+});
+
 
 // function formDataToObject(formData) {
 //   const obj = {};

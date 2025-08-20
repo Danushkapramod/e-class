@@ -1,44 +1,23 @@
-import useSetRoot from '../utils/setRoot';
 import useTeachers from './useTeachers';
 import { useNavigate } from 'react-router-dom';
 import SelectItem from '../ui/components/SelectItem';
 import { useDispatch, useSelector } from 'react-redux';
 import AppNav from '../ui/layouts/AppNav';
 import { setTableView } from './teacherSlice';
-import useClientSearch from '../hooks/useClientSearch';
-import { getTeachersCount } from '../services/apiTeachers';
-import Pagination from '../ui/components/Pagination';
 import { Button } from '../ui/components/ButtonNew';
 import DataLoader from '../ui/components/DataLoader';
 import DeleteConfirmation from '../ui/components/DeleteConfirmation';
 import { setDeleteConfirmation } from '../GlobalUiState';
 import useHide from '../user/useHide';
-import { useQuery } from '@tanstack/react-query';
+import { TeacherFilter, TeacherSearch } from './TeacherTableOperations';
 
 function TeachersTable() {
-  useSetRoot('');
-  const { data: teachersTotal } = useQuery({
-    queryKey: ['teachersCount'],
-    queryFn: () => getTeachersCount(),
-  });
   const { tableView } = useSelector((store) => store.teacher);
-  const { teachers: data, isLoading, error } = useTeachers();
-  const { searchResults: teachers, setQuery } = useClientSearch(data, {
-    type: 'obj',
-    valueName: 'name',
-  });
+  const { teachers, isLoading, error } = useTeachers();
 
-  function setSearchQuery(e) {
-    setQuery(e.target.value.trim());
-  }
   return (
     <>
-      <AppNav
-        type="teacher"
-        setTableView={setTableView}
-        tableView={tableView}
-        onChange={setSearchQuery}
-      />
+      <Nav />
       {tableView === 'card' ? (
         <div className=" mt-2 grid grid-cols-[repeat(auto-fill,minmax(13rem,1fr))] gap-2 rounded">
           <DataLoader
@@ -75,10 +54,33 @@ function TeachersTable() {
           </table>
         </div>
       )}
-      <div className="mb-10 mt-2 flex w-full flex-col items-center justify-center">
-        <Pagination total={teachersTotal} />
-      </div>
     </>
+  );
+}
+
+function Nav() {
+  const { tableView } = useSelector((store) => store.teacher);
+  const dispatch = useDispatch();
+
+  function handleView() {
+    if (tableView === 'list') dispatch(setTableView('card'));
+    if (tableView === 'card') dispatch(setTableView('list'));
+  }
+  return (
+    <AppNav>
+      <AppNav.Left>
+        <TeacherSearch />
+      </AppNav.Left>
+      <AppNav.Right>
+        <TeacherFilter />
+        <Button
+          onClick={handleView}
+          variant="outline"
+          size="sm"
+          icon={tableView === 'list' ? 'format_list_bulleted' : 'grid_view'}
+        />
+      </AppNav.Right>
+    </AppNav>
   );
 }
 
