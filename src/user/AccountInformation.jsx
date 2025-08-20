@@ -12,6 +12,8 @@ import { AppInputField } from '../ui/components/AppInputField';
 import { useUpdate } from '../authentication/useUpdate';
 import useUpdateUserAvatar from './useUploadImage';
 import { Button } from '../ui/components/ButtonNew';
+import { useQuery } from '@tanstack/react-query';
+import { getAdmins } from '../services/apiAuth';
 
 function AccountInformation() {
   const { auther, isLoading, error } = useAuther();
@@ -25,6 +27,7 @@ function AccountInformation() {
         <LeftSection auther={auther} />
         <RightSection auther={auther} />
         <MetaInfo auther={auther} />
+        <AdminsSectionn />
       </div>
     </div>
   );
@@ -238,6 +241,47 @@ function RightSection() {
           )}
           {isShow === 'changePassword' && <ChangePassword />}
         </div>
+      </div>
+    </div>
+  );
+}
+
+function AdminsSectionn() {
+  const {
+    data: admins,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ['admins'],
+    queryFn: getAdmins,
+  });
+
+  console.log(admins);
+
+  return (
+    <div className="w-full rounded p-6 text-text--primary">
+      <div className=" flex justify-between text-text--secondery">
+        <p className=" text-xl text-text--muted">Admins</p>
+      </div>
+      <div className=" text-right">
+        <Button size="sm" label="ADD" />
+      </div>
+      <div className={` flex flex-col gap-4 pt-6`}>
+        {admins?.map(({ _id, name, loginId }) => (
+          <div className="flex flex-row items-center gap-2 text-sm" key={_id}>
+            <span className=" material-symbols-outlined text-4xl">account_circle</span>
+            <div className="flex w-full max-w-xl flex-row items-center justify-between ">
+              <div>
+                <div>{name}</div>
+                <div className=" text-xs">{`@${loginId}`}</div>
+              </div>
+              <div className="flex gap-4">
+                <span className=" material-symbols-outlined text-xl">edit_square</span>
+                <span className=" material-symbols-outlined text-xl">delete</span>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

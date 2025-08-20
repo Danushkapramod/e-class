@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setPagginationQuery, setTableView } from './classSlice';
 import AppNav from '../ui/layouts/AppNav';
 import { getClassesCount } from '../services/apiClasses';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { Button } from '../ui/components/ButtonNew';
 import { formatLocalTime } from '../utils/formateDates&Times';
 import DataLoader from '../ui/components/DataLoader';
@@ -37,7 +37,6 @@ export default function ClassesTable() {
           <div className=" text-2xl text-text--secondery">Classes</div>
           <span className=" text-base font-normal uppercase opacity-70">{id}</span>
         </div>
-
         <div className=" flex items-end gap-2">
           <Exports category="class" buttonSize="base" />
           <Button to="new" icon="add" label="ADD CLASS" />
@@ -132,11 +131,12 @@ function Nav() {
 function CardItem({ classData }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { deleteConfirmation } = useSelector((store) => store.global);
-  const { mutate: hide, isPending: isDeleting } = useHide('classes');
-  const { _id, teacher, subject, avatar, hall, startTime, grade, day } = classData;
-  const hiddenId = useRef(_id);
 
+  const { deleteConfirmation, pagginationQuery } = useSelector((store) => store.global);
+
+  const { mutate: hide, isPending: isDeleting } = useHide(['classes', pagginationQuery]);
+
+  const { _id, teacher, subject, avatar, hall, startTime, grade, day } = classData;
   function onSelectHandler(selected) {
     if (selected === 'update') {
       navigate(`/app/classes/${_id}/update`);
@@ -145,7 +145,6 @@ function CardItem({ classData }) {
       navigate(`/app/classes/${_id}`);
     }
     if (selected === 'delete') {
-      hiddenId.current = _id;
       dispatch(setDeleteConfirmation(_id));
     }
   }

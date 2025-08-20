@@ -76,11 +76,11 @@ export default function ClassForm() {
     createClass(classData);
   };
 
-  function addSubject(subject) {
-    if (!subjects.some((sub) => sub.subjectName.toLowerCase() === subject.toLowerCase())) {
-      createSubject({ subjectName: subject });
-    }
-  }
+  // function addSubject(subject) {
+  //   if (!subjects.some((sub) => sub.subjectName.toLowerCase() === subject.toLowerCase())) {
+  //     createSubject({ subjectName: subject });
+  //   }
+  // }
 
   return (
     <>

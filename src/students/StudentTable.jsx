@@ -17,11 +17,10 @@ import useCreateAttendance from './useCreateAttendance';
 import toast from 'react-hot-toast';
 import { CircleSpinner } from 'react-spinners-kit';
 import useStudentRow from './useStudentRow';
-import HoverInfo from '../ui/components/HoverInfo';
 import { getStudentsCount } from '../services/apiStudents';
 import PagginationNew from '../ui/components/PagginationNew';
 import usePagginationNew from '../ui/hookComponents/usePagginationNew';
-import { useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useUpdateStatus } from './useUpdateStatus';
 
 export default function StudentTable() {
@@ -82,6 +81,7 @@ function TableNav() {
 
 export function Operation() {
   const { id: classId } = useParams();
+  const navigate = useNavigate();
   const { state, updateSelectedList } = useContext(StdTableContext);
   const { students } = useStudentsInTeacher();
   const { isPending: isDeleting, mutate: hideMany } = useHide('students');
@@ -104,6 +104,9 @@ export function Operation() {
   function onUnSelect() {
     updateSelectedList('clear');
   }
+  const onUpdate = () => {
+    navigate(`/app/students/${state.selectedList[0]}/update`);
+  };
 
   if (!state.selectedList?.length > 0) return null;
   return (
@@ -123,6 +126,16 @@ export function Operation() {
           ['Export to CSV', 'delete'],
         ]}
       />
+      {state.selectedList.length === 1 && (
+        <Button
+          className="!border-border-2"
+          size="sm"
+          variant="outline"
+          icon="edit_square"
+          onClick={onUpdate}
+          label="UPDATE"
+        />
+      )}
       <SelectItem
         buttonSize="sm"
         btnTitle="STATUS"
@@ -291,17 +304,10 @@ function CheckBoxWithSpinner({ isPresent, id, date }) {
 
 function TableRow({ student }) {
   const {
-    ref1,
-    isEditing,
-    setIsEditing,
-    formState,
-    setFormState,
     isSelected,
     onStatusHandler,
-    onSubmitHandler,
     onAddhandler,
     onRemoveHandler,
-    onSelectHandler,
     isUpdating,
     isDeleting,
     state,
@@ -327,36 +333,8 @@ function TableRow({ student }) {
       </td>
       <td className=" py-3 pr-6 text-text--muted ">{(index + 1).toString().padStart(2, '0')}</td>
       <td className="py-3">{studentId}</td>
-      <td className="relative py-3 ">
-        {isEditing ? (
-          <div className=" flex items-center">
-            <input
-              ref={ref1}
-              onChange={(e) => setFormState({ ...formState, name: e.target.value })}
-              className=" w-max rounded border-border-1 bg-bg--primary-300 px-2 py-1.5 outline-none"
-              type="text"
-              value={formState.name}
-            />
-          </div>
-        ) : (
-          name
-        )}
-      </td>
-      <td className="relative py-3 ">
-        {isEditing ? (
-          <div className="flex  items-center">
-            <input
-              onChange={(e) => setFormState({ ...formState, phone: e.target.value })}
-              className=" w-max rounded border border-border-1
-               bg-bg--primary-300 px-2 py-1.5 outline-none"
-              type="text"
-              value={formState.phone}
-            />
-          </div>
-        ) : (
-          phone
-        )}
-      </td>
+      <td className="relative py-3 ">{name}</td>
+      <td className="relative py-3 ">{phone}</td>
       <td className="w-[32rem]">
         <div className=" flex items-center  gap-8">
           <DaysChexboxes id={_id} attendances={attendances} />
@@ -391,76 +369,14 @@ function TableRow({ student }) {
           </div>
         </div>
       </td>
-      <td className=" w-1">
-        <div className=" flex w-24 items-center justify-between">
-          {!isEditing ? (
-            <SelectItem
-              btn={
-                <span className=" material-symbols-outlined flex scale-[80%] items-center">
-                  more_vert
-                </span>
-              }
-              disabled={isUpdating || isDeleting}
-              onClick={onSelectHandler}
-              items={[
-                ['update', 'edit'],
-                ['delete', 'delete'],
-              ]}
-            />
-          ) : (
-            <Button onClick={onSubmitHandler} type="sm" label="SAVE" />
-          )}
-          {!isEditing ? (
-            <Info student={student} />
-          ) : (
-            <button
-              onClick={() => {
-                setIsEditing(false);
-              }}
-              className=" material-symbols-outlined mr-3 flex aspect-square h-6
-               items-center justify-center rounded-full bg-bg--primary-300 text-lg"
-            >
-              close
-            </button>
-          )}
-        </div>
+      <td>
+        <Link
+          to={`/app/students/${_id}/update`}
+          className=" material-symbols-outlined flex scale-[80%] items-center"
+        >
+          edit_square
+        </Link>
       </td>
     </tr>
-  );
-}
-
-function Info({ student }) {
-  const { studentId, status, statusChangedAt, createdAt } = student;
-  return (
-    <HoverInfo>
-      <HoverInfo.Icon>
-        <span className=" material-symbols-outlined z-40 mr-2 cursor-default px-1 text-xl font-light text-text--muted">
-          help
-        </span>
-      </HoverInfo.Icon>
-      <HoverInfo.Content>
-        <div className="absolute right-4 z-20  w-60  max-w-56 rounded bg-bg--primary-500 p-4 text-sm text-text--primary">
-          <div className=" flex flex-col leading-loose">
-            <div className="flex justify-between">
-              <p className="basis-[60%]">Student ID</p>: <p className="w-full pl-2"> {studentId}</p>
-            </div>
-            <div className="flex justify-between">
-              <p className=" basis-[60%]">Joined</p>:
-              <p className="w-full pl-2">{new Date(createdAt).toLocaleDateString()}</p>{' '}
-            </div>
-            <div className="flex  justify-between">
-              <p className="basis-[60%]">Status</p>:
-              <p className="w-full pl-2 capitalize"> {status}</p>
-            </div>
-            <div className="flex  justify-between">
-              <p className="basis-[60%] ">Status At</p>:{' '}
-              <p className="w-full pl-2">
-                {statusChangedAt ? new Date(statusChangedAt).toLocaleString() : '----------'}
-              </p>
-            </div>
-          </div>
-        </div>
-      </HoverInfo.Content>
-    </HoverInfo>
   );
 }
