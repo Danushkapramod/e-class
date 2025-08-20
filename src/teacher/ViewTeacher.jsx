@@ -73,7 +73,6 @@ function ViewTeacher() {
 
         <div className=" absolute right-4 top-4">
           <SelectItem
-            btn="more_vert"
             disabled={isDeleting}
             onClick={onSelectHandler}
             items={[
@@ -115,7 +114,7 @@ function ViewTeacher() {
         <ul className="mt-2 divide-y divide-border-2 overflow-hidden rounded bg-bg--primary-200 ">
           <DataLoader
             data={
-              classesData.length > 0 ? (
+              classesData && classesData.length > 0 ? (
                 classesData.map((classData, index) => {
                   return <ClassItem classData={classData} key={index} />;
                 })
@@ -178,7 +177,6 @@ function ClassItem({ classData }) {
         <div className=" absolute z-50">
           <SelectItem
             disabled={isDeleting}
-            btn="more_vert"
             onClick={onSelectHandler}
             items={[
               ['update', 'edit'],

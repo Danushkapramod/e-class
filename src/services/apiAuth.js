@@ -13,7 +13,7 @@ export const getAuth = axiousWrapper(()=>{
 export const login = axiousWrapper((loginData)=>{
   return axios.post(`${BASE_URL}/users/login`,loginData,
       {withCredentials: true,
-        timeout: 6000
+       
       });
 })
 

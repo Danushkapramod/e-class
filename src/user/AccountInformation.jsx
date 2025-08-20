@@ -43,7 +43,7 @@ function MetaInfo({ auther }) {
     formState: { errors },
     handleSubmit,
   } = useForm({
-    defaultValues: useMemo(() => auther.auther.metaData, [auther.auther.metaData]),
+    defaultValues: useMemo(() => auther?.auther?.metaData, [auther?.auther?.metaData]),
   });
 
   useEffect(() => {
@@ -94,7 +94,7 @@ function MetaInfo({ auther }) {
           <AppInputField
             name="city"
             disabled={isLock}
-            errors={errors.city}
+            errors={errors?.city}
             rules={{ required: 'emply input!' }}
             control={control}
             placeholder="City"
@@ -105,7 +105,7 @@ function MetaInfo({ auther }) {
         <Button
           spinner={isPending}
           disabled={isPending}
-          label={auther?.auther.metaData ? 'UPDATE' : 'SAVE'}
+          label={auther?.auther?.metaData ? 'UPDATE' : 'SAVE'}
         />
       </div>
     </Form>
