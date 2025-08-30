@@ -13,7 +13,7 @@ export function useAllStudents() {
     ,[state,]
   )
   const {data: students, isLoading,isSuccess, error} =  useQuery({
-    queryKey: ['allStudents', query],
+    queryKey: ['students', 'allStudents', query],
     queryFn:({signal})=> getAllStudents({query, signal})
   })
   return { students, isSuccess, isLoading, error };

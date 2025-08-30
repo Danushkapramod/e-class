@@ -1,22 +1,23 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import useUpdateStudent from "./useUpdateStudent";
-import useDeleteStudent from "./useDeleteStudent";
 import { StdTableContext } from "./TableContext";
 import { useNavigate, useParams } from "react-router-dom";
 import { useUpdateStatus } from "./useUpdateStatus";
+import { useDispatch } from "react-redux";
+import { setDeleteConfirmation } from "../GlobalUiState";
 
 export default function useStudentRow(student) {
     const { _id, name, phone } = student;
-    const navigate = useNavigate()
+    const ref1 = useRef();
+    const {id} = useParams()
+
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [isEditing, setIsEditing] = useState(false);
     const [formState, setFormState] = useState({ name, phone });
     const [isSelected, setIsSelected] = useState(false);
-    const ref1 = useRef();
-  
-    const {id} = useParams()
     const { updateSelectedList, state} = useContext(StdTableContext);
     const { isUpdating, isSuccess, mutate } = useUpdateStudent();
-    const { isDeleting, mutate: deleteStudent } = useDeleteStudent();
     const {  mutate: updateStatus } = useUpdateStatus();
   
     useEffect(() => {
@@ -45,6 +46,7 @@ export default function useStudentRow(student) {
       });
     };
   
+ 
     const onAddhandler = () => {
       updateSelectedList('add', _id);
     };
@@ -58,7 +60,7 @@ export default function useStudentRow(student) {
         navigate(`/app/students/${_id}/update`)
       }
       if (selected === 'delete') {
-        deleteStudent(_id);
+        dispatch(setDeleteConfirmation(_id));
       }
     };
   
@@ -75,7 +77,6 @@ export default function useStudentRow(student) {
       onRemoveHandler,
       onSelectHandler,
       isUpdating,
-      isDeleting,
       state,
     };
   }

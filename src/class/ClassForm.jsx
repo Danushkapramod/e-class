@@ -26,7 +26,6 @@ export default function ClassForm() {
   const { tempCreateClassForm } = useSelector((store) => store.class);
   const [isSubmit, setIsSubmit] = useState(false);
   const { isCreating, mutate: createClass } = useCreateClass(setIsSubmit);
-  const { mutate: createSubject } = useCreateOption('subject');
 
   const {
     teachers,
@@ -71,16 +70,8 @@ export default function ClassForm() {
       teacher: data.teacherId,
       avatar: data.avatar[0] || undefined,
     };
-
-    // addSubject(data.subject);
     createClass(classData);
   };
-
-  function addSubject(subject) {
-    if (!subjects.some((sub) => sub.subjectName.toLowerCase() === subject.toLowerCase())) {
-      createSubject({ subjectName: subject });
-    }
-  }
 
   return (
     <>

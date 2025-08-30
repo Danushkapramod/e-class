@@ -1,14 +1,14 @@
 import { Form, useForm } from 'react-hook-form';
 import useCreateTeacher from './useCreateTeacher';
-import useCreateOption from '../option/useCreateOption';
-import useOptions from '../option/useOptions';
 import { AppInputField } from '../ui/components/AppInputField';
 import { Button } from '../ui/components/ButtonNew';
+import useCreateSubItem from '../option/useCreateSubItem';
+import useSubItems from '../option/useSubIttems';
 
 function CreateTeacher() {
   const { isCreating, mutate } = useCreateTeacher();
-  const { mutate: createSubjectMutate } = useCreateOption('subject');
-  const { options: subjects } = useOptions('subject');
+  const { mutate: createSubject } = useCreateSubItem('subjects');
+  const { data: subjects } = useSubItems({ key: 'subjects', category: 'subject' });
 
   const {
     register,
@@ -25,13 +25,13 @@ function CreateTeacher() {
       avatar: data.image[0],
     };
 
-    addSubject(data.subject);
     mutate(teacherData);
+    addSubject(data.subject);
   };
 
   function addSubject(subject) {
-    if (!subjects?.some((sub) => sub.subjectName.toLowerCase() === subject.toLowerCase())) {
-      createSubjectMutate({ option: 'subject', optionData: { subjectName: subject } });
+    if (!subjects.some((sub) => sub.itemName.toLowerCase() === subject.toLowerCase())) {
+      createSubject({ itemName: subject, category: 'subject' });
     }
   }
 

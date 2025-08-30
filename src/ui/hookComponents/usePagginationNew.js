@@ -3,7 +3,7 @@ import { useLocation, useSearchParams } from "react-router-dom";
 
 function usePagginationNew({setFun}){
  const [page, setPage] = useState(1);
- const [limit, setLimit] = useState(2);
+ const [limit, setLimit] = useState(30);
  const location = useLocation();
  const url = useMemo(() => new URLSearchParams(location.search), [location.search]);
  const [, setParams] = useSearchParams()
