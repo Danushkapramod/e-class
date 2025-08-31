@@ -6,7 +6,7 @@ import { useAuther } from '../../authentication/useAuther';
 function Avatar() {
   const [isOpen, setIsOpen] = useState();
   const { mutate: logout, isLoading } = useLogout();
-  const { auther } = useAuther();
+  const { auther, isLoading: avatarIsloding } = useAuther();
 
   return (
     <div className=" relative flex items-center justify-center">
@@ -15,7 +15,7 @@ function Avatar() {
           <img
             className="h-full"
             src={
-              auther?.auther?.avatar
+              avatarIsloding && auther?.auther?.avatar
                 ? auther?.auther?.avatar
                 : 'https://cdn-icons-png.flaticon.com/512/147/147144.png'
             }
