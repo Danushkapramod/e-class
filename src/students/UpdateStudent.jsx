@@ -29,7 +29,7 @@ function UpdateStudent() {
     setValue,
     watch,
     formState: { errors },
-  } = useForm({ defaultValues: { sendQr_whatsapp: true } });
+  } = useForm();
 
   const { data: student, isFetching } = useQuery({
     queryKey: ['stdData'],
@@ -60,7 +60,10 @@ function UpdateStudent() {
       sendQr_gmail: getValues('sendQr_gmail'),
       gmail: getValues('gmail'),
     };
+    console.log(newData);
+
     if (!newData.sendQr_whatsapp && !getValues('gmail')) return;
+
     reSendQr(
       { studentId: id, newData },
       {
@@ -118,7 +121,7 @@ function UpdateStudent() {
                 <p>Whatsapp</p>
                 <Checkbox
                   id="whatsappChexbox"
-                  _checked={getValues('sendQr_whatsapp')}
+                  checked={getValues('sendQr_whatsapp')}
                   trueCall={() => setValue('sendQr_whatsapp', true)}
                   falseCall={() => setValue('sendQr_whatsapp', false)}
                 />
@@ -133,6 +136,7 @@ function UpdateStudent() {
                 />
               </div>
               <Button
+                type="button"
                 spinner={qrSending}
                 onClick={onResendQr}
                 variant="outline"

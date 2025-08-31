@@ -14,6 +14,7 @@ const Button = forwardRef(
       size,
       variant,
       spinner,
+      type,
       icon,
       label,
       disabled,
@@ -91,6 +92,7 @@ const Button = forwardRef(
         ref={ref}
         onClick={onClick}
         disabled={disabled}
+        type={type || 'submit'}
         className={twMerge(clsx(buttonVariants({ variant, size }), className))}
         {...props}
       >

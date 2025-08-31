@@ -184,9 +184,13 @@ function Row({ classData, filterStatus }) {
         <td className="  flex justify-end gap-2 px-2 py-3 pr-4">
           <div className=" right-2 top-2">
             <SelectItem
+              btn={
+                <div className=" h-full">
+                  <span className=" material-symbols-outlined scale-75 ">more_vert</span>
+                </div>
+              }
               disabled={isDeleting}
               onClick={onSelectHandler}
-              btn="more_vert"
               items={[
                 ['update', 'edit'],
                 ['view', 'wysiwyg'],
