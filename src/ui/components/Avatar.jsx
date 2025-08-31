@@ -15,8 +15,8 @@ function Avatar() {
           <img
             className="h-full"
             src={
-              auther.auther?.avatar
-                ? auther.auther?.avatar
+              auther?.auther?.avatar
+                ? auther?.auther?.avatar
                 : 'https://cdn-icons-png.flaticon.com/512/147/147144.png'
             }
             alt="avatar"
