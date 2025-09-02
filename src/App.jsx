@@ -21,12 +21,13 @@ import { StudentRoutes } from './routes/StudentRoutes';
 import DeletedTable from './deleted/DeletedTable';
 import Backups from './backups$prints/Backups';
 import CameraComponent from './Camera';
+import Index from './pages/Index';
 
 function App() {
   const router = createBrowserRouter([
     {
       path: '/',
-      element: <Navigate to="app/dashbord" replace={true} />,
+      element: <Index />,
     },
     {
       path: 'login',
